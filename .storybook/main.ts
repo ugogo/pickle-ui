@@ -3,7 +3,11 @@ import { resolve } from "path";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
-  addons: ["@storybook/addon-links", "@storybook/addon-docs"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-docs",
+    "storybook-addon-pseudo-states",
+  ],
   framework: {
     name: "@storybook/react-vite",
     options: {},
