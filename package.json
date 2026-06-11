@@ -5,6 +5,7 @@
   "description": "React component library built with shadcn/ui, Tailwind CSS, and reui.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "packageManager": "pnpm@10.28.2",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -16,9 +17,11 @@
     "src"
   ],
   "scripts": {
-    "dev": "tsc --watch",
+    "dev": "storybook dev -p 6006",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "keywords": [
     "react",
@@ -30,19 +33,35 @@
   ],
   "author": "Ugo Onali",
   "license": "MIT",
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0"
+  },
   "devDependencies": {
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "typescript": "^5.4.0"
+    "@storybook/addon-docs": "^10.4.4",
+    "@storybook/addon-links": "^10.4.4",
+    "@storybook/react": "^10.4.4",
+    "@storybook/react-vite": "^10.4.4",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "postcss": "^8.5.15",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "storybook": "^10.4.4",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
-  "optionalDependencies": {
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
-    "reui": "^0.1.0",
-    "tailwind-merge": "^2.3.0"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
