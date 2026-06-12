@@ -18,7 +18,7 @@ npm install pickle-ui
 ## Usage
 
 ```tsx
-import { Button } from "pickle-ui";
+import { Button } from 'pickle-ui';
 
 export function App() {
   return <Button>Click me</Button>;

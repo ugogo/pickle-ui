@@ -1,14 +1,16 @@
-import type { ReactNode } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ReactNode } from 'react';
+
 import { IconPlus } from '@tabler/icons-react';
+
 import { Button, type ButtonProps } from './Button';
 
 const meta = {
-  title: 'components/Button',
   component: Button,
   parameters: {
     layout: 'fullscreen',
   },
+  title: 'components/Button',
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -37,10 +39,10 @@ const SIZES: { label: string; props: Partial<ButtonProps> }[] = [
   { label: 'Medium', props: { size: 'md' } },
 ];
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({ children, title }: { children: ReactNode; title: string }) {
   return (
     <section>
-      <h2 className="mb-6 text-xl font-medium text-foreground">{title}</h2>
+      <h2 className="text-foreground mb-6 text-xl font-medium">{title}</h2>
       {children}
     </section>
   );
@@ -48,7 +50,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 export const All: Story = {
   render: () => (
-    <div className="min-h-screen bg-background font-sans text-foreground">
+    <div className="bg-background text-foreground min-h-screen font-sans">
       <div className="mx-auto max-w-5xl px-8 py-12">
         <header className="mb-12">
           <h1 className="text-4xl font-bold tracking-tight">Button</h1>
@@ -57,14 +59,14 @@ export const All: Story = {
         <div className="space-y-16">
           <Section title="Variants &times; States">
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse bg-card">
+              <table className="bg-card w-full border-collapse">
                 <thead>
-                  <tr className="border border-border bg-border/10">
-                    <th className="w-28 px-3 py-2.5" aria-hidden="true" />
+                  <tr className="border-border bg-border/10 border">
+                    <th className="w-28 px-3 py-2.5" />
                     {STATES.map((state) => (
                       <th
+                        className="text-muted-foreground border-border border p-3 text-center text-xs font-medium"
                         key={state.label}
-                        className="p-3 text-center text-xs font-medium text-muted-foreground border border-border"
                       >
                         {state.label}
                       </th>
@@ -73,14 +75,14 @@ export const All: Story = {
                 </thead>
                 <tbody>
                   {VARIANTS.map((variant) => (
-                    <tr key={variant} className="border border-border">
-                      <td className="align-middle pl-6 text-xs font-medium text-muted-foreground border border-border capitalize">
+                    <tr className="border-border border" key={variant}>
+                      <td className="text-muted-foreground border-border border pl-6 align-middle text-xs font-medium capitalize">
                         {variant}
                       </td>
                       {STATES.map((state) => (
                         <td
+                          className="border-border border p-3 text-center align-middle"
                           key={state.label}
-                          className="p-3 text-center align-middle border border-border"
                         >
                           <Button variant={variant} {...state.props}>
                             Button
@@ -101,7 +103,7 @@ export const All: Story = {
                   Add
                 </Button>
               ))}
-              <Button size="icon" aria-label="Add">
+              <Button aria-label="Add" size="icon">
                 <IconPlus stroke={2} />
               </Button>
               <Button aria-label="Add">
