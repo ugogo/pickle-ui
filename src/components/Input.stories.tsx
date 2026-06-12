@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Input } from './Input';
-import { Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Input,
@@ -27,35 +27,36 @@ const TYPE_ROWS = [
   { description: 'Masked text entry', key: 'password', label: 'Password' },
 ];
 
+function InputMatrixCell({ column, row }: ComponentMatrixCellProps) {
+  const isInvalid = column.key === 'invalid';
+
+  return (
+    <Input
+      aria-invalid={isInvalid || undefined}
+      aria-label={`${row.label} ${column.label}`}
+      defaultValue={
+        column.key === 'filled'
+          ? row.key === 'email'
+            ? 'hello@pickle.dev'
+            : 'Pickle UI'
+          : undefined
+      }
+      disabled={column.key === 'disabled'}
+      placeholder={isInvalid ? 'Check this value' : row.label}
+      type={row.key}
+    />
+  );
+}
+
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-6xl" title="Input">
       <Story.Section title="Types and states">
         <Story.Matrix
+          Cell={InputMatrixCell}
           cellClassName="justify-stretch"
           cellWidth="16rem"
           columns={STATE_COLUMNS}
-          renderCell={(row, column) => {
-            const isFile = row.key === 'file';
-            const isInvalid = column.key === 'invalid';
-
-            return (
-              <Input
-                aria-invalid={isInvalid || undefined}
-                aria-label={`${row.label} ${column.label}`}
-                defaultValue={
-                  column.key === 'filled' && !isFile
-                    ? row.key === 'email'
-                      ? 'hello@pickle.dev'
-                      : 'Pickle UI'
-                    : undefined
-                }
-                disabled={column.key === 'disabled'}
-                placeholder={isInvalid ? 'Check this value' : row.label}
-                type={row.key}
-              />
-            );
-          }}
           rows={TYPE_ROWS}
         />
       </Story.Section>

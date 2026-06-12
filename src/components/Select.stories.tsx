@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Select } from './Select';
-import { Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Select,
@@ -24,6 +24,16 @@ const SIZE_ROWS = [
   { description: 'Standard control height', key: 'default', label: 'Default' },
   { description: 'Compact dense forms', key: 'sm', label: 'Small' },
 ];
+
+function SelectMatrixCell({ column, row }: ComponentMatrixCellProps) {
+  return (
+    <ThemeSelect
+      disabled={column.key === 'disabled'}
+      size={row.key as 'default' | 'sm'}
+      value={column.key === 'placeholder' ? undefined : 'system'}
+    />
+  );
+}
 
 function ThemeSelect({
   disabled,
@@ -53,14 +63,8 @@ export const All: StoryDefinition = {
     <Story.Layout className="max-w-5xl" title="Select">
       <Story.Section title="Sizes and states">
         <Story.Matrix
+          Cell={SelectMatrixCell}
           columns={STATE_COLUMNS}
-          renderCell={(row, column) => (
-            <ThemeSelect
-              disabled={column.key === 'disabled'}
-              size={row.key as 'default' | 'sm'}
-              value={column.key === 'placeholder' ? undefined : 'system'}
-            />
-          )}
           rows={SIZE_ROWS}
         />
       </Story.Section>

@@ -1,6 +1,11 @@
-import { Fragment, type ReactNode } from 'react';
+import { type ComponentType, Fragment, type ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
+
+type ComponentMatrixCellProps = {
+  column: ComponentMatrixColumn;
+  row: ComponentMatrixRow;
+};
 
 type ComponentMatrixColumn = {
   description?: string;
@@ -9,14 +14,11 @@ type ComponentMatrixColumn = {
 };
 
 type ComponentMatrixProps = {
+  Cell: ComponentType<ComponentMatrixCellProps>;
   cellClassName?: string;
   cellWidth?: string;
   className?: string;
   columns: ComponentMatrixColumn[];
-  renderCell: (
-    row: ComponentMatrixRow,
-    column: ComponentMatrixColumn,
-  ) => ReactNode;
   rows: ComponentMatrixRow[];
 };
 
@@ -48,11 +50,11 @@ function Layout({
 }
 
 function Matrix({
+  Cell,
   cellClassName,
   cellWidth = 'minmax(12rem, 1fr)',
   className,
   columns,
-  renderCell,
   rows,
 }: ComponentMatrixProps) {
   return (
@@ -115,7 +117,7 @@ function Matrix({
                 )}
                 key={`${row.key}-${column.key}`}
               >
-                {renderCell(row, column)}
+                <Cell column={column} row={row} />
               </div>
             ))}
           </Fragment>
@@ -141,4 +143,8 @@ const Story = Object.assign(Layout, {
 });
 
 export { Story };
-export type { ComponentMatrixColumn, ComponentMatrixRow };
+export type {
+  ComponentMatrixCellProps,
+  ComponentMatrixColumn,
+  ComponentMatrixRow,
+};

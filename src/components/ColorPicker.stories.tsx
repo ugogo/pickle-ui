@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { Button } from './Button';
 import { ColorPicker } from './ColorPicker';
-import { Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: ColorPicker,
@@ -31,6 +31,10 @@ const MODE_ROWS = [
 ];
 
 type ColorFormat = 'hex' | 'hsb' | 'hsl' | 'rgb';
+
+function ColorPickerMatrixCell({ column, row }: ComponentMatrixCellProps) {
+  return <PickerPreview format={column.key} mode={row.key} />;
+}
 
 function formatColor(hex: string, format: ColorFormat) {
   const [r, g, b] =
@@ -144,12 +148,10 @@ export const All: StoryDefinition = {
     <Story.Layout className="max-w-7xl" title="ColorPicker">
       <Story.Section title="Presentation and formats">
         <Story.Matrix
+          Cell={ColorPickerMatrixCell}
           cellClassName="min-h-32"
           cellWidth="minmax(14rem, 1fr)"
           columns={FORMAT_COLUMNS}
-          renderCell={(row, column) => (
-            <PickerPreview format={column.key} mode={row.key} />
-          )}
           rows={MODE_ROWS}
         />
       </Story.Section>

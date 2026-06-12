@@ -1672,5 +1672,4 @@ export {
   type ColorPickerProps,
   ColorPickerSwatch,
   ColorPickerTrigger,
-  useStore as useColorPicker,
 };

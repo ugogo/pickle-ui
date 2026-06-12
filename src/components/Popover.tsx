@@ -65,13 +65,15 @@ function PopoverRoot({ ...props }: PopoverProps) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
-function PopoverTitle({ className, ...props }: PopoverTitleProps) {
+function PopoverTitle({ children, className, ...props }: PopoverTitleProps) {
   return (
     <h2
       className={cn('text-base font-medium', className)}
       data-slot="popover-title"
       {...props}
-    />
+    >
+      {children}
+    </h2>
   );
 }
 

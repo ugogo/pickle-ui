@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Slider } from './Slider';
-import { Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Slider,
@@ -26,6 +26,10 @@ const SCALE_COLUMNS = [
   { key: 'stepped', label: 'Stepped marks' },
   { key: 'wide', label: 'Wide range' },
 ];
+
+function SliderMatrixCell({ column, row }: ComponentMatrixCellProps) {
+  return <SliderPreview columnKey={column.key} rowKey={row.key} />;
+}
 
 function SliderPreview({
   columnKey,
@@ -65,11 +69,9 @@ export const All: StoryDefinition = {
     <Story.Layout className="max-w-6xl" title="Slider">
       <Story.Section title="Modes and scales">
         <Story.Matrix
+          Cell={SliderMatrixCell}
           cellClassName="justify-stretch"
           columns={SCALE_COLUMNS}
-          renderCell={(row, column) => (
-            <SliderPreview columnKey={column.key} rowKey={row.key} />
-          )}
           rows={MODE_ROWS}
         />
       </Story.Section>

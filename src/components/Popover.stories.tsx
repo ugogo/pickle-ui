@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button, type ButtonProps } from './Button';
 import { Popover } from './Popover';
-import { Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Popover,
@@ -30,36 +30,38 @@ const TRIGGER_COLUMNS: {
   { key: 'ghost', label: 'Ghost trigger' },
 ];
 
+function PopoverMatrixCell({ column, row }: ComponentMatrixCellProps) {
+  return (
+    <Popover>
+      <Popover.Trigger asChild>
+        <Button variant={column.key as NonNullable<ButtonProps['variant']>}>
+          Open
+        </Button>
+      </Popover.Trigger>
+      <Popover.Content align={row.key as 'center' | 'end' | 'start'}>
+        <Popover.Header>
+          <Popover.Title>{row.label}</Popover.Title>
+          <Popover.Description>
+            Contextual content keeps the same spacing, radius, and border
+            treatment across trigger styles.
+          </Popover.Description>
+        </Popover.Header>
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost">Cancel</Button>
+          <Button>Apply</Button>
+        </div>
+      </Popover.Content>
+    </Popover>
+  );
+}
+
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-6xl" title="Popover">
       <Story.Section title="Alignment and trigger styles">
         <Story.Matrix
+          Cell={PopoverMatrixCell}
           columns={TRIGGER_COLUMNS}
-          renderCell={(row, column) => (
-            <Popover>
-              <Popover.Trigger asChild>
-                <Button
-                  variant={column.key as NonNullable<ButtonProps['variant']>}
-                >
-                  Open
-                </Button>
-              </Popover.Trigger>
-              <Popover.Content align={row.key as 'center' | 'end' | 'start'}>
-                <Popover.Header>
-                  <Popover.Title>{row.label}</Popover.Title>
-                  <Popover.Description>
-                    Contextual content keeps the same spacing, radius, and
-                    border treatment across trigger styles.
-                  </Popover.Description>
-                </Popover.Header>
-                <div className="flex justify-end gap-2">
-                  <Button variant="ghost">Cancel</Button>
-                  <Button>Apply</Button>
-                </div>
-              </Popover.Content>
-            </Popover>
-          )}
           rows={ALIGN_ROWS}
         />
       </Story.Section>

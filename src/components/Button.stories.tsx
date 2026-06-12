@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconPlus } from '@tabler/icons-react';
 
 import { Button, type ButtonProps } from './Button';
-import { Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Button,
@@ -49,49 +49,52 @@ const VARIANT_ROWS: {
   { key: 'link', label: 'Link' },
 ];
 
+function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
+  const variant = column.key as ButtonVariant;
+
+  if (row.key === 'icon') {
+    return (
+      <Button aria-label="Add" size="icon" variant={variant}>
+        <IconPlus stroke={2} />
+      </Button>
+    );
+  }
+
+  return (
+    <Button variant={variant}>
+      {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
+      Add
+    </Button>
+  );
+}
+
+function ButtonStateCell({ column, row }: ComponentMatrixCellProps) {
+  return (
+    <Button variant={row.key as ButtonVariant} {...STATE_PROPS[column.key]}>
+      Button
+    </Button>
+  );
+}
+
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-6xl" title="Button">
       <Story.Section title="Variants and states">
         <Story.Matrix
+          Cell={ButtonStateCell}
           columns={STATE_COLUMNS}
-          renderCell={(row, column) => (
-            <Button
-              variant={row.key as ButtonVariant}
-              {...STATE_PROPS[column.key]}
-            >
-              Button
-            </Button>
-          )}
           rows={VARIANT_ROWS}
         />
       </Story.Section>
 
       <Story.Section title="Content patterns">
         <Story.Matrix
+          Cell={ButtonContentCell}
           columns={[
             { key: 'primary', label: 'Primary' },
             { key: 'outline', label: 'Outline' },
             { key: 'ghost', label: 'Ghost' },
           ]}
-          renderCell={(row, column) => {
-            const variant = column.key as ButtonVariant;
-
-            if (row.key === 'icon') {
-              return (
-                <Button aria-label="Add" size="icon" variant={variant}>
-                  <IconPlus stroke={2} />
-                </Button>
-              );
-            }
-
-            return (
-              <Button variant={variant}>
-                {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
-                Add
-              </Button>
-            );
-          }}
           rows={[
             { key: 'text', label: 'Text' },
             { key: 'with-icon', label: 'Icon and text' },
