@@ -57,6 +57,11 @@ function Matrix({
   columns,
   rows,
 }: ComponentMatrixProps) {
+  const resolvedCellWidth =
+    cellWidth.includes('fr') || cellWidth.includes('minmax(')
+      ? cellWidth
+      : `minmax(${cellWidth}, 1fr)`;
+
   return (
     <div
       className={cn(
@@ -67,7 +72,7 @@ function Matrix({
       <div
         className="grid min-w-max"
         style={{
-          gridTemplateColumns: `12rem repeat(${columns.length}, ${cellWidth})`,
+          gridTemplateColumns: `12rem repeat(${columns.length}, ${resolvedCellWidth})`,
         }}
       >
         <div className="border-border bg-muted/30 border-r border-b p-3" />
