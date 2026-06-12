@@ -6,6 +6,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/**
+ * Shared focus-visible ring for every focusable component. The
+ * `[color,box-shadow]` transition animates the ring into view on focus —
+ * Tailwind v4 registers the ring shadow vars as `@property`, making the
+ * box-shadow interpolatable.
+ */
+@utility focus-ring {
+  @apply ring-offset-background transition-[color,box-shadow] outline-none;
+  @apply focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
