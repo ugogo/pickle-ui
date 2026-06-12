@@ -13,6 +13,11 @@ Guidance for AI agents (and humans) working in this repository.
 - **Typecheck:** `pnpm run typecheck`.
 - **Build library:** `pnpm run build`.
 
+## Component API
+
+- Prefer compound component APIs for component slots and helpers. Attach related parts to the parent component, e.g. `Slider.Value` or `Slider.Marks`, rather than exporting parallel names like `SliderValue` or `SliderMarks`.
+- Storybook stories should demonstrate the public compound API consumers are expected to use.
+
 ## Commit convention
 
 This repo follows [Conventional Commits](https://www.conventionalcommits.org/). Every commit subject must be:

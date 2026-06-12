@@ -5,6 +5,7 @@
     "src/**/*.stories.ts",
     "src/**/*.stories.tsx",
     "src/**/*.test.ts",
-    "src/**/*.test.tsx"
+    "src/**/*.test.tsx",
+    "src/components/story-utils.tsx"
   ]
 }
