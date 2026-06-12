@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconPlus } from '@tabler/icons-react';
 
 import { Button, type ButtonProps } from './Button';
-import { Section, StoryLayout } from './story-utils';
+import { ComponentMatrix, Section, StoryLayout } from './story-utils';
 
 const meta = {
   component: Button,
@@ -14,88 +14,90 @@ const meta = {
 } satisfies Meta<typeof Button>;
 
 export default meta;
+type ButtonVariant = NonNullable<ButtonProps['variant']>;
 type Story = StoryObj<typeof meta>;
 
-const VARIANTS: NonNullable<ButtonProps['variant']>[] = [
-  'primary',
-  'secondary',
-  'destructive',
-  'outline',
-  'ghost',
-  'link',
+const STATE_COLUMNS: {
+  key: string;
+  label: string;
+  props: Partial<ButtonProps>;
+}[] = [
+  { key: 'default', label: 'Default', props: {} },
+  { key: 'hover', label: 'Hover', props: { className: 'pseudo-hover' } },
+  {
+    key: 'focus',
+    label: 'Focus',
+    props: { className: 'pseudo-focus-visible' },
+  },
+  { key: 'active', label: 'Active', props: { className: 'pseudo-active' } },
+  { key: 'disabled', label: 'Disabled', props: { disabled: true } },
 ];
 
-// Each state forces the matching CSS pseudo-state via storybook-addon-pseudo-states,
-// except Default (none) and Disabled (the real `disabled` attribute).
-const STATES: { label: string; props: Partial<ButtonProps> }[] = [
-  { label: 'Default', props: {} },
-  { label: 'Hover', props: { className: 'pseudo-hover' } },
-  { label: 'Focus', props: { className: 'pseudo-focus-visible' } },
-  { label: 'Active', props: { className: 'pseudo-active' } },
-  { label: 'Disabled', props: { disabled: true } },
-];
+const STATE_PROPS = Object.fromEntries(
+  STATE_COLUMNS.map((state) => [state.key, state.props]),
+) as Record<string, Partial<ButtonProps>>;
 
-const SIZES: { label: string; props: Partial<ButtonProps> }[] = [
-  { label: 'Medium', props: { size: 'md' } },
+const VARIANT_ROWS: {
+  key: ButtonVariant;
+  label: string;
+}[] = [
+  { key: 'primary', label: 'Primary' },
+  { key: 'secondary', label: 'Secondary' },
+  { key: 'destructive', label: 'Destructive' },
+  { key: 'outline', label: 'Outline' },
+  { key: 'ghost', label: 'Ghost' },
+  { key: 'link', label: 'Link' },
 ];
 
 export const All: Story = {
   render: () => (
-    <StoryLayout className="max-w-5xl" title="Button">
-      <Section title="Variants &times; States">
-        <div className="overflow-x-auto">
-          <table className="bg-card w-full border-collapse">
-            <thead>
-              <tr className="border-border bg-border/10 border">
-                <th className="w-28 px-3 py-2.5" />
-                {STATES.map((state) => (
-                  <th
-                    className="text-muted-foreground border-border border p-3 text-center text-xs font-medium"
-                    key={state.label}
-                  >
-                    {state.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {VARIANTS.map((variant) => (
-                <tr className="border-border border" key={variant}>
-                  <td className="text-muted-foreground border-border border pl-6 align-middle text-xs font-medium capitalize">
-                    {variant}
-                  </td>
-                  {STATES.map((state) => (
-                    <td
-                      className="border-border border p-3 text-center align-middle"
-                      key={state.label}
-                    >
-                      <Button variant={variant} {...state.props}>
-                        Button
-                      </Button>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+    <StoryLayout className="max-w-6xl" title="Button">
+      <Section title="Variants and states">
+        <ComponentMatrix
+          columns={STATE_COLUMNS}
+          renderCell={(row, column) => (
+            <Button
+              variant={row.key as ButtonVariant}
+              {...STATE_PROPS[column.key]}
+            >
+              Button
+            </Button>
+          )}
+          rows={VARIANT_ROWS}
+        />
       </Section>
 
-      <Section title="Sizes">
-        <div className="flex flex-wrap items-center gap-3">
-          {SIZES.map((s) => (
-            <Button key={s.label} {...s.props}>
-              Add
-            </Button>
-          ))}
-          <Button aria-label="Add" size="icon">
-            <IconPlus stroke={2} />
-          </Button>
-          <Button aria-label="Add">
-            <IconPlus stroke={2} />
-            Add
-          </Button>
-        </div>
+      <Section title="Content patterns">
+        <ComponentMatrix
+          columns={[
+            { key: 'primary', label: 'Primary' },
+            { key: 'outline', label: 'Outline' },
+            { key: 'ghost', label: 'Ghost' },
+          ]}
+          renderCell={(row, column) => {
+            const variant = column.key as ButtonVariant;
+
+            if (row.key === 'icon') {
+              return (
+                <Button aria-label="Add" size="icon" variant={variant}>
+                  <IconPlus stroke={2} />
+                </Button>
+              );
+            }
+
+            return (
+              <Button variant={variant}>
+                {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
+                Add
+              </Button>
+            );
+          }}
+          rows={[
+            { key: 'text', label: 'Text' },
+            { key: 'with-icon', label: 'Icon and text' },
+            { key: 'icon', label: 'Icon only' },
+          ]}
+        />
       </Section>
     </StoryLayout>
   ),

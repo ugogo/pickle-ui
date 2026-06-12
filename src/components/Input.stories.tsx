@@ -1,0 +1,64 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import { Input } from './Input';
+import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+
+const meta = {
+  component: Input,
+  parameters: {
+    layout: 'fullscreen',
+  },
+  title: 'components/Input',
+} satisfies Meta<typeof Input>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+const STATE_COLUMNS = [
+  { key: 'empty', label: 'Empty' },
+  { key: 'filled', label: 'Filled' },
+  { key: 'disabled', label: 'Disabled' },
+  { key: 'invalid', label: 'Invalid' },
+];
+
+const TYPE_ROWS = [
+  { description: 'General text input', key: 'text', label: 'Text' },
+  { description: 'Keyboard hint for email', key: 'email', label: 'Email' },
+  { description: 'Masked text entry', key: 'password', label: 'Password' },
+];
+
+export const All: Story = {
+  render: () => (
+    <StoryLayout className="max-w-6xl" title="Input">
+      <Section title="Types and states">
+        <ComponentMatrix
+          cellClassName="justify-stretch"
+          cellWidth="16rem"
+          columns={STATE_COLUMNS}
+          renderCell={(row, column) => {
+            const isFile = row.key === 'file';
+            const isInvalid = column.key === 'invalid';
+
+            return (
+              <Input
+                aria-invalid={isInvalid || undefined}
+                aria-label={`${row.label} ${column.label}`}
+                defaultValue={
+                  column.key === 'filled' && !isFile
+                    ? row.key === 'email'
+                      ? 'hello@pickle.dev'
+                      : 'Pickle UI'
+                    : undefined
+                }
+                disabled={column.key === 'disabled'}
+                placeholder={isInvalid ? 'Check this value' : row.label}
+                type={row.key}
+              />
+            );
+          }}
+          rows={TYPE_ROWS}
+        />
+      </Section>
+    </StoryLayout>
+  ),
+};
