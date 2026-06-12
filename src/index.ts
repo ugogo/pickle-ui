@@ -52,3 +52,6 @@ export type {
   SliderProps,
   SliderValueProps,
 } from './components/Slider';
+
+export { Switch } from './components/Switch';
+export type { SwitchLabelProps, SwitchProps } from './components/Switch';
