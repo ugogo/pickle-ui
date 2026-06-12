@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ReactNode } from 'react';
 
 import { IconPlus } from '@tabler/icons-react';
 
 import { Button, type ButtonProps } from './Button';
+import { Section, StoryLayout } from './story-utils';
 
 const meta = {
   component: Button,
@@ -39,81 +39,64 @@ const SIZES: { label: string; props: Partial<ButtonProps> }[] = [
   { label: 'Medium', props: { size: 'md' } },
 ];
 
-function Section({ children, title }: { children: ReactNode; title: string }) {
-  return (
-    <section>
-      <h2 className="text-foreground mb-6 text-xl font-medium">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
 export const All: Story = {
   render: () => (
-    <div className="bg-background text-foreground min-h-screen font-sans">
-      <div className="mx-auto max-w-5xl px-8 py-12">
-        <header className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">Button</h1>
-        </header>
-
-        <div className="space-y-16">
-          <Section title="Variants &times; States">
-            <div className="overflow-x-auto">
-              <table className="bg-card w-full border-collapse">
-                <thead>
-                  <tr className="border-border bg-border/10 border">
-                    <th className="w-28 px-3 py-2.5" />
-                    {STATES.map((state) => (
-                      <th
-                        className="text-muted-foreground border-border border p-3 text-center text-xs font-medium"
-                        key={state.label}
-                      >
-                        {state.label}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {VARIANTS.map((variant) => (
-                    <tr className="border-border border" key={variant}>
-                      <td className="text-muted-foreground border-border border pl-6 align-middle text-xs font-medium capitalize">
-                        {variant}
-                      </td>
-                      {STATES.map((state) => (
-                        <td
-                          className="border-border border p-3 text-center align-middle"
-                          key={state.label}
-                        >
-                          <Button variant={variant} {...state.props}>
-                            Button
-                          </Button>
-                        </td>
-                      ))}
-                    </tr>
+    <StoryLayout className="max-w-5xl" title="Button">
+      <Section title="Variants &times; States">
+        <div className="overflow-x-auto">
+          <table className="bg-card w-full border-collapse">
+            <thead>
+              <tr className="border-border bg-border/10 border">
+                <th className="w-28 px-3 py-2.5" />
+                {STATES.map((state) => (
+                  <th
+                    className="text-muted-foreground border-border border p-3 text-center text-xs font-medium"
+                    key={state.label}
+                  >
+                    {state.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {VARIANTS.map((variant) => (
+                <tr className="border-border border" key={variant}>
+                  <td className="text-muted-foreground border-border border pl-6 align-middle text-xs font-medium capitalize">
+                    {variant}
+                  </td>
+                  {STATES.map((state) => (
+                    <td
+                      className="border-border border p-3 text-center align-middle"
+                      key={state.label}
+                    >
+                      <Button variant={variant} {...state.props}>
+                        Button
+                      </Button>
+                    </td>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </Section>
-
-          <Section title="Sizes">
-            <div className="flex flex-wrap items-center gap-3">
-              {SIZES.map((s) => (
-                <Button key={s.label} {...s.props}>
-                  Add
-                </Button>
+                </tr>
               ))}
-              <Button aria-label="Add" size="icon">
-                <IconPlus stroke={2} />
-              </Button>
-              <Button aria-label="Add">
-                <IconPlus stroke={2} />
-                Add
-              </Button>
-            </div>
-          </Section>
+            </tbody>
+          </table>
         </div>
-      </div>
-    </div>
+      </Section>
+
+      <Section title="Sizes">
+        <div className="flex flex-wrap items-center gap-3">
+          {SIZES.map((s) => (
+            <Button key={s.label} {...s.props}>
+              Add
+            </Button>
+          ))}
+          <Button aria-label="Add" size="icon">
+            <IconPlus stroke={2} />
+          </Button>
+          <Button aria-label="Add">
+            <IconPlus stroke={2} />
+            Add
+          </Button>
+        </div>
+      </Section>
+    </StoryLayout>
   ),
 };
