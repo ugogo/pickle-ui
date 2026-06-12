@@ -1,13 +1,10 @@
 /* eslint-disable */
 'use client';
 
+import { useDirection } from '@base-ui/react/direction-provider';
+import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 import { IconColorPicker } from '@tabler/icons-react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import {
-  Direction as DirectionPrimitive,
-  Slider as SliderPrimitive,
-  Slot as SlotPrimitive,
-} from 'radix-ui';
 import * as React from 'react';
 import { useComposedRefs } from '@/lib/compose-refs';
 import { cn } from '@/lib/utils';
@@ -44,11 +41,48 @@ interface DivProps extends React.ComponentProps<'div'> {
   asChild?: boolean;
 }
 
+type SlotProps = React.HTMLAttributes<HTMLElement> & {
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLElement>;
+};
+
+function Slot({ children, className, ref, style, ...props }: SlotProps) {
+  const child = React.isValidElement(children) ? children : undefined;
+  const childProps = (child?.props ?? {}) as {
+    className?: string;
+    ref?: React.Ref<HTMLElement>;
+    style?: React.CSSProperties;
+  };
+  const composedRef = useComposedRefs(ref, childProps.ref);
+
+  if (!child) {
+    return null;
+  }
+
+  return React.cloneElement(
+    child as React.ReactElement<Record<string, unknown>>,
+    {
+      ...props,
+      ...(child.props as React.HTMLAttributes<HTMLElement>),
+      className: cn(className, childProps.className),
+      ref: composedRef,
+      style: {
+        ...style,
+        ...childProps.style,
+      },
+    },
+  );
+}
+
 type RootElement = React.ComponentRef<typeof ColorPicker>;
 type AreaElement = React.ComponentRef<typeof ColorPickerArea>;
 type InputElement = React.ComponentRef<typeof ColorPickerInput>;
 
 type ColorFormat = (typeof colorFormats)[number];
+
+function getSliderValue(value: number | readonly number[]) {
+  return Array.isArray(value) ? (value[0] ?? 0) : value;
+}
 
 /**
  * @see https://gist.github.com/bkrmendy/f4582173f50fab209ddfef1377ab31e3
@@ -471,10 +505,11 @@ interface ColorPickerProps
     Omit<DivProps, 'onValueChange'>,
     Pick<
       React.ComponentProps<typeof Popover>,
-      'defaultOpen' | 'open' | 'onOpenChange' | 'modal'
+      'defaultOpen' | 'open' | 'modal'
     > {
   value?: string;
   defaultValue?: string;
+  onOpenChange?: (open: boolean) => void;
   onValueChange?: (value: string) => void;
   dir?: Direction;
   format?: ColorFormat;
@@ -636,7 +671,7 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
 
   const store = useStoreContext(ROOT_IMPL_NAME);
 
-  const dir = DirectionPrimitive.useDirection(dirProp);
+  const dir = dirProp ?? useDirection();
 
   const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(
     null,
@@ -674,7 +709,7 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
   const value = useStore((state) => rgbToHex(state.color));
   const open = useStore((state) => state.open);
 
-  const RootPrimitive = asChild ? SlotPrimitive.Slot : 'div';
+  const RootPrimitive = asChild ? Slot : 'div';
 
   if (inline) {
     return (
@@ -720,33 +755,52 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
   );
 }
 
-function ColorPickerTrigger(
-  props: React.ComponentProps<typeof PopoverTrigger>,
-) {
+type ColorPickerTriggerProps = React.ComponentProps<typeof Button> & {
+  asChild?: boolean;
+};
+
+function ColorPickerTrigger(props: ColorPickerTriggerProps) {
   const { asChild, disabled, ...triggerProps } = props;
 
   const context = useColorPickerContext(TRIGGER_NAME);
 
   const isDisabled = disabled || context.disabled;
 
-  const TriggerPrimitive = asChild ? SlotPrimitive.Slot : Button;
+  const TriggerPrimitive = asChild ? Slot : Button;
 
   return (
     <PopoverTrigger asChild disabled={isDisabled}>
-      <TriggerPrimitive data-slot="color-picker-trigger" {...triggerProps} />
+      <TriggerPrimitive
+        data-slot="color-picker-trigger"
+        {...(triggerProps as React.ComponentProps<typeof Button>)}
+      />
     </PopoverTrigger>
   );
 }
 
-function ColorPickerContent(
-  props: React.ComponentProps<typeof PopoverContent>,
-) {
-  const { asChild, className, children, ...popoverContentProps } = props;
+type ColorPickerContentProps = Omit<
+  React.ComponentProps<typeof PopoverContent>,
+  'className' | 'style'
+> & {
+  className?: string;
+  style?: React.CSSProperties;
+};
+
+function ColorPickerContent(props: ColorPickerContentProps) {
+  const {
+    align,
+    asChild,
+    className,
+    children,
+    side,
+    sideOffset,
+    ...popoverContentProps
+  } = props;
 
   const context = useColorPickerContext(CONTENT_NAME);
 
   if (context.inline) {
-    const ContentPrimitive = asChild ? SlotPrimitive.Slot : 'div';
+    const ContentPrimitive = asChild ? Slot : 'div';
 
     return (
       <ContentPrimitive
@@ -762,7 +816,10 @@ function ColorPickerContent(
   return (
     <PopoverContent
       data-slot="color-picker-content"
+      align={align}
       asChild={asChild}
+      side={side}
+      sideOffset={sideOffset}
       {...popoverContentProps}
       className={cn('flex w-[340px] flex-col gap-4 p-4', className)}
     >
@@ -860,7 +917,7 @@ function ColorPickerArea(props: DivProps) {
   const hue = hsv?.h ?? 0;
   const backgroundHue = hsvToRgb({ h: hue, s: 100, v: 100, a: 1 });
 
-  const AreaPrimitive = asChild ? SlotPrimitive.Slot : 'div';
+  const AreaPrimitive = asChild ? Slot : 'div';
 
   return (
     <AreaPrimitive
@@ -918,9 +975,9 @@ function ColorPickerHueSlider(
   const hsv = useStore((state) => state.hsv);
 
   const onValueChange = React.useCallback(
-    (values: number[]) => {
+    (value: number | readonly number[]) => {
       const newHsv: HSVColorValue = {
-        h: values[0] ?? 0,
+        h: getSliderValue(value),
         s: hsv?.s ?? 0,
         v: hsv?.v ?? 0,
         a: hsv?.a ?? 1,
@@ -946,7 +1003,7 @@ function ColorPickerHueSlider(
       disabled={context.disabled}
     >
       <SliderPrimitive.Track className="relative h-3 w-full grow overflow-hidden rounded-full bg-[linear-gradient(to_right,#ff0000_0%,#ffff00_16.66%,#00ff00_33.33%,#00ffff_50%,#0000ff_66.66%,#ff00ff_83.33%,#ff0000_100%)]">
-        <SliderPrimitive.Range className="absolute h-full" />
+        <SliderPrimitive.Indicator className="absolute h-full" />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb className="border-primary/50 bg-background focus-visible:ring-ring block size-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
     </SliderPrimitive.Root>
@@ -965,8 +1022,8 @@ function ColorPickerAlphaSlider(
   const hsv = useStore((state) => state.hsv);
 
   const onValueChange = React.useCallback(
-    (values: number[]) => {
-      const alpha = (values[0] ?? 0) / 100;
+    (value: number | readonly number[]) => {
+      const alpha = getSliderValue(value) / 100;
       const newColor = { ...color, a: alpha };
       const newHsv = { ...hsv, a: alpha };
       store.setColor(newColor);
@@ -1006,7 +1063,7 @@ function ColorPickerAlphaSlider(
             background: `linear-gradient(to right, transparent, ${gradientColor})`,
           }}
         />
-        <SliderPrimitive.Range className="absolute h-full" />
+        <SliderPrimitive.Indicator className="absolute h-full" />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb className="border-primary/50 bg-background focus-visible:ring-ring block size-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
     </SliderPrimitive.Root>
@@ -1046,7 +1103,7 @@ function ColorPickerSwatch(props: DivProps) {
     ? 'No color selected'
     : `Current color: ${colorToString(color, format)}`;
 
-  const SwatchPrimitive = asChild ? SlotPrimitive.Slot : 'div';
+  const SwatchPrimitive = asChild ? Slot : 'div';
 
   return (
     <SwatchPrimitive
@@ -1142,7 +1199,7 @@ function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
       data-slot="color-picker-format-select"
       {...selectProps}
       value={format}
-      onValueChange={onFormatChange}
+      onValueChange={(value) => onFormatChange(value as ColorFormat)}
       disabled={isDisabled}
     >
       <SelectTrigger
