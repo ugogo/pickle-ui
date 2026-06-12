@@ -62,7 +62,7 @@ export const All: Story = {
               <table className="bg-card w-full border-collapse">
                 <thead>
                   <tr className="border-border bg-border/10 border">
-                    <th aria-hidden="true" className="w-28 px-3 py-2.5" />
+                    <th className="w-28 px-3 py-2.5" />
                     {STATES.map((state) => (
                       <th
                         className="text-muted-foreground border-border border p-3 text-center text-xs font-medium"
