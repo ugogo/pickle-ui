@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Slider } from './Slider';
-import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+import { Story } from './Story';
 
 const meta = {
   component: Slider,
@@ -12,7 +12,7 @@ const meta = {
 } satisfies Meta<typeof Slider>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
 const MODE_ROWS = [
   { key: 'single', label: 'Single value' },
@@ -60,11 +60,11 @@ function SliderPreview({
   );
 }
 
-export const All: Story = {
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-6xl" title="Slider">
-      <Section title="Modes and scales">
-        <ComponentMatrix
+    <Story.Layout className="max-w-6xl" title="Slider">
+      <Story.Section title="Modes and scales">
+        <Story.Matrix
           cellClassName="justify-stretch"
           columns={SCALE_COLUMNS}
           renderCell={(row, column) => (
@@ -72,7 +72,7 @@ export const All: Story = {
           )}
           rows={MODE_ROWS}
         />
-      </Section>
-    </StoryLayout>
+      </Story.Section>
+    </Story.Layout>
   ),
 };

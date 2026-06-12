@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/Select';
-import { VisuallyHiddenInput } from '@/components/visually-hidden-input';
+import { VisuallyHiddenInput } from '@/components/VisuallyHiddenInput';
 import { useAsRef } from '@/hooks/use-as-ref';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useLazyRef } from '@/hooks/use-lazy-ref';

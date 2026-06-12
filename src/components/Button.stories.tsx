@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconPlus } from '@tabler/icons-react';
 
 import { Button, type ButtonProps } from './Button';
-import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+import { Story } from './Story';
 
 const meta = {
   component: Button,
@@ -15,7 +15,7 @@ const meta = {
 
 export default meta;
 type ButtonVariant = NonNullable<ButtonProps['variant']>;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
 const STATE_COLUMNS: {
   key: string;
@@ -49,11 +49,11 @@ const VARIANT_ROWS: {
   { key: 'link', label: 'Link' },
 ];
 
-export const All: Story = {
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-6xl" title="Button">
-      <Section title="Variants and states">
-        <ComponentMatrix
+    <Story.Layout className="max-w-6xl" title="Button">
+      <Story.Section title="Variants and states">
+        <Story.Matrix
           columns={STATE_COLUMNS}
           renderCell={(row, column) => (
             <Button
@@ -65,10 +65,10 @@ export const All: Story = {
           )}
           rows={VARIANT_ROWS}
         />
-      </Section>
+      </Story.Section>
 
-      <Section title="Content patterns">
-        <ComponentMatrix
+      <Story.Section title="Content patterns">
+        <Story.Matrix
           columns={[
             { key: 'primary', label: 'Primary' },
             { key: 'outline', label: 'Outline' },
@@ -98,7 +98,7 @@ export const All: Story = {
             { key: 'icon', label: 'Icon only' },
           ]}
         />
-      </Section>
-    </StoryLayout>
+      </Story.Section>
+    </Story.Layout>
   ),
 };

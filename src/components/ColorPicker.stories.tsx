@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { Button } from './Button';
 import { ColorPicker } from './ColorPicker';
-import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+import { Story } from './Story';
 
 const meta = {
   component: ColorPicker,
@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<typeof ColorPicker>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
 const FORMAT_COLUMNS = [
   { key: 'hex', label: 'HEX' },
@@ -139,11 +139,11 @@ function PickerPreview({ format, mode }: { format: string; mode: string }) {
   );
 }
 
-export const All: Story = {
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-7xl" title="ColorPicker">
-      <Section title="Presentation and formats">
-        <ComponentMatrix
+    <Story.Layout className="max-w-7xl" title="ColorPicker">
+      <Story.Section title="Presentation and formats">
+        <Story.Matrix
           cellClassName="min-h-32"
           cellWidth="minmax(14rem, 1fr)"
           columns={FORMAT_COLUMNS}
@@ -152,7 +152,7 @@ export const All: Story = {
           )}
           rows={MODE_ROWS}
         />
-      </Section>
-    </StoryLayout>
+      </Story.Section>
+    </Story.Layout>
   ),
 };

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Select } from './Select';
-import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+import { Story } from './Story';
 
 const meta = {
   component: Select,
@@ -12,7 +12,7 @@ const meta = {
 } satisfies Meta<typeof Select>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
 const STATE_COLUMNS = [
   { key: 'placeholder', label: 'Placeholder' },
@@ -48,11 +48,11 @@ function ThemeSelect({
   );
 }
 
-export const All: Story = {
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-5xl" title="Select">
-      <Section title="Sizes and states">
-        <ComponentMatrix
+    <Story.Layout className="max-w-5xl" title="Select">
+      <Story.Section title="Sizes and states">
+        <Story.Matrix
           columns={STATE_COLUMNS}
           renderCell={(row, column) => (
             <ThemeSelect
@@ -63,7 +63,7 @@ export const All: Story = {
           )}
           rows={SIZE_ROWS}
         />
-      </Section>
-    </StoryLayout>
+      </Story.Section>
+    </Story.Layout>
   ),
 };

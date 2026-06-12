@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button, type ButtonProps } from './Button';
 import { Popover } from './Popover';
-import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+import { Story } from './Story';
 
 const meta = {
   component: Popover,
@@ -13,7 +13,7 @@ const meta = {
 } satisfies Meta<typeof Popover>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
 const ALIGN_ROWS = [
   { key: 'start', label: 'Start align' },
@@ -30,11 +30,11 @@ const TRIGGER_COLUMNS: {
   { key: 'ghost', label: 'Ghost trigger' },
 ];
 
-export const All: Story = {
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-6xl" title="Popover">
-      <Section title="Alignment and trigger styles">
-        <ComponentMatrix
+    <Story.Layout className="max-w-6xl" title="Popover">
+      <Story.Section title="Alignment and trigger styles">
+        <Story.Matrix
           columns={TRIGGER_COLUMNS}
           renderCell={(row, column) => (
             <Popover>
@@ -62,7 +62,7 @@ export const All: Story = {
           )}
           rows={ALIGN_ROWS}
         />
-      </Section>
-    </StoryLayout>
+      </Story.Section>
+    </Story.Layout>
   ),
 };

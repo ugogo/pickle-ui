@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Input } from './Input';
-import { ComponentMatrix, Section, StoryLayout } from './story-utils';
+import { Story } from './Story';
 
 const meta = {
   component: Input,
@@ -12,7 +12,7 @@ const meta = {
 } satisfies Meta<typeof Input>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
 const STATE_COLUMNS = [
   { key: 'empty', label: 'Empty' },
@@ -27,11 +27,11 @@ const TYPE_ROWS = [
   { description: 'Masked text entry', key: 'password', label: 'Password' },
 ];
 
-export const All: Story = {
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-6xl" title="Input">
-      <Section title="Types and states">
-        <ComponentMatrix
+    <Story.Layout className="max-w-6xl" title="Input">
+      <Story.Section title="Types and states">
+        <Story.Matrix
           cellClassName="justify-stretch"
           cellWidth="16rem"
           columns={STATE_COLUMNS}
@@ -58,7 +58,7 @@ export const All: Story = {
           }}
           rows={TYPE_ROWS}
         />
-      </Section>
-    </StoryLayout>
+      </Story.Section>
+    </Story.Layout>
   ),
 };
