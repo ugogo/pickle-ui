@@ -1,9 +1,5 @@
 # Supply-chain hardening (see https://pnpm.io/settings)
 
-# Delay installing freshly published versions (in minutes) so malicious
-# releases have time to be caught and unpublished. 10080 = 7 days.
-minimumReleaseAge: 10080
-
 # Fail if a package's trust signals (provenance, signatures) weaken between
 # releases instead of silently accepting the downgrade.
 trustPolicy: no-downgrade

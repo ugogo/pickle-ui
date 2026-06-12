@@ -7,5 +7,8 @@ export default defineConfig({
     // (the shadcn/ui convention). The Fast Refresh tradeoff is negligible for a
     // component library, so we allow component files to export their variants.
     'react-doctor/only-export-components': 'off',
+    // Fresh package installs are common while adding shadcn registry components,
+    // so this repo intentionally does not enforce pnpm's minimumReleaseAge gate.
+    'react-doctor/require-pnpm-hardening': 'off',
   },
 });

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Slider } from './Slider';
-import { Section, StoryLayout } from './story-utils';
+import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Slider,
@@ -12,59 +12,69 @@ const meta = {
 } satisfies Meta<typeof Slider>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj<typeof meta>;
 
-const STEP_MAX = 12;
-const STEP_SKIP_INTERVAL = 2;
+const MODE_ROWS = [
+  { key: 'single', label: 'Single value' },
+  { key: 'range', label: 'Range' },
+  { key: 'labeled', label: 'With label' },
+  { key: 'disabled', label: 'Disabled' },
+];
 
-export const All: Story = {
+const SCALE_COLUMNS = [
+  { key: 'default', label: 'Default scale' },
+  { key: 'stepped', label: 'Stepped marks' },
+  { key: 'wide', label: 'Wide range' },
+];
+
+function SliderMatrixCell({ column, row }: ComponentMatrixCellProps) {
+  return <SliderPreview columnKey={column.key} rowKey={row.key} />;
+}
+
+function SliderPreview({
+  columnKey,
+  rowKey,
+}: {
+  columnKey: string;
+  rowKey: string;
+}) {
+  const isRange = rowKey === 'range';
+  const isStepped = columnKey === 'stepped';
+  const max = columnKey === 'wide' ? 500 : isStepped ? 12 : 100;
+  const value = isRange ? [max * 0.25, max * 0.75] : [max * 0.45];
+
+  return (
+    <div className="w-full min-w-48">
+      <Slider
+        aria-label={`${rowKey} ${columnKey}`}
+        defaultValue={value}
+        disabled={rowKey === 'disabled'}
+        max={max}
+        step={isStepped ? 1 : undefined}
+      >
+        {rowKey === 'labeled' ? (
+          <div className="mb-3 flex items-center justify-between">
+            <Slider.Label>Intensity</Slider.Label>
+            <Slider.Value />
+          </div>
+        ) : null}
+      </Slider>
+      {isStepped ? <Slider.Marks labelInterval={2} max={max} step={1} /> : null}
+    </div>
+  );
+}
+
+export const All: StoryDefinition = {
   render: () => (
-    <StoryLayout className="max-w-2xl" title="Slider">
-      <Section title="Default">
-        <div className="flex flex-col gap-10">
-          <Slider defaultValue={[33]} />
-          <Slider defaultValue={[25, 75]} />
-          <Slider defaultValue={[50]} disabled />
-        </div>
-      </Section>
-
-      <Section title="With labels">
-        <div className="flex flex-col gap-10">
-          <Slider defaultValue={[60]}>
-            <Slider.Label className="mb-3">Volume</Slider.Label>
-          </Slider>
-
-          <Slider defaultValue={[40]}>
-            <div className="mb-3 flex items-center justify-between">
-              <Slider.Label>Brightness</Slider.Label>
-              <Slider.Value />
-            </div>
-          </Slider>
-
-          <Slider defaultValue={[20, 80]}>
-            <div className="mb-3 flex items-center justify-between">
-              <Slider.Label>Price range</Slider.Label>
-              <Slider.Value />
-            </div>
-          </Slider>
-        </div>
-      </Section>
-
-      <Section title="With steps">
-        <div>
-          <Slider
-            aria-label="Value selector"
-            defaultValue={[5]}
-            max={STEP_MAX}
-            step={1}
-          />
-          <Slider.Marks
-            labelInterval={STEP_SKIP_INTERVAL}
-            max={STEP_MAX}
-            step={1}
-          />
-        </div>
-      </Section>
-    </StoryLayout>
+    <Story.Layout className="max-w-6xl" title="Slider">
+      <Story.Section title="Modes and scales">
+        <Story.Matrix
+          Cell={SliderMatrixCell}
+          cellClassName="justify-stretch"
+          columns={SCALE_COLUMNS}
+          rows={MODE_ROWS}
+        />
+      </Story.Section>
+    </Story.Layout>
   ),
 };
