@@ -49,12 +49,30 @@ const VARIANT_ROWS: {
   { key: 'link', label: 'Link' },
 ];
 
+const SIZE_COLUMNS = [
+  { description: 'h-7', key: 'sm', label: 'Small' },
+  { description: 'h-8 · default', key: 'md', label: 'Medium' },
+  { description: 'h-9', key: 'lg', label: 'Large' },
+];
+
+const CONTENT_ROWS = [
+  { key: 'text', label: 'Text' },
+  { key: 'with-icon', label: 'Icon and text' },
+  {
+    description: 'Squared automatically — no icon size needed',
+    key: 'icon',
+    label: 'Icon only',
+  },
+];
+
+type ButtonSize = NonNullable<ButtonProps['size']>;
+
 function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
   const variant = column.key as ButtonVariant;
 
   if (row.key === 'icon') {
     return (
-      <Button aria-label="Add" size="icon" variant={variant}>
+      <Button aria-label="Add" variant={variant}>
         <IconPlus stroke={2} />
       </Button>
     );
@@ -62,6 +80,25 @@ function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
 
   return (
     <Button variant={variant}>
+      {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
+      Add
+    </Button>
+  );
+}
+
+function ButtonSizeCell({ column, row }: ComponentMatrixCellProps) {
+  const size = column.key as ButtonSize;
+
+  if (row.key === 'icon') {
+    return (
+      <Button aria-label="Add" size={size}>
+        <IconPlus stroke={2} />
+      </Button>
+    );
+  }
+
+  return (
+    <Button size={size}>
       {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
       Add
     </Button>
@@ -95,11 +132,15 @@ export const All: StoryDefinition = {
             { key: 'outline', label: 'Outline' },
             { key: 'ghost', label: 'Ghost' },
           ]}
-          rows={[
-            { key: 'text', label: 'Text' },
-            { key: 'with-icon', label: 'Icon and text' },
-            { key: 'icon', label: 'Icon only' },
-          ]}
+          rows={CONTENT_ROWS}
+        />
+      </Story.Section>
+
+      <Story.Section title="Sizes">
+        <Story.Matrix
+          Cell={ButtonSizeCell}
+          columns={SIZE_COLUMNS}
+          rows={CONTENT_ROWS}
         />
       </Story.Section>
     </Story.Layout>
