@@ -368,7 +368,6 @@ function ColorPickerAlphaSlider(props: React.ComponentProps<typeof Slider>) {
       max={100}
       onValueChange={onValueChange}
       step={1}
-      trackClassName="data-[orientation=horizontal]:h-3"
       trackStyle={{
         backgroundImage: `linear-gradient(to right, transparent, ${gradientColor}), linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)`,
         backgroundPosition: '0 0, 0 0, 0 4px, 4px -4px, -4px 0px',
@@ -678,7 +677,6 @@ function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
       max={360}
       onValueChange={onValueChange}
       step={1}
-      trackClassName="data-[orientation=horizontal]:h-3"
       trackStyle={{
         background:
           'linear-gradient(to right,#ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,#00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%)',

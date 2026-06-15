@@ -131,7 +131,7 @@ function SliderRoot({
     >
       {children}
       <SliderPrimitive.Control
-        className="flex touch-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:min-w-44 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:flex-col"
+        className="flex touch-none items-center select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:min-w-44 data-[orientation=horizontal]:py-3 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:flex-col data-[orientation=vertical]:justify-center data-[orientation=vertical]:px-3"
         data-slot="slider-control"
       >
         <SliderPrimitive.Track
@@ -154,7 +154,7 @@ function SliderRoot({
               aria-label={getThumbAriaLabel ? undefined : ariaLabel}
               aria-labelledby={ariaLabelledBy}
               className={cn(
-                'border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] outline-none select-none hover:ring-4 focus-visible:ring-4 data-disabled:pointer-events-none data-disabled:opacity-50 data-dragging:ring-4',
+                'border-primary bg-background ring-ring/50 relative block size-4.5 shrink-0 rounded-full border border-[2px] shadow-sm transition-[color,box-shadow] outline-none select-none before:absolute before:-inset-2.5 before:content-[""] hover:ring-5 focus-visible:ring-5 data-disabled:pointer-events-none data-dragging:ring-4',
                 thumbClassName,
               )}
               data-slot="slider-thumb"
