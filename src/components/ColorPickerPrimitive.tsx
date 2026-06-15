@@ -2,11 +2,11 @@
 
 import { useDirection } from '@base-ui/react/direction-provider';
 import { IconColorPicker } from '@tabler/icons-react';
-import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { InputGroup } from '@/components/InputGroup';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
 import {
   Select,
@@ -224,6 +224,16 @@ type ColorPickerTriggerProps = React.ComponentProps<typeof Button> & {
   asChild?: boolean;
 };
 
+interface FormatInputProps extends ColorPickerInputProps {
+  color: ColorValue;
+  context: ColorPickerContextValue;
+  onColorChange: (color: ColorValue) => void;
+}
+
+interface HsbInputProps extends Omit<FormatInputProps, 'color'> {
+  hsv: HSVColorValue;
+}
+
 function ColorPicker(props: ColorPickerProps) {
   const {
     defaultFormat = 'hex',
@@ -368,7 +378,6 @@ function ColorPickerAlphaSlider(props: React.ComponentProps<typeof Slider>) {
       max={100}
       onValueChange={onValueChange}
       step={1}
-      trackClassName="data-[orientation=horizontal]:h-3"
       trackStyle={{
         backgroundImage: `linear-gradient(to right, transparent, ${gradientColor}), linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)`,
         backgroundPosition: '0 0, 0 0, 0 4px, 4px -4px, -4px 0px',
@@ -589,15 +598,13 @@ function ColorPickerEyeDropper(props: React.ComponentProps<typeof Button>) {
 
   if (!hasEyeDropper) return null;
 
-  const size = sizeProp ?? (children ? 'md' : 'icon');
-
   return (
     <Button
       data-slot="color-picker-eye-dropper"
       {...buttonProps}
       disabled={isDisabled}
       onClick={onEyeDropper}
-      size={size}
+      size={sizeProp}
       variant="outline"
     >
       {children ?? <IconColorPicker />}
@@ -678,7 +685,6 @@ function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
       max={360}
       onValueChange={onValueChange}
       step={1}
-      trackClassName="data-[orientation=horizontal]:h-3"
       trackStyle={{
         background:
           'linear-gradient(to right,#ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,#00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%)',
@@ -927,46 +933,6 @@ function ColorPickerTrigger(props: ColorPickerTriggerProps) {
   );
 }
 
-function useColorPickerContext(consumerName: string) {
-  const context = React.useContext(ColorPickerContext);
-  if (!context) {
-    throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``);
-  }
-  return context;
-}
-
-const inputGroupItemVariants = cva(
-  'h-8 [-moz-appearance:textfield] focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-offset-2 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none',
-  {
-    defaultVariants: {
-      position: 'isolated',
-    },
-    variants: {
-      position: {
-        first: 'rounded-e-none',
-        isolated: '',
-        last: '-ms-px rounded-s-none',
-        middle: '-ms-px rounded-none',
-      },
-    },
-  },
-);
-
-interface FormatInputProps extends ColorPickerInputProps {
-  color: ColorValue;
-  context: ColorPickerContextValue;
-  onColorChange: (color: ColorValue) => void;
-}
-
-interface HsbInputProps extends Omit<FormatInputProps, 'color'> {
-  hsv: HSVColorValue;
-}
-
-interface InputGroupItemProps
-  extends
-    React.ComponentProps<typeof Input>,
-    VariantProps<typeof inputGroupItemVariants> {}
-
 function HexInput(props: FormatInputProps) {
   const {
     className,
@@ -1003,9 +969,8 @@ function HexInput(props: FormatInputProps) {
 
   if (withoutAlpha) {
     return (
-      <InputGroupItem
+      <Input
         aria-label="Hex color value"
-        position="isolated"
         {...inputProps}
         className={cn('font-mono', className)}
         disabled={context.disabled}
@@ -1017,13 +982,9 @@ function HexInput(props: FormatInputProps) {
   }
 
   return (
-    <div
-      className={cn('flex items-center', className)}
-      data-slot="color-picker-input-wrapper"
-    >
-      <InputGroupItem
+    <InputGroup className={className}>
+      <Input
         aria-label="Hex color value"
-        position="first"
         {...inputProps}
         className="flex-1 font-mono"
         disabled={context.disabled}
@@ -1031,9 +992,8 @@ function HexInput(props: FormatInputProps) {
         placeholder="#000000"
         value={hexValue}
       />
-      <InputGroupItem
+      <Input
         aria-label="Alpha transparency percentage"
-        position="last"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1045,7 +1005,7 @@ function HexInput(props: FormatInputProps) {
         placeholder="100"
         value={alphaValue}
       />
-    </div>
+    </InputGroup>
   );
 }
 
@@ -1086,13 +1046,9 @@ function HsbInput(props: HsbInputProps) {
   );
 
   return (
-    <div
-      className={cn('flex items-center', className)}
-      data-slot="color-picker-input-wrapper"
-    >
-      <InputGroupItem
+    <InputGroup className={className}>
+      <Input
         aria-label="Hue degree (0-360)"
-        position="first"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1104,9 +1060,8 @@ function HsbInput(props: HsbInputProps) {
         placeholder="0"
         value={hsv?.h ?? 0}
       />
-      <InputGroupItem
+      <Input
         aria-label="Saturation percentage (0-100)"
-        position="middle"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1118,9 +1073,8 @@ function HsbInput(props: HsbInputProps) {
         placeholder="0"
         value={hsv?.s ?? 0}
       />
-      <InputGroupItem
+      <Input
         aria-label="Brightness percentage (0-100)"
-        position={withoutAlpha ? 'last' : 'middle'}
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1133,9 +1087,8 @@ function HsbInput(props: HsbInputProps) {
         value={hsv?.v ?? 0}
       />
       {!withoutAlpha && (
-        <InputGroupItem
+        <Input
           aria-label="Alpha transparency percentage"
-          position="last"
           {...inputProps}
           className="w-14"
           disabled={context.disabled}
@@ -1148,7 +1101,7 @@ function HsbInput(props: HsbInputProps) {
           value={alphaValue}
         />
       )}
-    </div>
+    </InputGroup>
   );
 }
 
@@ -1189,13 +1142,9 @@ function HslInput(props: FormatInputProps) {
   );
 
   return (
-    <div
-      className={cn('flex items-center', className)}
-      data-slot="color-picker-input-wrapper"
-    >
-      <InputGroupItem
+    <InputGroup className={className}>
+      <Input
         aria-label="Hue degree (0-360)"
-        position="first"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1207,9 +1156,8 @@ function HslInput(props: FormatInputProps) {
         placeholder="0"
         value={hsl.h}
       />
-      <InputGroupItem
+      <Input
         aria-label="Saturation percentage (0-100)"
-        position="middle"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1221,9 +1169,8 @@ function HslInput(props: FormatInputProps) {
         placeholder="0"
         value={hsl.s}
       />
-      <InputGroupItem
+      <Input
         aria-label="Lightness percentage (0-100)"
-        position={withoutAlpha ? 'last' : 'middle'}
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1236,9 +1183,8 @@ function HslInput(props: FormatInputProps) {
         value={hsl.l}
       />
       {!withoutAlpha && (
-        <InputGroupItem
+        <Input
           aria-label="Alpha transparency percentage"
-          position="last"
           {...inputProps}
           className="w-14"
           disabled={context.disabled}
@@ -1251,21 +1197,7 @@ function HslInput(props: FormatInputProps) {
           value={alphaValue}
         />
       )}
-    </div>
-  );
-}
-
-function InputGroupItem({
-  className,
-  position,
-  ...props
-}: InputGroupItemProps) {
-  return (
-    <Input
-      className={cn(inputGroupItemVariants({ className, position }))}
-      data-slot="color-picker-input"
-      {...props}
-    />
+    </InputGroup>
   );
 }
 
@@ -1297,13 +1229,9 @@ function RgbInput(props: FormatInputProps) {
   );
 
   return (
-    <div
-      className={cn('flex items-center', className)}
-      data-slot="color-picker-input-wrapper"
-    >
-      <InputGroupItem
+    <InputGroup className={className}>
+      <Input
         aria-label="Red color component (0-255)"
-        position="first"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1315,9 +1243,8 @@ function RgbInput(props: FormatInputProps) {
         placeholder="0"
         value={rValue}
       />
-      <InputGroupItem
+      <Input
         aria-label="Green color component (0-255)"
-        position="middle"
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1329,9 +1256,8 @@ function RgbInput(props: FormatInputProps) {
         placeholder="0"
         value={gValue}
       />
-      <InputGroupItem
+      <Input
         aria-label="Blue color component (0-255)"
-        position={withoutAlpha ? 'last' : 'middle'}
         {...inputProps}
         className="w-14"
         disabled={context.disabled}
@@ -1344,9 +1270,8 @@ function RgbInput(props: FormatInputProps) {
         value={bValue}
       />
       {!withoutAlpha && (
-        <InputGroupItem
+        <Input
           aria-label="Alpha transparency percentage"
-          position="last"
           {...inputProps}
           className="w-14"
           disabled={context.disabled}
@@ -1359,8 +1284,16 @@ function RgbInput(props: FormatInputProps) {
           value={alphaValue}
         />
       )}
-    </div>
+    </InputGroup>
   );
+}
+
+function useColorPickerContext(consumerName: string) {
+  const context = React.useContext(ColorPickerContext);
+  if (!context) {
+    throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``);
+  }
+  return context;
 }
 
 export {

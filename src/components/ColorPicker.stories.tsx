@@ -86,7 +86,7 @@ function PickerControls() {
       <ColorPicker.Area />
       <div className="flex items-center gap-2">
         <ColorPicker.EyeDropper />
-        <div className="flex flex-1 flex-col gap-3">
+        <div className="w-full">
           <ColorPicker.HueSlider />
           <ColorPicker.AlphaSlider />
         </div>

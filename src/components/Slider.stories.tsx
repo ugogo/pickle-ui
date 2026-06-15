@@ -27,6 +27,44 @@ const SCALE_COLUMNS = [
   { key: 'wide', label: 'Wide range' },
 ];
 
+function SliderAnatomy() {
+  return (
+    <div className="space-y-8">
+      <Slider
+        aria-label="anatomy"
+        className="max-w-lg [&_[data-slot=slider-control]]:rounded-md [&_[data-slot=slider-control]]:bg-sky-500/15 [&_[data-slot=slider-control]]:outline [&_[data-slot=slider-control]]:outline-sky-500/40 [&_[data-slot=slider-control]]:outline-dashed [&_[data-slot=slider-thumb]]:before:rounded-full [&_[data-slot=slider-thumb]]:before:bg-fuchsia-500/25 [&_[data-slot=slider-thumb]]:before:outline [&_[data-slot=slider-thumb]]:before:outline-fuchsia-500/50 [&_[data-slot=slider-thumb]]:before:outline-dashed"
+        defaultValue={[45]}
+      />
+      <dl className="grid gap-4 sm:grid-cols-2">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 size-4 shrink-0 rounded-sm bg-sky-500/15 outline outline-sky-500/40 outline-dashed" />
+          <div>
+            <dt className="text-foreground text-sm font-medium">
+              Bar hit area
+            </dt>
+            <dd className="text-muted-foreground mt-1 text-xs">
+              The <code>Slider.Control</code> padding. The visible track stays
+              thin, but the grabbable region extends above and below it.
+            </dd>
+          </div>
+        </div>
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 size-4 shrink-0 rounded-full bg-fuchsia-500/25 outline outline-fuchsia-500/50 outline-dashed" />
+          <div>
+            <dt className="text-foreground text-sm font-medium">
+              Thumb hit area
+            </dt>
+            <dd className="text-muted-foreground mt-1 text-xs">
+              A <code>::before</code> pseudo-element inset around the thumb,
+              enlarging the grab target without changing its visual size.
+            </dd>
+          </div>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 function SliderMatrixCell({ column, row }: ComponentMatrixCellProps) {
   return <SliderPreview columnKey={column.key} rowKey={row.key} />;
 }
@@ -74,6 +112,9 @@ export const All: StoryDefinition = {
           columns={SCALE_COLUMNS}
           rows={MODE_ROWS}
         />
+      </Story.Section>
+      <Story.Section title="Anatomy">
+        <SliderAnatomy />
       </Story.Section>
     </Story.Layout>
   ),

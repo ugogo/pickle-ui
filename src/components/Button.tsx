@@ -12,8 +12,9 @@ const buttonVariants = cva(
     },
     variants: {
       size: {
-        icon: 'h-8 w-8',
-        md: 'h-8 rounded-md px-2.5',
+        lg: 'h-9 rounded-md px-3.5 has-[>svg:only-child]:w-9 has-[>svg:only-child]:px-0',
+        md: 'h-8 rounded-md px-2.5 has-[>svg:only-child]:w-8 has-[>svg:only-child]:px-0',
+        sm: 'h-7 rounded-md px-2 has-[>svg:only-child]:w-7 has-[>svg:only-child]:px-0',
       },
       variant: {
         destructive:
@@ -33,6 +34,11 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {}
 
+/**
+ * A button whose only child is a lone icon (`svg`) is squared automatically via
+ * the `has-[>svg:only-child]` selector, so an icon-only button works at any
+ * size without a dedicated `icon` variant.
+ */
 function Button({
   className,
   ref,
