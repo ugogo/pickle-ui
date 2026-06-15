@@ -339,7 +339,8 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
 
   const store = useStoreContext(ROOT_IMPL_NAME);
 
-  const dir = dirProp ?? useDirection();
+  const contextDir = useDirection();
+  const dir = dirProp ?? contextDir;
 
   const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(
     null,
