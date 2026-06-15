@@ -2,16 +2,31 @@
 'use client';
 
 import { useDirection } from '@base-ui/react/direction-provider';
-import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 import { IconColorPicker } from '@tabler/icons-react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { converter, formatHex, parse, type Hsv, type Rgb } from 'culori';
 import * as React from 'react';
+import {
+  type ColorFormat,
+  colorFormats,
+  colorToString,
+  type ColorValue,
+  hexToRgb,
+  hslToRgb,
+  type HSVColorValue,
+  hsvToRgb,
+  isColorEqual,
+  isHsvEqual,
+  parseColorString,
+  rgbToHex,
+  rgbToHsl,
+  rgbToHsv,
+} from '@/lib/color';
 import { useComposedRefs } from '@/lib/compose-refs';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
+import { Slider } from '@/components/Slider';
 import {
   Select,
   SelectContent,
@@ -35,8 +50,6 @@ const SWATCH_NAME = 'ColorPickerSwatch';
 const EYE_DROPPER_NAME = 'ColorPickerEyeDropper';
 const FORMAT_SELECT_NAME = 'ColorPickerFormatSelect';
 const INPUT_NAME = 'ColorPickerInput';
-
-const colorFormats = ['hex', 'rgb', 'hsl', 'hsb'] as const;
 
 interface DivProps extends React.ComponentProps<'div'> {
   asChild?: boolean;
@@ -79,8 +92,6 @@ type RootElement = React.ComponentRef<typeof ColorPicker>;
 type AreaElement = React.ComponentRef<typeof ColorPickerArea>;
 type InputElement = React.ComponentRef<typeof ColorPickerInput>;
 
-type ColorFormat = (typeof colorFormats)[number];
-
 function getSliderValue(value: number | readonly number[]) {
   return Array.isArray(value) ? (value[0] ?? 0) : value;
 }
@@ -98,178 +109,6 @@ declare global {
       new (): EyeDropper;
     };
   }
-}
-
-interface ColorValue {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
-interface HSVColorValue {
-  h: number;
-  s: number;
-  v: number;
-  a: number;
-}
-
-const toRgb = converter('rgb');
-const toHsl = converter('hsl');
-const toHsv = converter('hsv');
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function alphaToValue(alpha: number | undefined) {
-  return clamp(alpha ?? 1, 0, 1);
-}
-
-function parseAlphaValue(value: string | undefined, isPercent?: string) {
-  if (!value) return 1;
-
-  const alpha = Number.parseFloat(value);
-  return alphaToValue(isPercent ? alpha / 100 : alpha);
-}
-
-function toCuloriRgb(color: ColorValue): Rgb {
-  return {
-    mode: 'rgb',
-    r: color.r / 255,
-    g: color.g / 255,
-    b: color.b / 255,
-    alpha: color.a,
-  };
-}
-
-function fromCuloriRgb(color: Rgb): ColorValue {
-  return {
-    r: Math.round(clamp(color.r, 0, 1) * 255),
-    g: Math.round(clamp(color.g, 0, 1) * 255),
-    b: Math.round(clamp(color.b, 0, 1) * 255),
-    a: alphaToValue(color.alpha),
-  };
-}
-
-function parseHsbString(value: string): Hsv | null {
-  const numberPattern = String.raw`([+-]?(?:\d+\.?\d*|\.\d+))`;
-  const hsbMatch = new RegExp(
-    String.raw`^hsba?\(\s*${numberPattern}(?:deg)?(?:\s*,\s*|\s+)${numberPattern}%(?:\s*,\s*|\s+)${numberPattern}%(?:\s*(?:,|\/)\s*${numberPattern}(%)?)?\s*\)$`,
-    'i',
-  ).exec(value);
-
-  if (!hsbMatch) return null;
-
-  return {
-    mode: 'hsv',
-    h: Number.parseFloat(hsbMatch[1] ?? '0'),
-    s: clamp(Number.parseFloat(hsbMatch[2] ?? '0') / 100, 0, 1),
-    v: clamp(Number.parseFloat(hsbMatch[3] ?? '0') / 100, 0, 1),
-    alpha: parseAlphaValue(hsbMatch[4], hsbMatch[5]),
-  };
-}
-
-function hexToRgb(hex: string, alpha?: number): ColorValue {
-  const color = parse(hex);
-  const rgb = color ? toRgb(color) : undefined;
-
-  return rgb
-    ? { ...fromCuloriRgb(rgb), a: alpha ?? 1 }
-    : { r: 0, g: 0, b: 0, a: alpha ?? 1 };
-}
-
-function isColorEqual(a: ColorValue, b: ColorValue) {
-  return a.r === b.r && a.g === b.g && a.b === b.b && a.a === b.a;
-}
-
-function isHsvEqual(a: HSVColorValue, b: HSVColorValue) {
-  return a.h === b.h && a.s === b.s && a.v === b.v && a.a === b.a;
-}
-
-function rgbToHex(color: ColorValue): string {
-  return formatHex(toCuloriRgb(color)) ?? '#000000';
-}
-
-function rgbToHsv(color: ColorValue): HSVColorValue {
-  const hsv = toHsv(toCuloriRgb(color));
-
-  return {
-    h: Math.round(hsv.h ?? 0),
-    s: Math.round(hsv.s * 100),
-    v: Math.round(hsv.v * 100),
-    a: alphaToValue(hsv.alpha),
-  };
-}
-
-function hsvToRgb(hsv: HSVColorValue): ColorValue {
-  return fromCuloriRgb(
-    toRgb({
-      mode: 'hsv',
-      h: hsv.h,
-      s: hsv.s / 100,
-      v: hsv.v / 100,
-      alpha: hsv.a,
-    }),
-  );
-}
-
-function colorToString(color: ColorValue, format: ColorFormat = 'hex'): string {
-  switch (format) {
-    case 'hex':
-      return rgbToHex(color);
-    case 'rgb':
-      return color.a < 1
-        ? `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
-        : `rgb(${color.r}, ${color.g}, ${color.b})`;
-    case 'hsl': {
-      const hsl = rgbToHsl(color);
-      return color.a < 1
-        ? `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${color.a})`
-        : `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-    }
-    case 'hsb': {
-      const hsv = rgbToHsv(color);
-      return color.a < 1
-        ? `hsba(${hsv.h}, ${hsv.s}%, ${hsv.v}%, ${color.a})`
-        : `hsb(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`;
-    }
-    default:
-      return rgbToHex(color);
-  }
-}
-
-function rgbToHsl(color: ColorValue) {
-  const hsl = toHsl(toCuloriRgb(color));
-
-  return {
-    h: Math.round(hsl.h ?? 0),
-    s: Math.round(hsl.s * 100),
-    l: Math.round(hsl.l * 100),
-  };
-}
-
-function hslToRgb(
-  hsl: { h: number; s: number; l: number },
-  alpha = 1,
-): ColorValue {
-  return fromCuloriRgb(
-    toRgb({
-      mode: 'hsl',
-      h: hsl.h,
-      s: hsl.s / 100,
-      l: hsl.l / 100,
-      alpha,
-    }),
-  );
-}
-
-function parseColorString(value: string): ColorValue | null {
-  const trimmed = value.trim();
-  const color = parseHsbString(trimmed) ?? parse(trimmed);
-  const rgb = color ? toRgb(color) : undefined;
-
-  return rgb ? fromCuloriRgb(rgb) : null;
 }
 
 type Direction = 'ltr' | 'rtl';
@@ -793,9 +632,7 @@ function ColorPickerArea(props: DivProps) {
   );
 }
 
-function ColorPickerHueSlider(
-  props: React.ComponentProps<typeof SliderPrimitive.Root>,
-) {
+function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
   const { className, ...sliderProps } = props;
 
   const context = useColorPickerContext(HUE_SLIDER_NAME);
@@ -817,30 +654,26 @@ function ColorPickerHueSlider(
   );
 
   return (
-    <SliderPrimitive.Root
+    <Slider
       data-slot="color-picker-hue-slider"
       {...sliderProps}
       max={360}
       step={1}
-      className={cn(
-        'relative flex w-full touch-none items-center select-none',
-        className,
-      )}
+      className={className}
       value={[hsv?.h ?? 0]}
       onValueChange={onValueChange}
       disabled={context.disabled}
-    >
-      <SliderPrimitive.Track className="relative h-3 w-full grow overflow-hidden rounded-full bg-[linear-gradient(to_right,#ff0000_0%,#ffff00_16.66%,#00ff00_33.33%,#00ffff_50%,#0000ff_66.66%,#ff00ff_83.33%,#ff0000_100%)]">
-        <SliderPrimitive.Indicator className="absolute h-full" />
-      </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="border-primary/50 bg-background focus-visible:ring-ring block size-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
-    </SliderPrimitive.Root>
+      indicator={false}
+      trackClassName="data-[orientation=horizontal]:h-3"
+      trackStyle={{
+        background:
+          'linear-gradient(to right,#ff0000 0%,#ffff00 16.66%,#00ff00 33.33%,#00ffff 50%,#0000ff 66.66%,#ff00ff 83.33%,#ff0000 100%)',
+      }}
+    />
   );
 }
 
-function ColorPickerAlphaSlider(
-  props: React.ComponentProps<typeof SliderPrimitive.Root>,
-) {
+function ColorPickerAlphaSlider(props: React.ComponentProps<typeof Slider>) {
   const { className, ...sliderProps } = props;
 
   const context = useColorPickerContext(ALPHA_SLIDER_NAME);
@@ -862,38 +695,23 @@ function ColorPickerAlphaSlider(
   const gradientColor = `rgb(${color?.r ?? 0}, ${color?.g ?? 0}, ${color?.b ?? 0})`;
 
   return (
-    <SliderPrimitive.Root
+    <Slider
       data-slot="color-picker-alpha-slider"
       {...sliderProps}
       max={100}
       step={1}
       disabled={context.disabled}
-      className={cn(
-        'relative flex w-full touch-none items-center select-none',
-        className,
-      )}
+      className={className}
       value={[Math.round((color?.a ?? 1) * 100)]}
       onValueChange={onValueChange}
-    >
-      <SliderPrimitive.Track
-        className="relative h-3 w-full grow overflow-hidden rounded-full"
-        style={{
-          background:
-            'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)',
-          backgroundSize: '8px 8px',
-          backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px',
-        }}
-      >
-        <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: `linear-gradient(to right, transparent, ${gradientColor})`,
-          }}
-        />
-        <SliderPrimitive.Indicator className="absolute h-full" />
-      </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="border-primary/50 bg-background focus-visible:ring-ring block size-4 rounded-full border shadow transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50" />
-    </SliderPrimitive.Root>
+      indicator={false}
+      trackClassName="data-[orientation=horizontal]:h-3"
+      trackStyle={{
+        backgroundImage: `linear-gradient(to right, transparent, ${gradientColor}), linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)`,
+        backgroundSize: 'auto, 8px 8px, 8px 8px, 8px 8px, 8px 8px',
+        backgroundPosition: '0 0, 0 0, 0 4px, 4px -4px, -4px 0px',
+      }}
+    />
   );
 }
 
