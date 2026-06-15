@@ -154,7 +154,7 @@ function SliderRoot({
               aria-label={getThumbAriaLabel ? undefined : ariaLabel}
               aria-labelledby={ariaLabelledBy}
               className={cn(
-                'border-primary bg-background ring-ring/50 relative block size-4.5 shrink-0 rounded-full border border-[2px] shadow-sm transition-[color,box-shadow] outline-none select-none before:absolute before:-inset-2.5 before:content-[""] hover:ring-5 focus-visible:ring-5 data-disabled:pointer-events-none data-dragging:ring-4',
+                'border-primary bg-background ring-ring/50 relative block size-4.5 shrink-0 rounded-full border-2 shadow-sm transition-[color,box-shadow] outline-none select-none before:absolute before:-inset-2.5 before:content-[""] hover:ring-5 focus-visible:ring-5 data-disabled:pointer-events-none data-dragging:ring-5',
                 thumbClassName,
               )}
               data-slot="slider-thumb"

@@ -48,6 +48,8 @@ export interface ButtonProps
     >,
     Omit<VariantProps<typeof buttonVariants>, 'iconOnly'> {}
 
+type ButtonContent = { hasContent: boolean; hasText: boolean };
+
 function Button({
   children,
   className,
@@ -77,18 +79,38 @@ function Button({
 }
 
 /**
- * Detects a button whose content is only icon(s) — i.e. it has children but
- * none of them is text. Such buttons get a squared size automatically, so an
- * icon-only button works at any size without a dedicated `icon` variant.
+ * Folds the entire child tree into whether the button renders anything and
+ * whether any of it is text — recursing into elements so text wrapped in a
+ * `span` or other element still counts.
+ */
+function collectContent(node: React.ReactNode): ButtonContent {
+  return React.Children.toArray(node).reduce<ButtonContent>(
+    (acc, child) => {
+      if (typeof child === 'number') {
+        return { ...acc, hasText: true };
+      }
+      if (typeof child === 'string') {
+        return { ...acc, hasText: acc.hasText || child.trim() !== '' };
+      }
+      const nested = React.isValidElement(child)
+        ? collectContent(
+            (child.props as { children?: React.ReactNode }).children,
+          )
+        : acc;
+      return { hasContent: true, hasText: acc.hasText || nested.hasText };
+    },
+    { hasContent: false, hasText: false },
+  );
+}
+
+/**
+ * Detects a button whose content is only icon(s) — it renders something, but
+ * none of that content is text. Such buttons get a squared size automatically,
+ * so an icon-only button works at any size without a dedicated `icon` variant.
  */
 function isIconOnly(children: React.ReactNode) {
-  const items = React.Children.toArray(children);
-  return (
-    items.length > 0 &&
-    items.every(
-      (child) => typeof child !== 'string' && typeof child !== 'number',
-    )
-  );
+  const { hasContent, hasText } = collectContent(children);
+  return hasContent && !hasText;
 }
 
 export { Button, buttonVariants };
