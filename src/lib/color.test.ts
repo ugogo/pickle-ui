@@ -121,3 +121,28 @@ describe('colorToString', () => {
     expect(colorToString({ a: 1, b: 0, g: 0, r: 0 })).toBe('#000000');
   });
 });
+
+describe('rgbToHsv hue preservation', () => {
+  it('uses the fallback hue for an achromatic color', () => {
+    // White has no intrinsic hue; without a fallback it reports 0.
+    expect(rgbToHsv({ a: 1, b: 255, g: 255, r: 255 }, 200)).toEqual({
+      a: 1,
+      h: 200,
+      s: 0,
+      v: 100,
+    });
+  });
+
+  it('ignores the fallback when the color has a real hue', () => {
+    expect(rgbToHsv({ a: 1, b: 0, g: 255, r: 0 }, 200)).toEqual({
+      a: 1,
+      h: 120,
+      s: 100,
+      v: 100,
+    });
+  });
+
+  it('still defaults to hue 0 with no fallback (backward compatible)', () => {
+    expect(rgbToHsv({ a: 1, b: 128, g: 128, r: 128 })).toMatchObject({ h: 0 });
+  });
+});

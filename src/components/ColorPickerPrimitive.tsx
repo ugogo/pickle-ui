@@ -563,6 +563,7 @@ function ColorPickerEyeDropper(props: React.ComponentProps<typeof Button>) {
   const store = useStoreContext(EYE_DROPPER_NAME);
 
   const color = useStore((state) => state.color);
+  const hsv = useStore((state) => state.hsv);
 
   const isDisabled = disabled || context.disabled;
 
@@ -576,13 +577,13 @@ function ColorPickerEyeDropper(props: React.ComponentProps<typeof Button>) {
       if (result.sRGBHex) {
         const currentAlpha = color?.a ?? 1;
         const newColor = hexToRgb(result.sRGBHex, currentAlpha);
-        const newHsv = rgbToHsv(newColor);
+        const newHsv = rgbToHsv(newColor, hsv?.h ?? 0);
         store.setValue(newColor, newHsv);
       }
     } catch (error) {
       console.warn('EyeDropper error:', error);
     }
-  }, [color, store]);
+  }, [color, hsv, store]);
 
   const hasEyeDropper = typeof window !== 'undefined' && !!window.EyeDropper;
 
@@ -721,7 +722,7 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
       const color =
         parseColorString(valueProp) ??
         hexToRgb(valueProp, currentState.color.a);
-      const hsv = rgbToHsv(color);
+      const hsv = rgbToHsv(color, currentState.hsv.h);
       store.setValue(color, hsv, { emit: false });
     }
   }, [valueProp]);
@@ -802,10 +803,10 @@ function ColorPickerInput(props: ColorPickerInputProps) {
 
   const onColorChange = React.useCallback(
     (newColor: ColorValue) => {
-      const newHsv = rgbToHsv(newColor);
+      const newHsv = rgbToHsv(newColor, hsv?.h ?? 0);
       store.setValue(newColor, newHsv);
     },
-    [store],
+    [hsv, store],
   );
 
   if (format === 'hex') {
