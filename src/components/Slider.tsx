@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { CSSProperties, Ref } from 'react';
 
 import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 
@@ -19,8 +19,12 @@ type SliderMarksProps = {
 type SliderProps = SliderPrimitive.Root.Props & {
   getAriaLabel?: SliderPrimitive.Thumb.Props['getAriaLabel'];
   getAriaValueText?: SliderPrimitive.Thumb.Props['getAriaValueText'];
+  /** Render the filled indicator. Set to `false` for sliders with a custom track (e.g. color pickers). Defaults to `true`. */
+  indicator?: boolean;
   ref?: Ref<HTMLDivElement>;
   thumbClassName?: string;
+  trackClassName?: string;
+  trackStyle?: CSSProperties;
 };
 
 type SliderValueProps = SliderPrimitive.Value.Props & {
@@ -91,10 +95,13 @@ function SliderRoot({
   defaultValue,
   getAriaLabel,
   getAriaValueText,
+  indicator = true,
   max = 100,
   min = 0,
   ref,
   thumbClassName,
+  trackClassName,
+  trackStyle,
   value,
   ...props
 }: SliderProps) {
@@ -128,13 +135,19 @@ function SliderRoot({
         data-slot="slider-control"
       >
         <SliderPrimitive.Track
-          className="bg-input relative grow rounded-full select-none data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
+          className={cn(
+            'bg-input relative grow rounded-full select-none data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5',
+            trackClassName,
+          )}
           data-slot="slider-track"
+          style={trackStyle}
         >
-          <SliderPrimitive.Indicator
-            className="bg-primary rounded-full select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
-            data-slot="slider-indicator"
-          />
+          {indicator ? (
+            <SliderPrimitive.Indicator
+              className="bg-primary rounded-full select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+              data-slot="slider-indicator"
+            />
+          ) : null}
           {Array.from({ length: thumbCount }, (_, index) => (
             <SliderPrimitive.Thumb
               aria-describedby={ariaDescribedBy}
