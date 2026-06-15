@@ -1,31 +1,33 @@
 'use client';
 
-/* eslint-disable */
 import * as React from 'react';
 
-type InputValue = string[] | string;
+/* eslint-disable react-hooks/refs -- this component intentionally reads prevValueRef.current during render to track the previous value across renders; the ref holds derived bookkeeping state, not render-affecting data. */
+
+type InputValue = string | string[];
 
 interface VisuallyHiddenInputProps<T = InputValue> extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  'value' | 'checked' | 'onReset'
+  'checked' | 'onReset' | 'value'
 > {
-  value?: T;
+  bubbles?: boolean;
   checked?: boolean;
   control: HTMLElement | null;
-  bubbles?: boolean;
+  value?: T;
 }
 
 function VisuallyHiddenInput<T = InputValue>(
   props: VisuallyHiddenInputProps<T>,
 ) {
   const {
-    control,
-    value,
-    checked,
     bubbles = true,
-    type = 'hidden',
+    checked,
+    control,
     style,
+    type = 'hidden',
+    value,
     ...inputProps
+    // react-doctor-disable-next-line react-doctor/no-event-handler -- this hidden input intentionally mirrors value/checked into the native control and dispatches a native input/click event from an effect; the side effect is driven by prop changes, not a user event, so it cannot move into an event handler
   } = props;
 
   const isCheckInput = React.useMemo(
@@ -35,11 +37,11 @@ function VisuallyHiddenInput<T = InputValue>(
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const prevValueRef = React.useRef<{
-    value: T | boolean | undefined;
-    previous: T | boolean | undefined;
+    previous: boolean | T | undefined;
+    value: boolean | T | undefined;
   }>({
-    value: isCheckInput ? checked : value,
     previous: isCheckInput ? checked : value,
+    value: isCheckInput ? checked : value,
   });
 
   const prevValue = React.useMemo(() => {
@@ -52,19 +54,21 @@ function VisuallyHiddenInput<T = InputValue>(
   }, [isCheckInput, value, checked]);
 
   const [controlSize, setControlSize] = React.useState<{
-    width?: number;
     height?: number;
+    width?: number;
   }>({});
 
+  // react-doctor-disable-next-line react-doctor/no-cascading-set-state -- this effect measures the control element and only calls setControlSize in mutually exclusive branches (or inside an async ResizeObserver callback), not as a synchronous render cascade
   React.useLayoutEffect(() => {
     if (!control) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset measured size synchronously when the control is removed so the hidden input does not retain a stale size
       setControlSize({});
       return;
     }
 
     setControlSize({
-      width: control.offsetWidth,
       height: control.offsetHeight,
+      width: control.offsetWidth,
     });
 
     if (typeof window === 'undefined') return;
@@ -90,7 +94,7 @@ function VisuallyHiddenInput<T = InputValue>(
         height = control.offsetHeight;
       }
 
-      setControlSize({ width, height });
+      setControlSize({ height, width });
     });
 
     resizeObserver.observe(control, { box: 'border-box' });
@@ -148,11 +152,11 @@ function VisuallyHiddenInput<T = InputValue>(
     <input
       type={type}
       {...inputProps}
-      ref={inputRef}
       aria-hidden={isCheckInput}
-      tabIndex={-1}
       defaultChecked={isCheckInput ? checked : undefined}
+      ref={inputRef}
       style={composedStyle}
+      tabIndex={-1}
     />
   );
 }

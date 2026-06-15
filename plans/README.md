@@ -9,12 +9,12 @@ done.
 
 | Plan | Title                                                           | Priority | Effort | Depends on | Status |
 | ---- | --------------------------------------------------------------- | -------- | ------ | ---------- | ------ |
-| 001  | Establish a Vitest test baseline + color characterization tests | P1       | M      | —          | TODO   |
-| 002  | Fix the conditional `useDirection()` hook call in ColorPicker   | P1       | S      | 001        | TODO   |
-| 003  | Replace blanket `eslint-disable` directives with scoped ones    | P2       | M      | 002        | TODO   |
-| 004  | Preserve hue when a color becomes achromatic                    | P2       | M      | 001        | TODO   |
-| 005  | Convert Button from `forwardRef` to React 19 ref-as-prop        | P3       | S      | —          | TODO   |
-| 006  | Refresh the README (real component list, pnpm commands)         | P3       | S      | —          | TODO   |
+| 001  | Establish a Vitest test baseline + color characterization tests | P1       | M      | —          | DONE   |
+| 002  | Fix the conditional `useDirection()` hook call in ColorPicker   | P1       | S      | 001        | DONE   |
+| 003  | Replace blanket `eslint-disable` directives with scoped ones    | P2       | M      | 002        | DONE   |
+| 004  | Preserve hue when a color becomes achromatic                    | P2       | M      | 001        | DONE   |
+| 005  | Convert Button from `forwardRef` to React 19 ref-as-prop        | P3       | S      | —          | DONE   |
+| 006  | Refresh the README (real component list, pnpm commands)         | P3       | S      | —          | DONE   |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 

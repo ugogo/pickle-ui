@@ -108,11 +108,11 @@ export function rgbToHex(color: ColorValue): string {
   return formatHex(toCuloriRgb(color)) ?? '#000000';
 }
 
-export function rgbToHsv(color: ColorValue): HSVColorValue {
+export function rgbToHsv(color: ColorValue, fallbackHue = 0): HSVColorValue {
   const hsv = toHsv(toCuloriRgb(color));
 
   return {
-    h: Math.round(hsv.h ?? 0),
+    h: Math.round(hsv.h ?? fallbackHue),
     s: Math.round(hsv.s * 100),
     v: Math.round(hsv.v * 100),
     a: alphaToValue(hsv.alpha),

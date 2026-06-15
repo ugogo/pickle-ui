@@ -28,15 +28,28 @@ export function App() {
 
 ## Components
 
-- Coming soon...
+- `Button`
+- `ColorPicker`
+- `Input`
+- `Popover`
+- `Select`
+- `Slider`
+- `Switch`
+
+All components use compound APIs where they have sub-parts — e.g.
+`Slider.Value`, `Popover.Trigger`, `ColorPicker.Area`.
 
 ## Development
 
+This project uses [pnpm](https://pnpm.io).
+
 ```bash
-npm install
-npm run dev
-npm run build
-npm run typecheck
+pnpm install
+pnpm run dev        # Storybook on http://localhost:6006
+pnpm run build      # build the library to dist/
+pnpm run typecheck
+pnpm run test       # added by the test baseline
+pnpm run lint
 ```
 
 ## License
