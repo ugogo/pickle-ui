@@ -1,21 +1,6 @@
-/* eslint-disable */
 import * as React from 'react';
 
 type PossibleRef<T> = React.Ref<T> | undefined;
-
-/**
- * Set a given ref to a given value
- * This utility takes care of different types of refs: callback refs and RefObject(s)
- */
-function setRef<T>(ref: PossibleRef<T>, value: T) {
-  if (typeof ref === 'function') {
-    return ref(value);
-  }
-
-  if (ref !== null && ref !== undefined) {
-    ref.current = value;
-  }
-}
 
 /**
  * A utility to compose multiple refs together
@@ -52,12 +37,27 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
 }
 
 /**
+ * Set a given ref to a given value
+ * This utility takes care of different types of refs: callback refs and RefObject(s)
+ */
+function setRef<T>(ref: PossibleRef<T>, value: T) {
+  if (typeof ref === 'function') {
+    return ref(value);
+  }
+
+  if (ref !== null && ref !== undefined) {
+    ref.current = value;
+  }
+}
+
+/**
  * A custom hook that composes multiple refs
  * Accepts callback refs and RefObject(s)
  */
 function useComposedRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
   // biome-ignore lint/correctness/useExhaustiveDependencies: we want to memoize by all values
-  return React.useCallback(composeRefs(...refs), refs);
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo -- memoize by every ref value; the spread `refs` array is the intended dependency list
+  return React.useCallback(composeRefs(...refs), refs); // react-doctor-disable-line react-doctor/exhaustive-deps -- same intentional memo: the dependency list is the spread `refs` array on purpose
 }
 
 export { composeRefs, useComposedRefs };
