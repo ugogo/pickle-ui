@@ -6,6 +6,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "packageManager": "pnpm@10.28.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugogo/pickle-ui.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -28,6 +35,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "doctor": "react-doctor",
+    "prepublishOnly": "pnpm run build",
+    "release": "release-it",
     "prepare": "husky"
   },
   "keywords": [
@@ -81,6 +90,7 @@
     "react": "^19.2.7",
     "react-doctor": "^0.5.1",
     "react-dom": "^19.2.7",
+    "release-it": "^20.2.0",
     "storybook": "^10.4.4",
     "storybook-addon-pseudo-states": "^10.4.4",
     "tailwindcss": "^4.3.0",

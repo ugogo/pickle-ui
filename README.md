@@ -52,6 +52,40 @@ pnpm run test       # added by the test baseline
 pnpm run lint
 ```
 
+## Releasing
+
+Releases are published to npm and tagged with a matching GitHub Release whose
+notes are generated from the commit subjects since the previous tag — so keep
+[commit messages clean](AGENTS.md) (they _are_ the changelog).
+
+```bash
+pnpm run release      # pick the bump (patch / minor / major / …) from the menu
+```
+
+This bumps the version, commits `chore(release): v<version>`, creates an
+annotated tag, pushes, publishes to npm, and cuts the GitHub Release.
+
+One-time setup per machine:
+
+- **Log in to npm:** `npm login`.
+- **Provide a GitHub token** so the GitHub Release is created automatically. Use
+  your existing [`gh`](https://cli.github.com) login:
+
+  ```bash
+  # macOS / Linux — add to ~/.zshrc or ~/.bashrc
+  export GITHUB_TOKEN=$(gh auth token)
+  ```
+
+  ```powershell
+  # Windows — add to your PowerShell profile ($PROFILE)
+  $env:GITHUB_TOKEN = gh auth token
+  ```
+
+  Without a token it still works — release-it falls back to opening a prefilled
+  GitHub Release page for you to publish manually.
+
+Run releases from `main` with a clean working tree.
+
 ## License
 
 MIT
