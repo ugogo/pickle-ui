@@ -1,8 +1,6 @@
 // Pickle UI - React component library
-// Export your components here as you build them
 
 export { Button } from './components/Button';
-// Re-export common types
 export type { ButtonProps } from './components/Button';
 
 export { ColorPicker } from './components/ColorPicker';
@@ -19,8 +17,25 @@ export type {
   ColorPickerTriggerProps,
 } from './components/ColorPicker';
 
+export {
+  ColorPickerAlphaSlider,
+  ColorPickerArea,
+  ColorPickerContent,
+  ColorPickerEyeDropper,
+  ColorPickerFormatSelect,
+  ColorPickerHueSlider,
+  ColorPickerInput,
+  ColorPicker as ColorPickerPrimitive,
+  type ColorPickerProps as ColorPickerPrimitiveProps,
+  ColorPickerSwatch,
+  ColorPickerTrigger,
+} from './components/ColorPickerPrimitive';
+
 export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
+
+export { InputGroup } from './components/InputGroup';
+export type { InputGroupProps } from './components/InputGroup';
 
 export { Popover } from './components/Popover';
 export type {
@@ -55,3 +70,6 @@ export type {
 
 export { Switch } from './components/Switch';
 export type { SwitchLabelProps, SwitchProps } from './components/Switch';
+
+export { Text, textVariants } from './components/Text';
+export type { TextProps } from './components/Text';

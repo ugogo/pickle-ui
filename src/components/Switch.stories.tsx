@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from './Story';
+import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Switch, type SwitchProps } from './Switch';
 
 const meta = {
