@@ -22,6 +22,15 @@ describe('Checkbox', () => {
     expect(checkbox).not.toBeChecked();
   });
 
+  it('does not render the check indicator when unchecked', () => {
+    render(<Checkbox aria-label="Accept" />);
+    expect(
+      screen
+        .getByRole('checkbox', { name: 'Accept' })
+        .querySelector('[data-slot="checkbox-indicator"]'),
+    ).not.toBeInTheDocument();
+  });
+
   it('clicking the label toggles the checkbox', () => {
     render(<Checkbox label="Accept terms" />);
     const label = screen.getByText('Accept terms');

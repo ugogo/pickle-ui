@@ -19,7 +19,13 @@ type SelectContentProps = Pick<
     position?: 'item-aligned' | 'popper';
   };
 type SelectGroupProps = React.ComponentProps<typeof SelectPrimitive.Group>;
-type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item>;
+type SelectItemData = {
+  label: React.ReactNode;
+  value: unknown;
+};
+type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {
+  label: React.ReactNode;
+};
 type SelectLabelProps = React.ComponentProps<typeof SelectPrimitive.GroupLabel>;
 type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>;
 type SelectSeparatorProps = React.ComponentProps<
@@ -30,7 +36,42 @@ type SelectTriggerProps = React.ComponentProps<
 > & {
   size?: 'default' | 'sm';
 };
+
 type SelectValueProps = React.ComponentProps<typeof SelectPrimitive.Value>;
+
+function collectSelectItems(
+  children: React.ReactNode,
+): SelectItemData[] | undefined {
+  const items: SelectItemData[] = [];
+
+  function walk(nodes: React.ReactNode) {
+    React.Children.forEach(nodes, (child) => {
+      if (!React.isValidElement(child)) {
+        return;
+      }
+
+      if (child.type === SelectItem) {
+        const { label, value } = child.props as SelectItemProps;
+
+        if (label != null) {
+          items.push({ label, value });
+        }
+
+        return;
+      }
+
+      const childProps = child.props as { children?: React.ReactNode };
+
+      if (childProps.children != null) {
+        walk(childProps.children);
+      }
+    });
+  }
+
+  walk(children);
+
+  return items.length > 0 ? items : undefined;
+}
 
 function SelectContent({
   align = 'center',
@@ -81,7 +122,7 @@ function SelectGroup({ className, ...props }: SelectGroupProps) {
   );
 }
 
-function SelectItem({ children, className, ...props }: SelectItemProps) {
+function SelectItem({ className, label, ...props }: SelectItemProps) {
   return (
     <SelectPrimitive.Item
       className={cn(
@@ -89,6 +130,7 @@ function SelectItem({ children, className, ...props }: SelectItemProps) {
         className,
       )}
       data-slot="select-item"
+      label={typeof label === 'string' ? label : undefined}
       {...props}
     >
       <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
@@ -96,7 +138,7 @@ function SelectItem({ children, className, ...props }: SelectItemProps) {
           <IconCheck className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText>{label}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
 }
@@ -111,8 +153,17 @@ function SelectLabel({ className, ...props }: SelectLabelProps) {
   );
 }
 
-function SelectRoot({ ...props }: SelectProps) {
-  return <SelectPrimitive.Root {...props} />;
+function SelectRoot({ children, items, ...props }: SelectProps) {
+  const derivedItems = React.useMemo(
+    () => collectSelectItems(children),
+    [children],
+  );
+
+  return (
+    <SelectPrimitive.Root items={items ?? derivedItems} {...props}>
+      {children}
+    </SelectPrimitive.Root>
+  );
 }
 
 function SelectScrollDownButton({

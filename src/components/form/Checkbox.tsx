@@ -34,7 +34,6 @@ function CheckboxControl({
       <CheckboxPrimitive.Indicator
         className="flex items-center justify-center text-current"
         data-slot="checkbox-indicator"
-        keepMounted
       >
         <IconCheck className="group-data-[size=default]/checkbox:size-3 group-data-[size=sm]/checkbox:size-2.5 data-indeterminate:hidden [[data-indeterminate]_&]:hidden" />
         <IconMinus className="hidden group-data-[size=default]/checkbox:size-3 group-data-[size=sm]/checkbox:size-2.5 [[data-indeterminate]_&]:block" />
@@ -47,7 +46,7 @@ function CheckboxLabel({ className, htmlFor, ...props }: CheckboxLabelProps) {
   return (
     <label
       className={cn(
-        'text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
+        'text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
         className,
       )}
       data-slot="checkbox-label"

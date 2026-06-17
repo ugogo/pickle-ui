@@ -10,7 +10,7 @@ function Label({ className, htmlFor, ...props }: LabelProps) {
   return (
     <label
       className={cn(
-        'text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
+        'text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
         className,
       )}
       data-slot="label"

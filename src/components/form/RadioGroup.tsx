@@ -9,52 +9,47 @@ import { cn } from '@/lib/utils';
 type RadioGroupItemProps = React.ComponentProps<typeof RadioPrimitive.Root> & {
   label?: React.ReactNode;
   labelClassName?: string;
-  size?: 'default' | 'sm';
 };
 
 type RadioGroupProps = React.ComponentProps<typeof RadioGroupPrimitive>;
 
 function RadioGroupItem({
+  className,
+  disabled,
   id,
   label,
   labelClassName,
   ...props
 }: RadioGroupItemProps) {
-  const generatedId = React.useId();
-
   if (!label) {
-    return <RadioGroupItemControl id={id} {...props} />;
+    return <RadioGroupItemControl className={className} id={id} {...props} />;
   }
 
-  const itemId = id ?? generatedId;
-
   return (
-    <div className="flex items-center gap-2" data-slot="radio-field">
-      <RadioGroupItemControl id={itemId} {...props} />
-      <RadioGroupItemLabel className={labelClassName} htmlFor={itemId}>
-        {label}
-      </RadioGroupItemLabel>
-    </div>
+    <RadioGroupItemLabel className={labelClassName} disabled={disabled}>
+      <RadioGroupItemControl
+        className={className}
+        disabled={disabled}
+        id={id}
+        {...props}
+      />
+      {label}
+    </RadioGroupItemLabel>
   );
 }
 
-function RadioGroupItemControl({
-  className,
-  size = 'default',
-  ...props
-}: Omit<RadioGroupItemProps, 'label' | 'labelClassName'>) {
+function RadioGroupItemControl({ className, ...props }: RadioGroupItemProps) {
   return (
     <RadioPrimitive.Root
       className={cn(
-        'peer group/radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:border-primary focus-ring inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:size-4 data-[size=sm]:size-3.5',
+        'peer group/radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:border-primary focus-ring inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full border aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
-      data-size={size}
       data-slot="radio"
       {...props}
     >
       <RadioPrimitive.Indicator
-        className="bg-primary rounded-full group-data-[size=default]/radio:size-2 group-data-[size=sm]/radio:size-1.5"
+        className="bg-primary size-2 rounded-full"
         data-slot="radio-indicator"
       />
     </RadioPrimitive.Root>
@@ -63,17 +58,19 @@ function RadioGroupItemControl({
 
 function RadioGroupItemLabel({
   className,
-  htmlFor,
+  disabled,
   ...props
-}: Omit<React.ComponentProps<'label'>, 'htmlFor'> & { htmlFor: string }) {
+}: React.ComponentProps<'label'> & { disabled?: boolean }) {
   return (
+    // react-doctor-disable-next-line react-doctor/label-has-associated-control -- Base UI radios are not native inputs, so the label must wrap the control for click and screen-reader association
     <label
       className={cn(
-        'text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
+        'flex cursor-pointer items-center gap-2 text-sm leading-none font-medium',
+        disabled && 'text-muted-foreground cursor-not-allowed',
+        'has-[>[data-slot=radio][data-disabled]]:text-muted-foreground has-[>[data-slot=radio][data-disabled]]:cursor-not-allowed',
         className,
       )}
       data-slot="radio-label"
-      htmlFor={htmlFor}
       {...props}
     />
   );

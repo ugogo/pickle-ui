@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { Field } from './Field';
 import { RadioGroup } from './RadioGroup';
 
 describe('RadioGroup', () => {
@@ -73,6 +74,21 @@ describe('RadioGroup', () => {
     expect(radio).toHaveAttribute('aria-checked', 'false');
   });
 
+  it('mutes the label when its item is disabled', () => {
+    render(
+      <RadioGroup>
+        <RadioGroup.Item disabled label="Disabled" value="d" />
+        <RadioGroup.Item label="Enabled" value="e" />
+      </RadioGroup>,
+    );
+    expect(
+      screen.getByText('Disabled').closest('[data-slot="radio-label"]'),
+    ).toHaveClass('text-muted-foreground');
+    expect(
+      screen.getByText('Enabled').closest('[data-slot="radio-label"]'),
+    ).not.toHaveClass('text-muted-foreground');
+  });
+
   it('supports arrow-key roving focus between items', () => {
     render(
       <RadioGroup defaultValue="a">
@@ -99,17 +115,33 @@ describe('RadioGroup', () => {
   it('renders compound RadioGroup.Item.Label', () => {
     render(
       <RadioGroup>
-        <div>
-          <RadioGroup.Item id="radio-custom" value="x" />
-          <RadioGroup.Item.Label htmlFor="radio-custom">
-            Custom label
-          </RadioGroup.Item.Label>
-        </div>
+        <RadioGroup.Item.Label>
+          <RadioGroup.Item value="x" />
+          Custom label
+        </RadioGroup.Item.Label>
       </RadioGroup>,
     );
     expect(screen.getByText('Custom label')).toHaveAttribute(
       'data-slot',
       'radio-label',
     );
+  });
+
+  it('clicking the label selects its item inside a Field', () => {
+    render(
+      <Field>
+        <Field.Label id="plan-label" nativeLabel={false} render={<span />}>
+          Plan
+        </Field.Label>
+        <RadioGroup aria-labelledby="plan-label">
+          <RadioGroup.Item label="Pro" value="pro" />
+        </RadioGroup>
+      </Field>,
+    );
+    const label = screen.getByText('Pro');
+    const radio = screen.getByRole('radio');
+    expect(radio).toHaveAttribute('aria-checked', 'false');
+    fireEvent.click(label);
+    expect(radio).toHaveAttribute('aria-checked', 'true');
   });
 });

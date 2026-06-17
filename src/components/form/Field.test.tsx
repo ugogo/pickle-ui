@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { Input } from '../Input';
 import { Field } from './Field';
-import { Input } from './Input';
 
 describe('Field', () => {
   it('Field.Label is associated with the wrapped Input via getByLabelText', () => {

@@ -41,7 +41,7 @@ function FieldLabel({ className, ...props }: FieldLabelProps) {
   return (
     <FieldPrimitive.Label
       className={cn(
-        'text-sm leading-none font-medium select-none data-disabled:cursor-not-allowed data-disabled:opacity-50',
+        'text-sm leading-none font-medium data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
       data-slot="field-label"
@@ -53,7 +53,7 @@ function FieldLabel({ className, ...props }: FieldLabelProps) {
 function FieldRoot({ className, ...props }: FieldProps) {
   return (
     <FieldPrimitive.Root
-      className={cn('grid gap-1.5', className)}
+      className={cn('grid gap-2.5', className)}
       data-slot="field"
       {...props}
     />
