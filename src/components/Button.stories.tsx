@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { IconPlus } from '@tabler/icons-react';
 
+import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Button, type ButtonProps } from './Button';
-import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: Button,

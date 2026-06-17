@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Input } from './Input';
 import { InputGroup } from './InputGroup';
-import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: InputGroup,

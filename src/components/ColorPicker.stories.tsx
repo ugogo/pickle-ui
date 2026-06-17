@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { useState } from 'react';
 
+import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Button } from './Button';
 import { ColorPicker } from './ColorPicker';
-import { type ComponentMatrixCellProps, Story } from './Story';
 
 const meta = {
   component: ColorPicker,

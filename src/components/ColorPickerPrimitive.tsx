@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from '@/components/Select';
 import { Slider } from '@/components/Slider';
-import { VisuallyHiddenInput } from '@/components/VisuallyHiddenInput';
 import { useAsRef } from '@/hooks/use-as-ref';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useLazyRef } from '@/hooks/use-lazy-ref';
@@ -38,6 +37,8 @@ import {
 } from '@/lib/color';
 import { useComposedRefs } from '@/lib/compose-refs';
 import { cn } from '@/lib/utils';
+
+import { VisuallyHiddenInput } from './_internal/VisuallyHiddenInput';
 
 const ROOT_NAME = 'ColorPicker';
 const ROOT_IMPL_NAME = 'ColorPickerImpl';

@@ -4,7 +4,7 @@ Guidance for AI agents (and humans) working in this repository.
 
 ## Project
 
-**pickle-ui** — a React component library built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). Components live in `src/components`, shared helpers in `src/lib`, and each component ships a `*.stories.tsx` for Storybook.
+**pickle-ui** — a React component library built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). Exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook.
 
 ## Tooling
 
@@ -13,11 +13,18 @@ Guidance for AI agents (and humans) working in this repository.
 - **Typecheck:** `pnpm run typecheck`.
 - **Build library:** `pnpm run build`.
 
+## Component layout
+
+- **Exported components** — one top-level file per component in `src/components` (e.g. `Button.tsx`, `Slider.tsx`), each with a co-located `*.stories.tsx` for Storybook. Export every exported component and its types from `src/index.ts`; that file is the library's public API.
+- **Internal components** — helpers and Storybook-only utilities that are not part of the public API belong in `src/components/_internal` (e.g. `Story.tsx`, `VisuallyHiddenInput.tsx`). Do not export these from `src/index.ts`.
+- **Co-located modules** — when an exported component has a lower-level building block consumers may compose directly, keep it alongside the facade in `src/components` (e.g. `ColorPicker.tsx` + `ColorPickerPrimitive.tsx`) and export both from `src/index.ts`.
+- Stories import internal utilities from `./_internal/…`; exported components import internal modules the same way (e.g. `./_internal/VisuallyHiddenInput`).
+
 ## Component API
 
 - Use [Base UI](https://base-ui.com) for headless component primitives. Do not introduce new `radix-ui` imports or dependencies; if generated code uses Radix primitives, convert it to Base UI before committing.
 - Prefer compound component APIs for component slots and helpers. Attach related parts to the parent component, e.g. `Slider.Value` or `Slider.Marks`, rather than exporting parallel names like `SliderValue` or `SliderMarks`.
-- Storybook stories should demonstrate the public compound API consumers are expected to use.
+- Storybook stories should demonstrate the compound API consumers are expected to use.
 
 ## Commit convention
 
