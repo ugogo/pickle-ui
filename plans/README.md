@@ -18,6 +18,21 @@ done.
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
+## Feature plans (added after the audit)
+
+Forward-looking component additions, not part of the 2026-06-15 audit. Planned
+against commit `d742bcc` (2026-06-16). Independent of 001–006.
+
+| Plan | Title                                                        | Priority | Effort | Depends on | Status |
+| ---- | ------------------------------------------------------------ | -------- | ------ | ---------- | ------ |
+| 007  | Add a Typography (`Text`) component                          | P2       | M      | —          | TODO   |
+| 008  | Round out form elements — Label, Checkbox, RadioGroup, Field | P2       | L      | —          | TODO   |
+
+- **007 and 008 are independent** and can be done in either order. 008 may
+  optionally reuse 007's `Text` styling for `Field` messages, but does not
+  hard-depend on it. Both grew out of a gap analysis against the `../pane` app's
+  UI set.
+
 ## Dependency notes
 
 - **001 first.** It is the verification baseline — there are currently no

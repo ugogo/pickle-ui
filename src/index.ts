@@ -70,3 +70,6 @@ export type {
 
 export { Switch } from './components/Switch';
 export type { SwitchLabelProps, SwitchProps } from './components/Switch';
+
+export { Text, textVariants } from './components/Text';
+export type { TextProps } from './components/Text';
