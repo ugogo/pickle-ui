@@ -48,4 +48,4 @@ jobs:
         with:
           # Match the react-doctor version pinned in package.json so CI and the
           # pre-commit hook evaluate the exact same ruleset.
-          version: 0.5.1
+          version: 0.5.6

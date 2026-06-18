@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from './_internal/Story';
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
 import { Switch, type SwitchProps } from './Switch';
 
 const meta = {
@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/Switch',
+  title: 'components/form/Switch',
 } satisfies Meta<typeof Switch>;
 
 export default meta;
@@ -70,41 +70,7 @@ export const All: StoryDefinition = {
       </Story.Section>
 
       <Story.Section title="Label">
-        <Switch
-          defaultChecked
-          id="switch-notifications"
-          label="Notifications"
-        />
-      </Story.Section>
-
-      <Story.Section title="Labeled disabled states">
-        <div className="flex flex-col items-start justify-start gap-3">
-          <Switch
-            disabled
-            id="switch-disabled-unchecked"
-            label="Disabled (Unchecked)"
-          />
-          <Switch
-            defaultChecked
-            disabled
-            id="switch-disabled-checked"
-            label="Disabled (Checked)"
-          />
-        </div>
-      </Story.Section>
-
-      <Story.Section title="Custom composition">
-        <div className="flex items-start gap-3">
-          <Switch id="switch-composed" />
-          <div className="grid gap-1">
-            <Switch.Label htmlFor="switch-composed">
-              Weekly summary
-            </Switch.Label>
-            <p className="text-muted-foreground text-sm">
-              Send a summary of account activity every Friday.
-            </p>
-          </div>
-        </div>
+        <Switch defaultChecked id="story-switch-label" label="Notifications" />
       </Story.Section>
     </Story.Layout>
   ),

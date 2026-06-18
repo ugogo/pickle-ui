@@ -18,9 +18,16 @@ type SelectContentProps = Pick<
   React.ComponentProps<typeof SelectPrimitive.Popup> & {
     position?: 'item-aligned' | 'popper';
   };
+type SelectGroupLabelProps = React.ComponentProps<
+  typeof SelectPrimitive.GroupLabel
+>;
 type SelectGroupProps = React.ComponentProps<typeof SelectPrimitive.Group>;
+type SelectItemData = {
+  label: React.ReactNode;
+  value: unknown;
+};
 type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item>;
-type SelectLabelProps = React.ComponentProps<typeof SelectPrimitive.GroupLabel>;
+type SelectLabelProps = React.ComponentProps<typeof SelectPrimitive.Label>;
 type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>;
 type SelectSeparatorProps = React.ComponentProps<
   typeof SelectPrimitive.Separator
@@ -30,13 +37,31 @@ type SelectTriggerProps = React.ComponentProps<
 > & {
   size?: 'default' | 'sm';
 };
+
 type SelectValueProps = React.ComponentProps<typeof SelectPrimitive.Value>;
+
+// Base UI needs root item metadata to display labels before the popup mounts.
+function deriveSelectItems(children: React.ReactNode): SelectItemData[] {
+  return React.Children.toArray(children).flatMap((child) => {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) {
+      return [];
+    }
+
+    if (child.type === SelectItem) {
+      const { children: label, value } = child.props as SelectItemProps;
+
+      return label == null ? [] : [{ label, value }];
+    }
+
+    return deriveSelectItems(child.props.children);
+  });
+}
 
 function SelectContent({
   align = 'center',
   children,
   className,
-  position = 'item-aligned',
+  position = 'popper',
   side = 'bottom',
   sideOffset = 4,
   ...props
@@ -81,6 +106,16 @@ function SelectGroup({ className, ...props }: SelectGroupProps) {
   );
 }
 
+function SelectGroupLabel({ className, ...props }: SelectGroupLabelProps) {
+  return (
+    <SelectPrimitive.GroupLabel
+      className={cn('text-muted-foreground px-3 py-2.5 text-xs', className)}
+      data-slot="select-group-label"
+      {...props}
+    />
+  );
+}
+
 function SelectItem({ children, className, ...props }: SelectItemProps) {
   return (
     <SelectPrimitive.Item
@@ -89,6 +124,8 @@ function SelectItem({ children, className, ...props }: SelectItemProps) {
         className,
       )}
       data-slot="select-item"
+      // react-doctor-disable-next-line react-doctor/no-polymorphic-children -- maps string children to Base UI's keyboard typeahead label prop; display always uses children via ItemText
+      label={typeof children === 'string' ? children : undefined}
       {...props}
     >
       <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
@@ -103,16 +140,28 @@ function SelectItem({ children, className, ...props }: SelectItemProps) {
 
 function SelectLabel({ className, ...props }: SelectLabelProps) {
   return (
-    <SelectPrimitive.GroupLabel
-      className={cn('text-muted-foreground px-3 py-2.5 text-xs', className)}
+    <SelectPrimitive.Label
+      className={cn(
+        'text-sm leading-none font-medium data-disabled:cursor-not-allowed data-disabled:opacity-50',
+        className,
+      )}
       data-slot="select-label"
       {...props}
     />
   );
 }
 
-function SelectRoot({ ...props }: SelectProps) {
-  return <SelectPrimitive.Root {...props} />;
+function SelectRoot({ children, items, ...props }: SelectProps) {
+  const derivedItems = React.useMemo(
+    () => deriveSelectItems(children),
+    [children],
+  );
+
+  return (
+    <SelectPrimitive.Root items={items ?? derivedItems} {...props}>
+      {children}
+    </SelectPrimitive.Root>
+  );
 }
 
 function SelectScrollDownButton({
@@ -173,7 +222,7 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "border-input bg-background aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground focus-ring flex w-fit items-center justify-between gap-1.5 rounded-md border px-2.5 py-1 text-sm whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-50 data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:h-8 data-[size=sm]:h-7 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "border-input bg-background aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground focus-ring enabled:hover:border-ring/50 data-popup-open:border-ring/50 flex w-fit items-center justify-between gap-1.5 rounded-md border px-2.5 py-1 text-sm whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-50 data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:h-8 data-[size=sm]:h-7 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       data-size={size}
@@ -195,6 +244,7 @@ function SelectValue({ ...props }: SelectValueProps) {
 const Select = Object.assign(SelectRoot, {
   Content: SelectContent,
   Group: SelectGroup,
+  GroupLabel: SelectGroupLabel,
   Item: SelectItem,
   Label: SelectLabel,
   Separator: SelectSeparator,
@@ -206,6 +256,7 @@ export {
   Select,
   SelectContent,
   SelectGroup,
+  SelectGroupLabel,
   SelectItem,
   SelectLabel,
   SelectScrollDownButton,
@@ -216,6 +267,7 @@ export {
 };
 export type {
   SelectContentProps,
+  SelectGroupLabelProps,
   SelectGroupProps,
   SelectItemProps,
   SelectLabelProps,

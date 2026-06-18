@@ -5,16 +5,16 @@ import { IconColorPicker } from '@tabler/icons-react';
 import * as React from 'react';
 
 import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { InputGroup } from '@/components/InputGroup';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/Select';
+} from '@/components/form/Select';
+import { Input } from '@/components/Input';
+import { InputGroup } from '@/components/InputGroup';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
 import { Slider } from '@/components/Slider';
 import { useAsRef } from '@/hooks/use-as-ref';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
