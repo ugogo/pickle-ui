@@ -1,7 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod/v4';
+
 import { Story } from '../_internal/Story';
-import { Form } from './Form';
+import {
+  Form,
+  FormCheckbox,
+  FormInput,
+  FormInputGroup,
+  FormRadioGroup,
+  FormSelect,
+  FormSwitch,
+} from './Form';
 
 const meta = {
   args: {},
@@ -13,6 +25,7 @@ const meta = {
 } satisfies Meta<typeof Form>;
 
 export default meta;
+
 type StoryDefinition = StoryObj<typeof meta>;
 
 const roles = [
@@ -31,131 +44,123 @@ const notificationChannels: {
   { disabled: true, label: 'Push (coming soon)', value: 'push' },
 ];
 
+const signUpSchema = z.object({
+  email: z.email('Enter a valid email address.'),
+  firstName: z.string().trim().min(1, 'Enter your first name.'),
+  lastName: z.string().trim().min(1, 'Enter your last name.'),
+  notificationChannel: z.enum(['email', 'sms']),
+  password: z.string().min(8, 'Use at least 8 characters.'),
+  productUpdates: z.boolean(),
+  role: z.enum(['designer', 'engineer', 'manager']),
+  terms: z.boolean().refine(Boolean, 'Accept the terms to continue.'),
+  username: z.string().trim().min(1, 'Enter a username.'),
+});
+
+type SignUpValues = z.infer<typeof signUpSchema>;
+
+function SignUpForm() {
+  const form = useForm<SignUpValues>({
+    defaultValues: {
+      email: '',
+      firstName: '',
+      lastName: '',
+      notificationChannel: 'email',
+      password: '',
+      productUpdates: true,
+      role: 'designer',
+      terms: false,
+      username: '',
+    },
+    resolver: zodResolver(signUpSchema),
+  });
+
+  return (
+    <Form className="max-w-md" form={form} onSubmit={() => form.clearErrors()}>
+      <Form.Field
+        description="We'll send a confirmation link to this address."
+        label="Email"
+        name="email"
+      >
+        <FormInput autoComplete="email" inputMode="email" />
+      </Form.Field>
+
+      <Form.Field label="Username" name="username">
+        <FormInput autoComplete="username" />
+      </Form.Field>
+
+      <Form.Field
+        description="At least 8 characters."
+        label="Password"
+        name="password"
+      >
+        <FormInput autoComplete="new-password" type="password" />
+      </Form.Field>
+
+      <Form.Field label="Full name">
+        <FormInputGroup>
+          <FormInput
+            aria-label="First name"
+            name="firstName"
+            placeholder="First"
+          />
+          <FormInput
+            aria-label="Last name"
+            name="lastName"
+            placeholder="Last"
+          />
+        </FormInputGroup>
+      </Form.Field>
+
+      <Form.Field label="Role" name="role">
+        <FormSelect>
+          <FormSelect.Trigger className="w-full">
+            <FormSelect.Value placeholder="Select a role" />
+          </FormSelect.Trigger>
+          <FormSelect.Content>
+            {roles.map((role) => (
+              <FormSelect.Item key={role.value} value={role.value}>
+                {role.label}
+              </FormSelect.Item>
+            ))}
+          </FormSelect.Content>
+        </FormSelect>
+      </Form.Field>
+
+      <Form.Field name="productUpdates">
+        <FormSwitch label="Email me about new features and releases" />
+      </Form.Field>
+
+      <Form.Field
+        description="How should we reach you for account alerts?"
+        label="Notification channel"
+        name="notificationChannel"
+      >
+        <FormRadioGroup>
+          {notificationChannels.map((channel) => (
+            <FormRadioGroup.Item
+              disabled={channel.disabled}
+              key={channel.value}
+              label={channel.label}
+              value={channel.value}
+            />
+          ))}
+        </FormRadioGroup>
+      </Form.Field>
+
+      <Form.Field name="terms">
+        <FormCheckbox label="I agree to the terms of service and privacy policy" />
+      </Form.Field>
+
+      <Form.Button type="submit">Create account</Form.Button>
+    </Form>
+  );
+}
+
 export const SignUp: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-lg" title="Form">
       <Story.Section title="Sign up">
-        <Form
-          className="max-w-md"
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-        >
-          <Form.Field name="email">
-            <Form.Field.Label>Email</Form.Field.Label>
-            <Form.Field.Control render={<Form.Input required type="email" />} />
-            <Form.Field.Description>
-              {"We'll send a confirmation link to this address."}
-            </Form.Field.Description>
-          </Form.Field>
-
-          <Form.Field name="username">
-            <Form.Field.Label>Username</Form.Field.Label>
-            <Form.Field.Control render={<Form.Input required />} />
-            <Form.Field.Error match="valueMissing">
-              Username is required.
-            </Form.Field.Error>
-          </Form.Field>
-
-          <Form.Field name="password">
-            <Form.Field.Label>Password</Form.Field.Label>
-            <Form.Field.Control
-              render={<Form.Input minLength={8} required type="password" />}
-            />
-            <Form.Field.Description>
-              At least 8 characters.
-            </Form.Field.Description>
-          </Form.Field>
-
-          <Form.Field>
-            <Form.Field.Label>Full name</Form.Field.Label>
-            <Form.Field.Control
-              render={
-                <Form.InputGroup>
-                  <Form.Input
-                    aria-label="First name"
-                    name="firstName"
-                    placeholder="First"
-                    required
-                  />
-                  <Form.Input
-                    aria-label="Last name"
-                    name="lastName"
-                    placeholder="Last"
-                    required
-                  />
-                </Form.InputGroup>
-              }
-            />
-          </Form.Field>
-
-          <Form.Field name="role">
-            <Form.Field.Label>Role</Form.Field.Label>
-            <Form.Field.Control
-              render={
-                <Form.Select defaultValue="designer">
-                  <Form.Select.Trigger className="w-full">
-                    <Form.Select.Value placeholder="Select a role" />
-                  </Form.Select.Trigger>
-                  <Form.Select.Content>
-                    {roles.map((role) => (
-                      <Form.Select.Item key={role.value} value={role.value}>
-                        {role.label}
-                      </Form.Select.Item>
-                    ))}
-                  </Form.Select.Content>
-                </Form.Select>
-              }
-            />
-          </Form.Field>
-
-          <Form.Field>
-            <Form.Field.Label>Product updates</Form.Field.Label>
-            <Form.Switch
-              defaultChecked
-              label="Email me about new features and releases"
-            />
-          </Form.Field>
-
-          <Form.Field>
-            <Form.Field.Label
-              id="notification-channel-label"
-              nativeLabel={false}
-              render={<span />}
-            >
-              Notification channel
-            </Form.Field.Label>
-            <Form.RadioGroup
-              aria-labelledby="notification-channel-label"
-              defaultValue="email"
-              name="notificationChannel"
-            >
-              {notificationChannels.map((channel) => (
-                <Form.RadioGroup.Item
-                  disabled={channel.disabled}
-                  key={channel.value}
-                  label={channel.label}
-                  value={channel.value}
-                />
-              ))}
-            </Form.RadioGroup>
-            <Form.Field.Description>
-              How should we reach you for account alerts?
-            </Form.Field.Description>
-          </Form.Field>
-
-          <Form.Field name="terms">
-            <Form.Checkbox
-              label="I agree to the terms of service and privacy policy"
-              required
-            />
-            <Form.Field.Error match="valueMissing">
-              You must accept the terms to continue.
-            </Form.Field.Error>
-          </Form.Field>
-
-          <Form.Button type="submit">Create account</Form.Button>
-        </Form>
+        <SignUpForm />
       </Story.Section>
     </Story.Layout>
   ),
