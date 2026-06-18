@@ -112,6 +112,18 @@ describe('RadioGroup', () => {
     expect(radioA).toHaveAttribute('aria-checked', 'false');
   });
 
+  it('disabled unlabeled item is not interactive', () => {
+    render(
+      <RadioGroup>
+        <RadioGroup.Item aria-label="Hidden" disabled value="d" />
+      </RadioGroup>,
+    );
+    const radio = screen.getByRole('radio', { name: 'Hidden' });
+    expect(radio).toHaveAttribute('aria-disabled', 'true');
+    fireEvent.click(radio);
+    expect(radio).toHaveAttribute('aria-checked', 'false');
+  });
+
   it('renders compound RadioGroup.Item.Label', () => {
     render(
       <RadioGroup>

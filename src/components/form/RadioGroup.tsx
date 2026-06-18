@@ -22,7 +22,14 @@ function RadioGroupItem({
   ...props
 }: RadioGroupItemProps) {
   if (!label) {
-    return <RadioGroupItemControl className={className} id={id} {...props} />;
+    return (
+      <RadioGroupItemControl
+        className={className}
+        disabled={disabled}
+        id={id}
+        {...props}
+      />
+    );
   }
 
   return (

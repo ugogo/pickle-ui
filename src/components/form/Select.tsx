@@ -24,7 +24,7 @@ type SelectItemData = {
   value: unknown;
 };
 type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {
-  label: React.ReactNode;
+  label?: React.ReactNode;
 };
 type SelectLabelProps = React.ComponentProps<typeof SelectPrimitive.GroupLabel>;
 type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>;
@@ -51,10 +51,15 @@ function collectSelectItems(
       }
 
       if (child.type === SelectItem) {
-        const { label, value } = child.props as SelectItemProps;
+        const {
+          children: itemChildren,
+          label,
+          value,
+        } = child.props as SelectItemProps;
+        const itemLabel = label ?? itemChildren;
 
-        if (label != null) {
-          items.push({ label, value });
+        if (itemLabel != null) {
+          items.push({ label: itemLabel, value });
         }
 
         return;
@@ -122,7 +127,9 @@ function SelectGroup({ className, ...props }: SelectGroupProps) {
   );
 }
 
-function SelectItem({ className, label, ...props }: SelectItemProps) {
+function SelectItem({ children, className, label, ...props }: SelectItemProps) {
+  const itemLabel = label ?? children;
+
   return (
     <SelectPrimitive.Item
       className={cn(
@@ -130,7 +137,7 @@ function SelectItem({ className, label, ...props }: SelectItemProps) {
         className,
       )}
       data-slot="select-item"
-      label={typeof label === 'string' ? label : undefined}
+      label={typeof itemLabel === 'string' ? itemLabel : undefined}
       {...props}
     >
       <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
@@ -138,7 +145,7 @@ function SelectItem({ className, label, ...props }: SelectItemProps) {
           <IconCheck className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{label}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText>{itemLabel}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
 }
