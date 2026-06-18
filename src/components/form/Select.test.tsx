@@ -11,8 +11,8 @@ describe('Select', () => {
           <Select.Value placeholder="Select a role" />
         </Select.Trigger>
         <Select.Content>
-          <Select.Item label="Designer" value="designer" />
-          <Select.Item label="Engineer" value="engineer" />
+          <Select.Item value="designer">Designer</Select.Item>
+          <Select.Item value="engineer">Engineer</Select.Item>
         </Select.Content>
       </Select>,
     );

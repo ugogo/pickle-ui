@@ -646,11 +646,9 @@ function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
       </SelectTrigger>
       <SelectContent>
         {colorFormats.map((format) => (
-          <SelectItem
-            key={format}
-            label={format.toUpperCase()}
-            value={format}
-          />
+          <SelectItem key={format} value={format}>
+            {format.toUpperCase()}
+          </SelectItem>
         ))}
       </SelectContent>
     </Select>

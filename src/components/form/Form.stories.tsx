@@ -15,6 +15,22 @@ const meta = {
 export default meta;
 type StoryDefinition = StoryObj<typeof meta>;
 
+const roles = [
+  { label: 'Designer', value: 'designer' },
+  { label: 'Engineer', value: 'engineer' },
+  { label: 'Manager', value: 'manager' },
+] as const;
+
+const notificationChannels: {
+  disabled?: boolean;
+  label: string;
+  value: string;
+}[] = [
+  { label: 'Email', value: 'email' },
+  { label: 'SMS', value: 'sms' },
+  { disabled: true, label: 'Push (coming soon)', value: 'push' },
+];
+
 export const SignUp: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-lg" title="Form">
@@ -82,9 +98,11 @@ export const SignUp: StoryDefinition = {
                     <Form.Select.Value placeholder="Select a role" />
                   </Form.Select.Trigger>
                   <Form.Select.Content>
-                    <Form.Select.Item label="Designer" value="designer" />
-                    <Form.Select.Item label="Engineer" value="engineer" />
-                    <Form.Select.Item label="Manager" value="manager" />
+                    {roles.map((role) => (
+                      <Form.Select.Item key={role.value} value={role.value}>
+                        {role.label}
+                      </Form.Select.Item>
+                    ))}
                   </Form.Select.Content>
                 </Form.Select>
               }
@@ -112,13 +130,14 @@ export const SignUp: StoryDefinition = {
               defaultValue="email"
               name="notificationChannel"
             >
-              <Form.RadioGroup.Item label="Email" value="email" />
-              <Form.RadioGroup.Item label="SMS" value="sms" />
-              <Form.RadioGroup.Item
-                disabled
-                label="Push (coming soon)"
-                value="push"
-              />
+              {notificationChannels.map((channel) => (
+                <Form.RadioGroup.Item
+                  disabled={channel.disabled}
+                  key={channel.value}
+                  label={channel.label}
+                  value={channel.value}
+                />
+              ))}
             </Form.RadioGroup>
             <Form.Field.Description>
               How should we reach you for account alerts?

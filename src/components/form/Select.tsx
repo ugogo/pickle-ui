@@ -23,9 +23,7 @@ type SelectItemData = {
   label: React.ReactNode;
   value: unknown;
 };
-type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {
-  label?: React.ReactNode;
-};
+type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item>;
 type SelectLabelProps = React.ComponentProps<typeof SelectPrimitive.GroupLabel>;
 type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>;
 type SelectSeparatorProps = React.ComponentProps<
@@ -51,12 +49,7 @@ function collectSelectItems(
       }
 
       if (child.type === SelectItem) {
-        const {
-          children: itemChildren,
-          label,
-          value,
-        } = child.props as SelectItemProps;
-        const itemLabel = label ?? itemChildren;
+        const { children: itemLabel, value } = child.props as SelectItemProps;
 
         if (itemLabel != null) {
           items.push({ label: itemLabel, value });
@@ -127,9 +120,7 @@ function SelectGroup({ className, ...props }: SelectGroupProps) {
   );
 }
 
-function SelectItem({ children, className, label, ...props }: SelectItemProps) {
-  const itemLabel = label ?? children;
-
+function SelectItem({ children, className, ...props }: SelectItemProps) {
   return (
     <SelectPrimitive.Item
       className={cn(
@@ -137,7 +128,8 @@ function SelectItem({ children, className, label, ...props }: SelectItemProps) {
         className,
       )}
       data-slot="select-item"
-      label={typeof itemLabel === 'string' ? itemLabel : undefined}
+      // react-doctor-disable-next-line react-doctor/no-polymorphic-children -- maps string children to Base UI's keyboard typeahead label prop; display always uses children via ItemText
+      label={typeof children === 'string' ? children : undefined}
       {...props}
     >
       <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
@@ -145,7 +137,7 @@ function SelectItem({ children, className, label, ...props }: SelectItemProps) {
           <IconCheck className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{itemLabel}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
 }
