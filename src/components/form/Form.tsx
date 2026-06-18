@@ -316,7 +316,9 @@ const FormFieldWithParts = Object.assign(FormField, {
   Control: Field.Control,
   Description: Field.Description,
   Error: Field.Error,
+  Item: Field.Item,
   Label: Field.Label,
+  Validity: Field.Validity,
 });
 
 const FormCheckbox = Object.assign(FormCheckboxRoot, {
@@ -330,6 +332,7 @@ const FormRadioGroup = Object.assign(FormRadioGroupRoot, {
 const FormSelect = Object.assign(FormSelectRoot, {
   Content: Select.Content,
   Group: Select.Group,
+  GroupLabel: Select.GroupLabel,
   Item: Select.Item,
   Label: Select.Label,
   Separator: Select.Separator,

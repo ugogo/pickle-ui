@@ -37,15 +37,6 @@ export type {
   CheckboxProps,
 } from './components/form/Checkbox';
 
-export { Field } from './components/form/Field';
-export type {
-  FieldControlProps,
-  FieldDescriptionProps,
-  FieldErrorProps,
-  FieldLabelProps,
-  FieldProps,
-} from './components/form/Field';
-
 export {
   Form,
   FormCheckbox,
@@ -66,9 +57,6 @@ export type {
   FormSwitchProps,
 } from './components/form/Form';
 
-export { Label } from './components/form/Label';
-export type { LabelProps } from './components/form/Label';
-
 export { RadioGroup } from './components/form/RadioGroup';
 export type {
   RadioGroupItemProps,
@@ -78,6 +66,7 @@ export type {
 export { Select } from './components/form/Select';
 export type {
   SelectContentProps,
+  SelectGroupLabelProps,
   SelectGroupProps,
   SelectItemProps,
   SelectLabelProps,

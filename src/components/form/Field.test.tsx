@@ -84,4 +84,34 @@ describe('Field', () => {
       'custom-field',
     );
   });
+
+  it('exposes Field.Item for grouped controls', () => {
+    render(
+      <Field>
+        <Field.Item disabled>
+          <span>Disabled option</span>
+        </Field.Item>
+      </Field>,
+    );
+
+    const item = screen.getByText('Disabled option').closest('[data-slot]');
+
+    expect(item).toHaveAttribute('data-slot', 'field-item');
+  });
+
+  it('exposes Field.Validity render state', () => {
+    render(
+      <Field>
+        <Field.Label>Name</Field.Label>
+        <Field.Control render={<Input required />} />
+        <Field.Validity>
+          {({ validity }) => (
+            <span>{validity.valid ? 'Valid field' : 'Invalid field'}</span>
+          )}
+        </Field.Validity>
+      </Field>,
+    );
+
+    expect(screen.getByText('Invalid field')).toBeInTheDocument();
+  });
 });

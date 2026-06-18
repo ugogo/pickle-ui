@@ -18,6 +18,9 @@ type CheckboxProps = React.ComponentProps<typeof CheckboxPrimitive.Root> & {
 
 function CheckboxControl({
   className,
+  nativeButton = true,
+  // react-doctor-disable-next-line react-doctor/control-has-associated-label -- consumers provide aria-label/aria-labelledby, or CheckboxRoot wires this button to the sibling label by id
+  render = <button type="button" />,
   size = 'default',
   ...props
 }: Omit<CheckboxProps, 'label' | 'labelClassName'>) {
@@ -29,6 +32,8 @@ function CheckboxControl({
       )}
       data-size={size}
       data-slot="checkbox"
+      nativeButton={nativeButton}
+      render={render}
       {...props}
     >
       <CheckboxPrimitive.Indicator

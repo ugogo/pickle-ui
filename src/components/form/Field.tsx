@@ -10,8 +10,10 @@ type FieldDescriptionProps = React.ComponentProps<
   typeof FieldPrimitive.Description
 >;
 type FieldErrorProps = React.ComponentProps<typeof FieldPrimitive.Error>;
+type FieldItemProps = React.ComponentProps<typeof FieldPrimitive.Item>;
 type FieldLabelProps = React.ComponentProps<typeof FieldPrimitive.Label>;
 type FieldProps = React.ComponentProps<typeof FieldPrimitive.Root>;
+type FieldValidityProps = React.ComponentProps<typeof FieldPrimitive.Validity>;
 
 function FieldControl({ ...props }: FieldControlProps) {
   return <FieldPrimitive.Control data-slot="field-control" {...props} />;
@@ -32,6 +34,16 @@ function FieldError({ className, ...props }: FieldErrorProps) {
     <FieldPrimitive.Error
       className={cn('text-destructive text-sm font-medium', className)}
       data-slot="field-error"
+      {...props}
+    />
+  );
+}
+
+function FieldItem({ className, ...props }: FieldItemProps) {
+  return (
+    <FieldPrimitive.Item
+      className={cn('grid gap-1.5', className)}
+      data-slot="field-item"
       {...props}
     />
   );
@@ -60,11 +72,17 @@ function FieldRoot({ className, ...props }: FieldProps) {
   );
 }
 
+function FieldValidity({ ...props }: FieldValidityProps) {
+  return <FieldPrimitive.Validity data-slot="field-validity" {...props} />;
+}
+
 const Field = Object.assign(FieldRoot, {
   Control: FieldControl,
   Description: FieldDescription,
   Error: FieldError,
+  Item: FieldItem,
   Label: FieldLabel,
+  Validity: FieldValidity,
 });
 
 export { Field };
@@ -72,6 +90,8 @@ export type {
   FieldControlProps,
   FieldDescriptionProps,
   FieldErrorProps,
+  FieldItemProps,
   FieldLabelProps,
   FieldProps,
+  FieldValidityProps,
 };

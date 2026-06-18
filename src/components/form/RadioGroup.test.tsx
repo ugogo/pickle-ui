@@ -16,6 +16,19 @@ describe('RadioGroup', () => {
     expect(screen.getByRole('radio', { name: 'Option B' })).toBeInTheDocument();
   });
 
+  it('supports compact item sizing', () => {
+    render(
+      <RadioGroup>
+        <RadioGroup.Item label="Compact" size="sm" value="compact" />
+      </RadioGroup>,
+    );
+
+    expect(screen.getByRole('radio', { name: 'Compact' })).toHaveAttribute(
+      'data-size',
+      'sm',
+    );
+  });
+
   it('selects defaultValue on mount', () => {
     render(
       <RadioGroup defaultValue="b">

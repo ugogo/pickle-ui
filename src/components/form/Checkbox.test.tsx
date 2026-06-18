@@ -12,6 +12,13 @@ describe('Checkbox', () => {
     expect(checkbox).not.toBeChecked();
   });
 
+  it('renders the control as a native button for sibling labels', () => {
+    render(<Checkbox aria-label="Accept" />);
+    expect(screen.getByRole('checkbox', { name: 'Accept' }).tagName).toBe(
+      'BUTTON',
+    );
+  });
+
   it('toggles on click', () => {
     render(<Checkbox aria-label="Accept" />);
     const checkbox = screen.getByRole('checkbox', { name: 'Accept' });
@@ -51,7 +58,7 @@ describe('Checkbox', () => {
   it('is disabled and blocks interaction', () => {
     render(<Checkbox aria-label="Accept" disabled />);
     const checkbox = screen.getByRole('checkbox', { name: 'Accept' });
-    expect(checkbox).toHaveAttribute('aria-disabled', 'true');
+    expect(checkbox).toBeDisabled();
     fireEvent.click(checkbox);
     expect(checkbox).not.toBeChecked();
   });
