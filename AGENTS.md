@@ -24,6 +24,7 @@ Guidance for AI agents (and humans) working in this repository.
 
 - Use [Base UI](https://base-ui.com) for headless component primitives. Do not introduce new `radix-ui` imports or dependencies; if generated code uses Radix primitives, convert it to Base UI before committing.
 - Prefer compound component APIs for component slots and helpers. Attach related parts to the parent component, e.g. `Slider.Value` or `Slider.Marks`, rather than exporting parallel names like `SliderValue` or `SliderMarks`.
+- Use the shared `Text` component for headings and text content in exported components and Storybook stories instead of raw typography elements such as `h1`–`h6`, `p`, and `span`.
 - Storybook stories should demonstrate the compound API consumers are expected to use.
 
 ## Commit convention

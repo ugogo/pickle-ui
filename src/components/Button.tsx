@@ -12,9 +12,9 @@ const buttonVariants = cva(
     },
     variants: {
       size: {
-        lg: 'h-9 rounded-md px-3.5 has-[>svg:only-child]:w-9 has-[>svg:only-child]:px-0',
-        md: 'h-8 rounded-md px-2.5 has-[>svg:only-child]:w-8 has-[>svg:only-child]:px-0',
-        sm: 'h-7 rounded-md px-2 has-[>svg:only-child]:w-7 has-[>svg:only-child]:px-0',
+        lg: 'h-9 rounded-md px-4 data-icon-only:w-9 data-icon-only:px-0',
+        md: 'h-8 rounded-md px-3 data-icon-only:w-8 data-icon-only:px-0',
+        sm: 'h-7 rounded-md px-2 data-icon-only:w-7 data-icon-only:px-0',
       },
       variant: {
         destructive:
@@ -40,6 +40,7 @@ export interface ButtonProps
  * size without a dedicated `icon` variant.
  */
 function Button({
+  children,
   className,
   ref,
   size,
@@ -47,13 +48,19 @@ function Button({
   variant,
   ...props
 }: ButtonProps) {
+  const iconOnly =
+    React.Children.count(children) === 1 && React.isValidElement(children);
+
   return (
     <button
       className={cn(buttonVariants({ className, size, variant }))}
+      data-icon-only={iconOnly ? '' : undefined}
       ref={ref}
       type={type}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 }
 

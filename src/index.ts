@@ -1,7 +1,21 @@
 // Pickle UI - React component library
 
+export { Badge, badgeVariants } from './components/Badge';
+export type { BadgeProps } from './components/Badge';
+
 export { Button } from './components/Button';
 export type { ButtonProps } from './components/Button';
+
+export { Card } from './components/Card';
+export type {
+  CardActionProps,
+  CardContentProps,
+  CardDescriptionProps,
+  CardFooterProps,
+  CardHeaderProps,
+  CardProps,
+  CardTitleProps,
+} from './components/Card';
 
 export { ColorPicker } from './components/ColorPicker';
 export type {
@@ -95,6 +109,17 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
 } from './components/Popover';
+
+export { ScrollArea } from './components/ScrollArea';
+export type {
+  ScrollAreaContentProps,
+  ScrollAreaCornerProps,
+  ScrollAreaProps,
+  ScrollAreaRootProps,
+  ScrollAreaScrollbarProps,
+  ScrollAreaThumbProps,
+  ScrollAreaViewportProps,
+} from './components/ScrollArea';
 
 export { Slider } from './components/Slider';
 export type {
