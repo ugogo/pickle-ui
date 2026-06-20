@@ -15,7 +15,7 @@ Guidance for AI agents (and humans) working in this repository.
 
 ## Releases
 
-- Releases run through the manually triggered `Release` GitHub Actions workflow. Do not run `release-it` locally.
+- When a user asks for a release, always trigger the manually dispatched `Release` GitHub Actions workflow with `gh`. Never run `pnpm release`, `npm run release`, or `release-it` locally.
 - Trigger a release with `gh workflow run release.yml -f bump=<patch|minor|major>`, then monitor it with `gh run watch --exit-status`.
 - The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release.
 - npm Trusted Publishing must be configured once for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. Do not add an npm token to repository secrets.
