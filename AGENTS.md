@@ -13,6 +13,14 @@ Guidance for AI agents (and humans) working in this repository.
 - **Typecheck:** `pnpm run typecheck`.
 - **Build library:** `pnpm run build`.
 
+## Releases
+
+- When a user asks for a release, always trigger the manually dispatched `Release` GitHub Actions workflow with `gh`. Never run `pnpm release`, `npm run release`, or `release-it` locally.
+- Trigger a release with `gh workflow run release.yml -f bump=<patch|minor|major>`, then monitor it with `gh run watch --exit-status`.
+- The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release.
+- npm Trusted Publishing must be configured once for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. Do not add an npm token to repository secrets.
+- The workflow must retain `contents: write` for git/GitHub releases and `id-token: write` for npm Trusted Publishing.
+
 ## Component layout
 
 - **Exported components** — one top-level file per component in `src/components` (e.g. `Button.tsx`, `Slider.tsx`), each with a co-located `*.stories.tsx` for Storybook. Export every exported component and its types from `src/index.ts`; that file is the library's public API.
