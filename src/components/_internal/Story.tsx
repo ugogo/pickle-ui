@@ -2,6 +2,8 @@ import { type ComponentType, Fragment, type ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
+import { Text } from '../Text';
+
 type ComponentMatrixCellProps = {
   column: ComponentMatrixColumn;
   row: ComponentMatrixRow;
@@ -41,7 +43,9 @@ function Layout({
     <div className="bg-background text-foreground min-h-screen font-sans">
       <div className={cn('mx-auto px-8 py-12', className)}>
         <header className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
+          <Text as="h1" variant="h1">
+            {title}
+          </Text>
         </header>
         <div className="space-y-16">{children}</div>
       </div>
@@ -135,7 +139,9 @@ function Matrix({
 function Section({ children, title }: { children: ReactNode; title: string }) {
   return (
     <section>
-      <h2 className="text-foreground mb-6 text-xl font-medium">{title}</h2>
+      <Text as="h2" className="mb-6" variant="h3">
+        {title}
+      </Text>
       {children}
     </section>
   );
