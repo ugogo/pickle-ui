@@ -44,6 +44,10 @@ export {
   ColorPickerSwatch,
   ColorPickerTrigger,
 } from './components/ColorPickerPrimitive';
+
+export { Flex } from './components/Flex';
+export type { FlexProps } from './components/Flex';
+
 export { Checkbox } from './components/form/Checkbox';
 
 export type {
@@ -93,6 +97,9 @@ export type {
 export { Switch } from './components/form/Switch';
 export type { SwitchLabelProps, SwitchProps } from './components/form/Switch';
 
+export { Grid } from './components/Grid';
+export type { GridProps } from './components/Grid';
+
 export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
 
@@ -131,3 +138,9 @@ export type {
 
 export { Text, textVariants } from './components/Text';
 export type { TextProps } from './components/Text';
+
+export { XStack } from './components/XStack';
+export type { XStackProps } from './components/XStack';
+
+export { YStack } from './components/YStack';
+export type { YStackProps } from './components/YStack';
