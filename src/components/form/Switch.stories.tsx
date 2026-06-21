@@ -13,7 +13,6 @@ const meta = {
 
 export default meta;
 type StoryDefinition = StoryObj<typeof meta>;
-type SwitchSize = NonNullable<SwitchProps['size']>;
 
 const STATE_COLUMNS: {
   key: string;
@@ -35,13 +34,7 @@ const STATE_COLUMNS: {
   { key: 'disabled', label: 'Disabled', props: { disabled: true } },
 ];
 
-const SIZE_ROWS: {
-  key: SwitchSize;
-  label: string;
-}[] = [
-  { key: 'default', label: 'Default' },
-  { key: 'sm', label: 'Small' },
-];
+const STATE_ROWS = [{ key: 'default', label: 'Default' }];
 
 const STATE_PROPS = Object.fromEntries(
   STATE_COLUMNS.map((state) => [state.key, state.props]),
@@ -51,7 +44,6 @@ function SwitchStateCell({ column, row }: ComponentMatrixCellProps) {
   return (
     <Switch
       aria-label={`${row.label} ${column.label}`}
-      size={row.key as SwitchSize}
       {...STATE_PROPS[column.key]}
     />
   );
@@ -60,12 +52,12 @@ function SwitchStateCell({ column, row }: ComponentMatrixCellProps) {
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Switch">
-      <Story.Section title="Sizes and states">
+      <Story.Section title="States">
         <Story.Matrix
           Cell={SwitchStateCell}
           cellWidth="9rem"
           columns={STATE_COLUMNS}
-          rows={SIZE_ROWS}
+          rows={STATE_ROWS}
         />
       </Story.Section>
 

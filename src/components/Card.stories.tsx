@@ -38,7 +38,7 @@ export const All: StoryDefinition = {
               <Text tone="muted">Events across 8 active projects</Text>
             </Card.Content>
             <Card.Footer>
-              <Button className="ml-auto" size="sm" variant="ghost">
+              <Button className="ml-auto" variant="ghost">
                 View report <IconArrowUpRight />
               </Button>
             </Card.Footer>

@@ -71,7 +71,7 @@ function CardRoot({ className, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        'border-border bg-card text-card-foreground flex flex-col gap-6 rounded-lg border py-6 shadow-sm',
+        'surface-shadow bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6',
         className,
       )}
       data-slot="card"

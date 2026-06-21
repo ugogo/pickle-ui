@@ -57,7 +57,7 @@ function RadioGroupItemControl({
   return (
     <RadioPrimitive.Root
       className={cn(
-        'peer group/radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:border-primary focus-ring inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:size-4 data-[size=sm]:size-3.5',
+        'peer group/radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:border-primary focus-ring relative inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border transition-[border-color,box-shadow] duration-150 ease-out after:absolute after:top-1/2 after:left-1/2 after:size-10 after:-translate-x-1/2 after:-translate-y-1/2 aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:size-4 data-[size=sm]:size-3.5',
         className,
       )}
       data-size={size}

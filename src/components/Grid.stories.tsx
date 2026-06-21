@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Story } from './_internal/Story';
 import { Grid } from './Grid';
-import { Text } from './Text';
 
 const meta = {
   component: Grid,
@@ -16,14 +15,7 @@ export default meta;
 type StoryDefinition = StoryObj<typeof meta>;
 
 function Item({ children }: { children: string }) {
-  return (
-    <Grid
-      className="bg-muted min-h-20 rounded-md border p-4"
-      placeItems="center"
-    >
-      <Text>{children}</Text>
-    </Grid>
-  );
+  return <Story.Box className="min-h-20">{children}</Story.Box>;
 }
 
 export const All: StoryDefinition = {

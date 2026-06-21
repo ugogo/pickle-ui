@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Story } from './_internal/Story';
 import { Flex } from './Flex';
-import { Text } from './Text';
 
 const meta = {
   component: Flex,
@@ -16,15 +15,7 @@ export default meta;
 type StoryDefinition = StoryObj<typeof meta>;
 
 function Item({ children }: { children: string }) {
-  return (
-    <Flex
-      align="center"
-      className="bg-muted min-h-16 min-w-24 rounded-md border p-4"
-      justify="center"
-    >
-      <Text>{children}</Text>
-    </Flex>
-  );
+  return <Story.Box className="min-h-16 min-w-24">{children}</Story.Box>;
 }
 
 export const All: StoryDefinition = {

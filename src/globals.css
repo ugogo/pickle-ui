@@ -13,7 +13,23 @@
  */
 @utility focus-ring {
   @apply ring-offset-background transition-[color,box-shadow] outline-none;
-  @apply focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
+  @apply focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none;
+}
+
+@utility surface-shadow {
+  box-shadow: var(--shadow-border);
+}
+
+@utility elevated-shadow {
+  box-shadow: var(--shadow-border), var(--shadow-lg);
+}
+
+@utility primary-shadow {
+  box-shadow: var(--shadow-primary);
+}
+
+html {
+  scrollbar-gutter: stable;
 }
 
 @theme inline {
@@ -142,6 +158,18 @@
     0px 4px 10px 0px hsl(0 0% 0% / 0.1), 0px 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0px 4px 10px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0.01em;
+  --shadow-border:
+    0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06),
+    0 2px 4px rgb(0 0 0 / 0.04);
+  --shadow-border-hover:
+    0 0 0 1px rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08),
+    0 2px 4px rgb(0 0 0 / 0.06);
+  --shadow-primary:
+    inset 0 1px rgb(255 255 255 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.18),
+    0 1px 2px -1px rgb(0 0 0 / 0.18), 0 2px 4px rgb(0 0 0 / 0.1);
+  --shadow-primary-hover:
+    inset 0 1px rgb(255 255 255 / 0.16), 0 0 0 1px rgb(0 0 0 / 0.22),
+    0 1px 2px -1px rgb(0 0 0 / 0.22), 0 2px 5px rgb(0 0 0 / 0.14);
 }
 
 .dark {
@@ -201,4 +229,6 @@
   --shadow-xl:
     0px 6px 15px 0px hsl(0 0% 0% / 0.3), 0px 8px 10px -1px hsl(0 0% 0% / 0.3);
   --shadow-2xl: 0px 6px 15px 0px hsl(0 0% 0% / 0.75);
+  --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.08);
+  --shadow-border-hover: 0 0 0 1px rgb(255 255 255 / 0.13);
 }

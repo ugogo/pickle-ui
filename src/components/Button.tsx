@@ -4,7 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md text-sm focus-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:[shape-rendering:geometricPrecision]',
+  'relative inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md text-sm focus-ring transition-[background-color,color,box-shadow,scale] duration-150 ease-out after:absolute after:left-1/2 after:top-1/2 after:min-h-10 after:min-w-10 after:-translate-x-1/2 after:-translate-y-1/2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:[shape-rendering:geometricPrecision]',
   {
     defaultVariants: {
       size: 'md',
@@ -14,7 +14,6 @@ const buttonVariants = cva(
       size: {
         lg: 'h-9 rounded-md px-4 data-icon-only:w-9 data-icon-only:px-0',
         md: 'h-8 rounded-md px-3 data-icon-only:w-8 data-icon-only:px-0',
-        sm: 'h-7 rounded-md px-2 data-icon-only:w-7 data-icon-only:px-0',
       },
       variant: {
         destructive:
@@ -22,8 +21,9 @@ const buttonVariants = cva(
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+          'surface-shadow bg-background hover:bg-accent hover:text-accent-foreground hover:[box-shadow:var(--shadow-border-hover)]',
+        primary:
+          'primary-shadow bg-primary text-primary-foreground hover:bg-primary/90 hover:[box-shadow:var(--shadow-primary-hover)] focus-visible:ring-primary/40',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
       },
@@ -32,7 +32,10 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {}
+  extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
+  /** Disables tactile press scaling when motion would be distracting. */
+  static?: boolean;
+}
 
 /**
  * A button whose only child is a lone icon (`svg`) is squared automatically via
@@ -44,6 +47,7 @@ function Button({
   className,
   ref,
   size,
+  static: isStatic = false,
   type = 'button',
   variant,
   ...props
@@ -53,7 +57,10 @@ function Button({
 
   return (
     <button
-      className={cn(buttonVariants({ className, size, variant }))}
+      className={cn(
+        buttonVariants({ className, size, variant }),
+        !isStatic && 'active:not-disabled:scale-[0.96]',
+      )}
       data-icon-only={iconOnly ? '' : undefined}
       data-slot="button"
       ref={ref}

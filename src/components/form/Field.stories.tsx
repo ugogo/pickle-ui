@@ -34,11 +34,9 @@ export const All: StoryDefinition = {
         <Field name="role">
           <Select defaultValue="designer">
             <Select.Label>Role</Select.Label>
-            <div className="relative mt-2">
-              <Select.Trigger className="w-56">
-                <Select.Value placeholder="Select a role" />
-              </Select.Trigger>
-            </div>
+            <Select.Trigger className="w-56">
+              <Select.Value placeholder="Select a role" />
+            </Select.Trigger>
             <Select.Content>
               <Select.Item value="designer">Designer</Select.Item>
               <Select.Item value="engineer">Engineer</Select.Item>

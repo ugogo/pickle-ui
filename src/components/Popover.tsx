@@ -3,6 +3,8 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+import { Text } from './Text';
+
 type PopoverAnchorProps = React.ComponentProps<'div'>;
 type PopoverContentProps = Pick<
   React.ComponentProps<typeof PopoverPrimitive.Positioner>,
@@ -43,7 +45,7 @@ function PopoverContent({
       >
         <PopoverPrimitive.Popup
           className={cn(
-            'border-border bg-popover text-popover-foreground data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 z-50 flex w-72 origin-(--transform-origin) flex-col gap-4 rounded-md border p-4 text-sm shadow-lg duration-100 outline-none',
+            'elevated-shadow bg-popover text-popover-foreground data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 z-50 flex w-72 origin-(--transform-origin) flex-col gap-4 rounded-lg p-4 text-sm duration-100 outline-none',
             className,
           )}
           data-slot="popover-content"
@@ -59,9 +61,12 @@ function PopoverContent({
 
 function PopoverDescription({ className, ...props }: PopoverDescriptionProps) {
   return (
-    <p
-      className={cn('text-muted-foreground', className)}
+    <Text
+      as="p"
+      className={className}
       data-slot="popover-description"
+      tone="muted"
+      variant="body"
       {...props}
     />
   );
@@ -83,13 +88,15 @@ function PopoverRoot({ ...props }: PopoverProps) {
 
 function PopoverTitle({ children, className, ...props }: PopoverTitleProps) {
   return (
-    <h2
-      className={cn('text-base font-medium', className)}
+    <Text
+      as="h2"
+      className={className}
       data-slot="popover-title"
+      variant="h4"
       {...props}
     >
       {children}
-    </h2>
+    </Text>
   );
 }
 
@@ -107,6 +114,7 @@ function PopoverTrigger({ asChild, children, ...props }: PopoverTriggerProps) {
 
 const Popover = Object.assign(PopoverRoot, {
   Anchor: PopoverAnchor,
+  Close: PopoverPrimitive.Close,
   Content: PopoverContent,
   Description: PopoverDescription,
   Header: PopoverHeader,

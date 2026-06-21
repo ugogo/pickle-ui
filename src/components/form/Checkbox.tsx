@@ -13,7 +13,6 @@ type CheckboxLabelProps = Omit<React.ComponentProps<'label'>, 'htmlFor'> & {
 type CheckboxProps = React.ComponentProps<typeof CheckboxPrimitive.Root> & {
   label?: React.ReactNode;
   labelClassName?: string;
-  size?: 'default' | 'sm';
 };
 
 function CheckboxControl({
@@ -21,16 +20,14 @@ function CheckboxControl({
   nativeButton = true,
   // react-doctor-disable-next-line react-doctor/control-has-associated-label -- consumers provide aria-label/aria-labelledby, or CheckboxRoot wires this button to the sibling label by id
   render = <button type="button" />,
-  size = 'default',
   ...props
 }: Omit<CheckboxProps, 'label' | 'labelClassName'>) {
   return (
     <CheckboxPrimitive.Root
       className={cn(
-        'peer group/checkbox aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:bg-primary data-checked:border-primary data-checked:text-primary-foreground data-indeterminate:bg-primary data-indeterminate:border-primary data-indeterminate:text-primary-foreground focus-ring inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm border aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:size-4 data-[size=sm]:size-3.5',
+        'peer group/checkbox aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:bg-primary data-checked:border-primary data-checked:text-primary-foreground data-indeterminate:bg-primary data-indeterminate:border-primary data-indeterminate:text-primary-foreground focus-ring relative inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm border transition-[background-color,border-color,box-shadow] duration-150 ease-out after:absolute after:top-1/2 after:left-1/2 after:size-10 after:-translate-x-1/2 after:-translate-y-1/2 aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
-      data-size={size}
       data-slot="checkbox"
       nativeButton={nativeButton}
       render={render}
@@ -40,8 +37,8 @@ function CheckboxControl({
         className="flex items-center justify-center text-current"
         data-slot="checkbox-indicator"
       >
-        <IconCheck className="group-data-[size=default]/checkbox:size-3 group-data-[size=sm]/checkbox:size-2.5 data-indeterminate:hidden [[data-indeterminate]_&]:hidden" />
-        <IconMinus className="hidden group-data-[size=default]/checkbox:size-3 group-data-[size=sm]/checkbox:size-2.5 [[data-indeterminate]_&]:block" />
+        <IconCheck className="size-3 data-indeterminate:hidden [[data-indeterminate]_&]:hidden" />
+        <IconMinus className="hidden size-3 [[data-indeterminate]_&]:block" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

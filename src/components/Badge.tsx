@@ -20,7 +20,7 @@ const badgeVariants = cva(
           'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300',
         inReview:
           'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300',
-        outline: 'border-border text-foreground border',
+        outline: 'surface-shadow text-foreground',
         pending:
           'bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300',
         primary: 'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300',

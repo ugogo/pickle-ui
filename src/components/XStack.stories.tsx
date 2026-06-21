@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Story } from './_internal/Story';
-import { Text } from './Text';
 import { XStack } from './XStack';
 
 const meta = {
@@ -16,9 +15,7 @@ export default meta;
 type StoryDefinition = StoryObj<typeof meta>;
 
 function Item({ children }: { children: string }) {
-  return (
-    <Text className="bg-muted rounded-md border px-4 py-3">{children}</Text>
-  );
+  return <Story.Box>{children}</Story.Box>;
 }
 
 export const All: StoryDefinition = {

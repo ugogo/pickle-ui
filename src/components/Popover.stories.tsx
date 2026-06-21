@@ -34,7 +34,10 @@ function PopoverMatrixCell({ column, row }: ComponentMatrixCellProps) {
   return (
     <Popover>
       <Popover.Trigger asChild>
-        <Button variant={column.key as NonNullable<ButtonProps['variant']>}>
+        <Button
+          static
+          variant={column.key as NonNullable<ButtonProps['variant']>}
+        >
           Open
         </Button>
       </Popover.Trigger>
@@ -47,8 +50,14 @@ function PopoverMatrixCell({ column, row }: ComponentMatrixCellProps) {
           </Popover.Description>
         </Popover.Header>
         <div className="flex justify-end gap-2">
-          <Button variant="ghost">Cancel</Button>
-          <Button>Apply</Button>
+          <Popover.Close
+            render={
+              <Button static variant="ghost">
+                Cancel
+              </Button>
+            }
+          />
+          <Popover.Close render={<Button static>Apply</Button>} />
         </div>
       </Popover.Content>
     </Popover>

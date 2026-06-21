@@ -30,6 +30,26 @@ type ComponentMatrixRow = {
   label: string;
 };
 
+function Box({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <Text
+      as="div"
+      className={cn(
+        'flex items-center justify-center rounded-lg bg-white/50 px-4 py-3 font-medium text-neutral-950',
+        className,
+      )}
+    >
+      {children}
+    </Text>
+  );
+}
+
 function Layout({
   children,
   className,
@@ -41,8 +61,8 @@ function Layout({
 }) {
   return (
     <div className="bg-background text-foreground min-h-screen font-sans">
-      <div className={cn('mx-auto px-8 py-12', className)}>
-        <header className="mb-12">
+      <div className={cn('mx-auto px-6 py-10 sm:px-8 sm:py-12', className)}>
+        <header className="mb-10 border-b border-black/5 pb-8 dark:border-white/8">
           <Text as="h1" variant="h1">
             {title}
           </Text>
@@ -69,7 +89,7 @@ function Matrix({
   return (
     <div
       className={cn(
-        'border-border bg-card/20 overflow-x-auto rounded-md border',
+        'surface-shadow bg-card/25 overflow-x-auto rounded-xl',
         className,
       )}
     >
@@ -88,13 +108,13 @@ function Matrix({
             )}
             key={column.key}
           >
-            <div className="text-foreground text-sm font-medium">
+            <Text as="div" className="text-foreground" weight="bold">
               {column.label}
-            </div>
+            </Text>
             {column.description ? (
-              <div className="text-muted-foreground mt-1 text-xs">
+              <Text as="div" className="mt-1" tone="muted" variant="small">
                 {column.description}
-              </div>
+              </Text>
             ) : null}
           </div>
         ))}
@@ -107,13 +127,18 @@ function Matrix({
                 rowIndex < rows.length - 1 && 'border-b',
               )}
             >
-              <div className="text-foreground text-sm font-medium">
+              <Text as="div" className="text-foreground" weight="bold">
                 {row.label}
-              </div>
+              </Text>
               {row.description ? (
-                <div className="text-muted-foreground mt-1 max-w-40 text-xs">
+                <Text
+                  as="div"
+                  className="mt-1 max-w-40"
+                  tone="muted"
+                  variant="small"
+                >
                   {row.description}
-                </div>
+                </Text>
               ) : null}
             </div>
             {columns.map((column, columnIndex) => (
@@ -148,6 +173,7 @@ function Section({ children, title }: { children: ReactNode; title: string }) {
 }
 
 const Story = Object.assign(Layout, {
+  Box,
   Layout,
   Matrix,
   Section,

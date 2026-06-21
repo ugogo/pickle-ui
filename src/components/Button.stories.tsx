@@ -50,8 +50,7 @@ const VARIANT_ROWS: {
 ];
 
 const SIZE_COLUMNS = [
-  { description: 'h-7', key: 'sm', label: 'Small' },
-  { description: 'h-8 · default', key: 'md', label: 'Medium' },
+  { description: 'h-8', key: 'md', label: 'Default' },
   { description: 'h-9', key: 'lg', label: 'Large' },
 ];
 
