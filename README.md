@@ -58,36 +58,19 @@ override the same variables under `.dark` for a custom dark theme.
 ### Fonts
 
 Pickle loads no font files and uses Tailwind's system sans and monospace stacks
-by default. To recreate Pickle's original Geist and JetBrains Mono typography,
-install their self-hosted Fontsource packages:
-
-```bash
-pnpm add @fontsource/geist @fontsource/jetbrains-mono
-```
-
-Import only the Latin subsets and weights your application uses, then override
-the Tailwind font variables:
+by default. If your application already provides custom fonts, connect them to
+Pickle by overriding the Tailwind font variables:
 
 ```css
-@import '@fontsource/geist/latin-400.css';
-@import '@fontsource/geist/latin-500.css';
-@import '@fontsource/geist/latin-600.css';
-@import '@fontsource/jetbrains-mono/latin-400.css';
-@import 'tailwindcss';
-@import 'pickle-ui/styles.css';
-
 @theme {
-  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Your Sans Font', ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sans);
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'Your Mono Font', ui-monospace, monospace;
 }
 ```
 
-Add `@fontsource/geist/latin-700.css` only if your application uses
-`font-bold`. Import each font stylesheet once; Pickle does not bundle its own
-copy, so the application remains in control of which families, subsets, and
-weights it downloads. Other font families work the same way by overriding
-`--font-sans`, `--font-heading`, or `--font-mono`.
+How those fonts are loaded remains entirely up to the application. Pickle adds
+no font files, packages, or network requests to consumer bundles.
 
 ## Components
 
