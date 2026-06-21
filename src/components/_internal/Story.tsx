@@ -41,7 +41,7 @@ function Layout({
     <div className="bg-background text-foreground min-h-screen font-sans">
       <div className={cn('mx-auto px-8 py-12', className)}>
         <header className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
+          <h1 className="text-4xl font-semibold tracking-tight">{title}</h1>
         </header>
         <div className="space-y-16">{children}</div>
       </div>
