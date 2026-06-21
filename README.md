@@ -1,22 +1,54 @@
 # Pickle UI
 
-A React component library built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com), and [reui](https://github.com/reui/reui).
+A React component library built with Base UI and Tailwind CSS v4.
 
-## Features
+## Use Pickle UI
 
-- **Composable components** — Built for flexibility and reuse
-- **Base UI primitives** — Headless behavior and accessibility foundation
-- **Tailwind CSS** — Utility-first styling with full customization
-- **TypeScript** — Full type safety out of the box
-- **Accessible** — WCAG compliant components
-
-## Installation
+Install Pickle and Tailwind:
 
 ```bash
-npm install pickle-ui tailwindcss
+pnpm add pickle-ui tailwindcss
 ```
 
-## Usage
+To match Pickle's Storybook typography, install Geist and JetBrains Mono:
+
+```bash
+pnpm add @fontsource-variable/geist @fontsource/jetbrains-mono
+```
+
+Then load the fonts and your application stylesheet from the application entry
+point:
+
+```tsx
+import '@fontsource-variable/geist/wght.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import './app.css';
+```
+
+Create `app.css`:
+
+```css
+@import 'tailwindcss';
+@import 'pickle-ui/styles.css';
+
+@theme {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply font-sans antialiased;
+  }
+}
+```
+
+Import components from `pickle-ui`:
 
 ```tsx
 import { Button } from 'pickle-ui';
@@ -26,23 +58,16 @@ export function App() {
 }
 ```
 
-Pickle currently requires Tailwind CSS v4. Import Pickle after Tailwind in your
-application stylesheet:
+Pickle supplies its component styles, light theme, and `.dark` theme. Add the
+`dark` class to an ancestor to enable dark mode:
 
-```css
-@import 'tailwindcss';
-@import 'pickle-ui/styles.css';
+```tsx
+<div className="dark">
+  <App />
+</div>
 ```
 
-The Pickle stylesheet registers the library's component sources and supplies
-its theme tokens, variants, and utilities. Your existing Tailwind pipeline
-compiles everything; no additional Pickle config or copied `globals.css` is
-required.
-
-### Theming
-
-Pickle ships its default light theme on `:root` and dark theme on `.dark`.
-Override semantic CSS variables after the Pickle stylesheet to customize it:
+Override Pickle's semantic variables after the imports to customize the theme:
 
 ```css
 :root {
@@ -52,47 +77,15 @@ Override semantic CSS variables after the Pickle stylesheet to customize it:
 }
 ```
 
-Add `class="dark"` to an ancestor to use the bundled dark defaults. You can
-override the same variables under `.dark` for a custom dark theme.
-
-### Fonts
-
-Pickle loads no font files and uses Tailwind's system sans and monospace stacks
-by default. If your application already provides custom fonts, connect them to
-Pickle by overriding the Tailwind font variables:
-
-```css
-@theme {
-  --font-sans: 'Your Sans Font', ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-sans);
-  --font-mono: 'Your Mono Font', ui-monospace, monospace;
-}
-```
-
-How those fonts are loaded remains entirely up to the application. Pickle adds
-no font files, packages, or network requests to consumer bundles.
-
-## Components
-
-- `Button`
-- `ColorPicker`
-- `Input`
-- `Popover`
-- `Select`
-- `Slider`
-- `Switch`
-
-All components use compound APIs where they have sub-parts — e.g.
-`Slider.Value`, `Popover.Trigger`, `ColorPicker.Area`.
+The font packages are optional. Omit their imports and the `@theme` block to
+use Tailwind's system font stacks.
 
 ## Development
-
-This project uses [pnpm](https://pnpm.io).
 
 ```bash
 pnpm install
 pnpm run dev        # Storybook on http://localhost:6006
-pnpm run build      # build the library to dist/
+pnpm run build
 pnpm run typecheck
 pnpm run test
 pnpm run lint
@@ -100,13 +93,9 @@ pnpm run lint
 
 ## Releasing
 
-Releases are published to npm and tagged with a matching GitHub Release whose
-notes are generated from the commit subjects since the previous tag — so keep
-[commit messages clean](AGENTS.md) (they _are_ the changelog).
-
-Releases are run through the manually dispatched `Release` GitHub Actions
-workflow. Choose a patch, minor, or major bump there; the workflow owns the
-version commit, npm publication, tag, and GitHub Release.
+Run the manually dispatched `Release` GitHub Actions workflow and choose a
+patch, minor, or major bump. The workflow publishes the npm package, version
+commit, tag, and GitHub Release.
 
 ## License
 

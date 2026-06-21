@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@fontsource/geist": "5.2.9",
+    "@fontsource-variable/geist": "5.2.9",
     "@fontsource/jetbrains-mono": "5.2.8",
     "@hookform/resolvers": "^5.4.0",
     "@storybook/addon-docs": "^10.4.4",
