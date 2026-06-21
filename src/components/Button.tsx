@@ -55,6 +55,7 @@ function Button({
     <button
       className={cn(buttonVariants({ className, size, variant }))}
       data-icon-only={iconOnly ? '' : undefined}
+      data-slot="button"
       ref={ref}
       type={type}
       {...props}

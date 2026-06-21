@@ -4,6 +4,7 @@
   "type": "module",
   "description": "React component library built with Base UI, shadcn/ui, Tailwind CSS, and reui.",
   "main": "dist/index.js",
+  "style": "src/globals.css",
   "types": "dist/index.d.ts",
   "packageManager": "pnpm@10.28.2",
   "repository": {
@@ -17,7 +18,8 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./styles.css": "./src/globals.css"
   },
   "files": [
     "dist",
@@ -107,7 +109,8 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "react-hook-form": "^7.0.0"
+    "react-hook-form": "^7.0.0",
+    "tailwindcss": "^4.0.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [

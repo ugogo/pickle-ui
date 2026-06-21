@@ -1,6 +1,8 @@
 import type { Preview } from '@storybook/react-vite';
 
-import '../src/globals.css';
+import '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2';
+
+import './storybook.css';
 
 const preview: Preview = {
   parameters: {
