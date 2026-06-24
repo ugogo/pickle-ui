@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { IconSearch } from '@tabler/icons-react';
+
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Input } from './Input';
 import { InputGroup } from './InputGroup';
@@ -91,6 +93,25 @@ export const All: StoryDefinition = {
           columns={STATE_COLUMNS}
           rows={COMPOSITION_ROWS}
         />
+      </Story.Section>
+      <Story.Section title="Addons and buttons">
+        <div className="max-w-md space-y-4">
+          <InputGroup>
+            <InputGroup.Addon>$</InputGroup.Addon>
+            <Input aria-label="Amount" defaultValue="1200" />
+          </InputGroup>
+          <InputGroup>
+            <Input aria-label="Domain" defaultValue="pickle" />
+            <InputGroup.Addon>.dev</InputGroup.Addon>
+          </InputGroup>
+          <InputGroup>
+            <InputGroup.Addon>
+              <IconSearch aria-hidden stroke={1.75} />
+            </InputGroup.Addon>
+            <Input aria-label="Search" placeholder="Search…" />
+            <InputGroup.Button aria-label="Submit search">Go</InputGroup.Button>
+          </InputGroup>
+        </div>
       </Story.Section>
     </Story.Layout>
   ),
