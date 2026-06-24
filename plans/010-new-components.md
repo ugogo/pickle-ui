@@ -56,7 +56,8 @@ No `Sidebar` component consumes them yet.
 ### Demo gaps (`src/demo/dashboard/Dashboard.tsx`)
 
 - Deployments list uses `Grid` rows — needs `Table`
-- Revenue panel uses hand-rolled div bars — needs `Chart` (minimal)
+- Revenue panel uses hand-rolled div bars — **Chart deferred** (needs external
+  library such as recharts; not in scope for this plan)
 - Navigation uses styled `<aside>` — needs `Sidebar` compound
 
 ## Components to build
@@ -138,32 +139,6 @@ demo sidebar anatomy without importing demo code.
 
 **Verify**: commit `feat(sidebar): add Sidebar compound component`
 
-### 4. `Chart` — `src/components/Chart.tsx` (minimal)
-
-Lightweight **bar chart primitive** using existing `--chart-*` tokens — no
-recharts/chart.js dependency.
-
-```tsx
-<Chart value={series} max={100}>
-  <Chart.BarChart>
-    <Chart.Bar dataKey="value" />
-  </Chart.BarChart>
-  <Chart.XAxis />
-</Chart>
-```
-
-Minimum viable API:
-
-- `Chart` root context holding `{ items: { label: string; value: number }[] }`
-- `Chart.BarChart` — flex row of bars, `items-end`, `gap-2`, fixed height container
-- `Chart.Bar` — `bg-chart-1` rounded-t bar, height from value/max
-- `Chart.XAxis` — row of `Text tone="muted" variant="small"` labels
-
-Keep API small; document that full charting libraries can wrap later. Stories:
-monthly revenue bars matching demo data shape.
-
-**Verify**: commit `feat(chart): add minimal bar chart primitive`
-
 ## Scope
 
 **In scope**:
@@ -171,7 +146,6 @@ monthly revenue bars matching demo data shape.
 - **Edit** `InputGroup.tsx`, `InputGroup.stories.tsx`, `InputGroup.test.tsx`
 - **New** `Table.tsx`, `Table.stories.tsx`, `Table.test.tsx`
 - **New** `Sidebar.tsx`, `Sidebar.stories.tsx`, `Sidebar.test.tsx`
-- **New** `Chart.tsx`, `Chart.stories.tsx`, `Chart.test.tsx`
 - **Edit** `src/index.ts` — export new components + types (alphabetical)
 - **Edit** `src/globals.css` — add `@source` if new folders need Tailwind scan
   (unlikely under `src/components/`)
@@ -181,6 +155,7 @@ monthly revenue bars matching demo data shape.
 - Refining existing component tokens/states — plan 009
 - Exporting form `Label`/`Field` — plan 008 completion (branch
   `cursor/form-elements-e448`, depends on this plan)
+- **Chart** — deferred; likely needs an external library (e.g. recharts)
 - Rewriting `src/demo/dashboard/` — optional follow-up after 009+010 land
 
 ## Git workflow
@@ -196,13 +171,12 @@ Model after `Card.test.tsx` and `Progress.test.tsx`:
 
 - **Table**: renders `<table>`, header cell text, body cell text
 - **Sidebar**: renders root with `data-slot="sidebar"`, header/footer slots
-- **Chart**: renders correct number of bars for series length
 - **InputGroup.Addon**: renders addon text adjacent to input with shared border
 
 ## Done criteria
 
 - [ ] `InputGroup.Addon` and `InputGroup.Button` attached via `Object.assign`
-- [ ] `Table`, `Sidebar`, `Chart` exported from `src/index.ts` with types
+- [ ] `Table`, `Sidebar` exported from `src/index.ts` with types
 - [ ] Each new component has `*.stories.tsx` using `Story.Layout` / `Story.Section`
 - [ ] `pnpm run typecheck`, `test`, `lint`, `build` all exit 0
 - [ ] React Doctor pre-commit score 100/100 (do not commit `storybook-static/`)
@@ -214,7 +188,6 @@ Model after `Card.test.tsx` and `Progress.test.tsx`:
   stop and report; do not re-implement duplicates
 - Base UI adds an official Table primitive that conflicts — stop and report; prefer
   Base UI if stable
-- Chart scope expands beyond bar primitive — stop and split to a follow-up plan
 
 ## Maintenance notes
 

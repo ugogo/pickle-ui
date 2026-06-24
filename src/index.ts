@@ -17,14 +17,6 @@ export type {
   CardTitleProps,
 } from './components/Card';
 
-export { Chart } from './components/Chart';
-export type {
-  ChartBarProps,
-  ChartItem,
-  ChartProps,
-  ChartXAxisProps,
-} from './components/Chart';
-
 export { ColorPicker } from './components/ColorPicker';
 export type {
   ColorPickerAlphaSliderProps,
