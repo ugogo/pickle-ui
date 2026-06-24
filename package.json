@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "style": "src/globals.css",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "packageManager": "pnpm@10.28.2",
   "repository": {
     "type": "git",
@@ -16,10 +17,16 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     },
-    "./styles.css": "./src/globals.css"
+    "./styles.css": "./src/globals.css",
+    "./*": {
+      "types": "./dist/entries/*.d.ts",
+      "import": "./dist/entries/*.js",
+      "default": "./dist/entries/*.js"
+    }
   },
   "files": [
     "dist",
