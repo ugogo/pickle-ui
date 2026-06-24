@@ -16,9 +16,13 @@
 - **Priority**: P2
 - **Effort**: L
 - **Risk**: LOW
-- **Depends on**: none (optionally pairs with 007 for `Text`-based message styling)
+- **Depends on**: plans/010-new-components.md (branch from `cursor/new-components-e448`
+  so Form/InputGroup stories can use `InputGroup.Addon`; rebase onto `main` after 010
+  merges)
 - **Category**: feat
-- **Planned at**: commit `d742bcc`, 2026-06-16
+- **Planned at**: commit `d742bcc`, 2026-06-16 (reconciled 2026-06-24 — components
+  landed under `src/components/form/`; remaining work is public exports + README)
+- **Branch**: `cursor/form-elements-e448`
 
 ## Why this matters
 
@@ -38,6 +42,12 @@ pattern. The repo's own audit flagged this (`plans/README.md` → "Round out the
 primitive set — Checkbox, RadioGroup …").
 
 ## Current state — conventions to match
+
+> **Reconciliation (2026-06-24)**: Checkbox, RadioGroup, Field, Label, and Form
+> already exist under `src/components/form/` (not the paths below). Checkbox and
+> RadioGroup are exported from `src/index.ts`. **Label and Field are not yet
+> exported** from the public API — that is the primary remaining work for this
+> plan. Do not rebuild components that already pass tests.
 
 - `Switch.tsx` is the reference: a Base UI control (`SwitchPrimitive.Root` from
   `@base-ui/react/switch`, with `'use client'`), styled with `cn` + design tokens,
@@ -127,34 +137,67 @@ resolves a wrapped `Input`); then run the full gate — `pnpm run lint`,
 `pnpm run format:check`, `pnpm run build` (new components in `dist/index.d.ts`) —
 all exit 0; commit.
 
-## Scope
+## Remaining work (2026-06-24 reconciliation)
 
-**In scope** (the only files you should create/modify):
+Skip steps 2–3 if Checkbox and RadioGroup already pass tests on your branch.
 
-- **New**: `Label.tsx`, `Checkbox.tsx`, `RadioGroup.tsx`, `Field.tsx` in
-  `src/components/`, each with a `*.stories.tsx` and a `*.test.tsx`.
-- **Edit** `src/index.ts`: export each component + its types, preserving the
-  alphabetical block ordering already used there.
+### Step A: Export `Label` from public API
 
-**Out of scope** (do NOT touch, even though they look related):
+Add to `src/index.ts` (alphabetical, form block):
 
-- `src/components/Switch.tsx` — do not refactor its bespoke label onto the new
-  `Label`/`Field` layer in this plan (recorded as a follow-up in Maintenance).
-- `src/components/Input.tsx` / `Select.tsx` — `Field.Control` must wrap them via
-  Base UI's `render` prop **without** changing their public API. Needing to edit
-  them is a STOP condition.
-- `package.json` — no new dependencies; `@base-ui/react` and `@tabler/icons-react`
-  are already present.
+```tsx
+export { Label } from './components/form/Label';
+export type { LabelProps } from './components/form/Label';
+```
+
+**Verify**: `grep Label src/index.ts`; `pnpm run build` includes `Label` in
+`dist/index.d.ts`.
+
+### Step B: Export `Field` from public API
+
+Add compound export:
+
+```tsx
+export { Field } from './components/form/Field';
+export type {
+  FieldControlProps,
+  FieldDescriptionProps,
+  FieldErrorProps,
+  FieldItemProps,
+  FieldLabelProps,
+  FieldProps,
+  FieldValidityProps,
+} from './components/form/Field';
+```
+
+**Verify**: `Field` test still passes; `pnpm run build` exit 0.
+
+### Step C: Optional — InputGroup.Addon in Form story
+
+If plan 010 landed on your branch, add one `FormInputGroup` example using
+`InputGroup.Addon` in `Form.stories.tsx` (prefix icon or `$` addon).
+
+## Scope (reconciled)
+
+**In scope**:
+
+- **Edit** `src/index.ts` — export `Label` and `Field` + types
+- **Optional edit** `src/components/form/Form.stories.tsx` — InputGroup.Addon demo
+
+**Out of scope**:
+
+- Rebuilding Checkbox, RadioGroup, Field, Label (already exist under `form/`)
+- `Switch.tsx` label refactor
+- Changing `Input.tsx` / `Select.tsx` public APIs
 
 ## Git workflow
 
-- Branch: `feat/form-elements`.
-- Conventional Commits (`AGENTS.md`), **one commit per component** in build order.
-  Examples: `feat(label): add Label component`, `feat(checkbox): add Checkbox`,
-  `feat(radio-group): add RadioGroup`, `feat(field): add Field labeling layer`.
-- Keep the tree green between commits — each component (plus its export, story,
-  test) lands as a self-contained, verified unit.
-- Do NOT push or open a PR unless the operator instructed it.
+- Branch: `cursor/form-elements-e448` — **create from `cursor/new-components-e448`**
+  (not `main`) so 010's InputGroup addons are available; after 010 merges to
+  `main`, rebase this branch onto `main` and update PR base
+- Single commit: `feat(form): export Label and Field from public API`
+- Push: `git push -u origin cursor/form-elements-e448`
+- Open draft PR with base branch `cursor/new-components-e448` until 010 merges
 
 ## Test plan (vitest + `@testing-library/react`)
 
