@@ -1,5 +1,12 @@
 // Pickle UI - React component library
 
+export { Avatar } from './components/Avatar';
+export type {
+  AvatarFallbackProps,
+  AvatarImageProps,
+  AvatarRootProps,
+} from './components/Avatar';
+
 export { Badge, badgeVariants } from './components/Badge';
 export type { BadgeProps } from './components/Badge';
 
@@ -116,6 +123,15 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
 } from './components/Popover';
+
+export { Progress } from './components/Progress';
+export type {
+  ProgressIndicatorProps,
+  ProgressLabelProps,
+  ProgressRootProps,
+  ProgressTrackProps,
+  ProgressValueProps,
+} from './components/Progress';
 
 export { ScrollArea } from './components/ScrollArea';
 export type {

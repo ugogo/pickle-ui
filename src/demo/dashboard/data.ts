@@ -21,6 +21,8 @@ type Project = {
   id: string;
   name: string;
   owner: string;
+  ownerAvatar?: string;
+  ownerInitials: string;
   progress: number;
   status: BadgeProps['variant'];
   statusLabel: string;
@@ -94,6 +96,8 @@ const projects: Project[] = [
     id: 'atlas',
     name: 'Atlas redesign',
     owner: 'Maya Chen',
+    ownerAvatar: 'https://i.pravatar.cc/128?u=maya-chen',
+    ownerInitials: 'MC',
     progress: 72,
     status: 'inProgress',
     statusLabel: 'In progress',
@@ -103,6 +107,8 @@ const projects: Project[] = [
     id: 'billing',
     name: 'Billing migration',
     owner: 'Alex Rivera',
+    ownerAvatar: 'https://i.pravatar.cc/128?u=alex-rivera',
+    ownerInitials: 'AR',
     progress: 41,
     status: 'inReview',
     statusLabel: 'In review',
@@ -112,6 +118,8 @@ const projects: Project[] = [
     id: 'mobile',
     name: 'Mobile onboarding',
     owner: 'Sam Okonkwo',
+    ownerAvatar: 'https://i.pravatar.cc/128?u=sam-okonkwo',
+    ownerInitials: 'SO',
     progress: 100,
     status: 'success',
     statusLabel: 'Shipped',
@@ -121,6 +129,7 @@ const projects: Project[] = [
     id: 'search',
     name: 'Search indexing',
     owner: 'Jordan Lee',
+    ownerInitials: 'JL',
     progress: 18,
     status: 'pending',
     statusLabel: 'Queued',
@@ -130,6 +139,8 @@ const projects: Project[] = [
     id: 'infra',
     name: 'Infra hardening',
     owner: 'Priya Patel',
+    ownerAvatar: 'https://i.pravatar.cc/128?u=priya-patel',
+    ownerInitials: 'PP',
     progress: 63,
     status: 'failed',
     statusLabel: 'Blocked',

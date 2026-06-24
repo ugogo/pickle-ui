@@ -11,6 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
+import { Avatar } from '@/components/Avatar';
 import { Badge } from '@/components/Badge';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
@@ -19,6 +20,7 @@ import { Switch } from '@/components/form/Switch';
 import { Grid } from '@/components/Grid';
 import { Input } from '@/components/Input';
 import { Popover } from '@/components/Popover';
+import { Progress } from '@/components/Progress';
 import { ScrollArea } from '@/components/ScrollArea';
 import { Slider } from '@/components/Slider';
 import { Text } from '@/components/Text';
@@ -101,25 +103,18 @@ function Dashboard() {
                   { label: 'Engineering', value: 92 },
                   { label: 'Support', value: 54 },
                 ].map((team) => (
-                  <YStack gap={2} key={team.label}>
+                  <Progress key={team.label} value={team.value}>
                     <XStack justify="between">
-                      <Text weight="bold">{team.label}</Text>
+                      <Progress.Label>{team.label}</Progress.Label>
                       <Text tone="muted" variant="small">
                         {team.value}%
                       </Text>
                     </XStack>
-                    <div className="bg-muted h-2 overflow-hidden rounded-full">
-                      <div
-                        className="bg-chart-2 h-full rounded-full"
-                        style={{ width: `${team.value}%` }}
-                      />
-                    </div>
-                  </YStack>
+                    <Progress.Track>
+                      <Progress.Indicator indicatorClassName="bg-chart-2" />
+                    </Progress.Track>
+                  </Progress>
                 ))}
-                <Text tone="muted" variant="small">
-                  Progress bars are hand-rolled — a Progress component would
-                  standardize this pattern.
-                </Text>
               </Card.Content>
             </Card>
           </Grid>
@@ -230,7 +225,16 @@ function DashboardHeader() {
 
         <Popover>
           <Popover.Trigger asChild>
-            <Button variant="outline">Maya Chen</Button>
+            <Button className="gap-2" variant="outline">
+              <Avatar size="sm">
+                <Avatar.Image
+                  alt="Maya Chen"
+                  src="https://i.pravatar.cc/128?u=maya-chen"
+                />
+                <Avatar.Fallback>MC</Avatar.Fallback>
+              </Avatar>
+              Maya Chen
+            </Button>
           </Popover.Trigger>
           <Popover.Content align="end">
             <Popover.Header>
@@ -268,9 +272,9 @@ function DashboardSidebar() {
         className="border-sidebar-border border-b px-5 py-4"
         gap={3}
       >
-        <div className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-md text-sm font-semibold">
-          P
-        </div>
+        <Avatar size="sm">
+          <Avatar.Fallback>P</Avatar.Fallback>
+        </Avatar>
         <YStack gap={0.5}>
           <Text variant="h4" weight="bold">
             Pickle
@@ -419,19 +423,31 @@ function ProjectsPanel() {
                     </Badge>
                   </XStack>
                   <Text tone="muted" variant="small">
-                    {project.owner} · Updated {project.updatedAt}
+                    <XStack align="center" gap={2}>
+                      <Avatar size="sm">
+                        {project.ownerAvatar ? (
+                          <Avatar.Image
+                            alt={project.owner}
+                            src={project.ownerAvatar}
+                          />
+                        ) : null}
+                        <Avatar.Fallback>
+                          {project.ownerInitials}
+                        </Avatar.Fallback>
+                      </Avatar>
+                      {project.owner} · Updated {project.updatedAt}
+                    </XStack>
                   </Text>
                 </YStack>
-                <YStack align="end" className="w-28 shrink-0" gap={1}>
+                <YStack align="end" className="w-32 shrink-0" gap={1}>
                   <Text variant="small" weight="bold">
                     {project.progress}%
                   </Text>
-                  <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
-                    <div
-                      className="bg-primary h-full rounded-full"
-                      style={{ width: `${project.progress}%` }}
-                    />
-                  </div>
+                  <Progress
+                    aria-label={`${project.name} progress`}
+                    size="sm"
+                    value={project.progress}
+                  />
                 </YStack>
               </XStack>
             ))}
@@ -477,17 +493,19 @@ function RevenueChart() {
   );
 }
 
-function SidebarNavItem({ active, icon, label }: NavItem) {
+function SidebarNavItem({ active, href, icon, label }: NavItem) {
   const Icon = navIcons[icon];
 
   return (
     <Button
-      aria-current={active ? 'page' : undefined}
+      asChild
       className="w-full justify-start"
       variant={active ? 'secondary' : 'ghost'}
     >
-      <Icon stroke={1.75} />
-      {label}
+      <a aria-current={active ? 'page' : undefined} href={href}>
+        <Icon stroke={1.75} />
+        {label}
+      </a>
     </Button>
   );
 }
