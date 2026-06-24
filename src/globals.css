@@ -2,6 +2,7 @@
 @import 'shadcn/tailwind.css';
 
 @source './components/**/*.{ts,tsx}';
+@source './demo/**/*.{ts,tsx}';
 
 @custom-variant dark (&:is(.dark *));
 
