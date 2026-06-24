@@ -25,15 +25,33 @@ against commit `d742bcc` (2026-06-16). Independent of 001–006.
 
 | Plan | Title                                                        | Priority | Effort | Depends on | Status |
 | ---- | ------------------------------------------------------------ | -------- | ------ | ---------- | ------ |
-| 007  | Add a Typography (`Text`) component                          | P2       | M      | —          | TODO   |
-| 008  | Round out form elements — Label, Checkbox, RadioGroup, Field | P2       | L      | —          | TODO   |
+| 007  | Add a Typography (`Text`) component                          | P2       | M      | —          | DONE   |
+| 008  | Round out form elements — Label, Checkbox, RadioGroup, Field | P2       | S      | 010        | TODO   |
 
-- **007 and 008 are independent** and can be done in either order. 008 may
-  optionally reuse 007's `Text` styling for `Field` messages, but does not
-  hard-depend on it. Both grew out of a gap analysis against the `../pane` app's
-  UI set.
+- **007 DONE** — `Text` ships in `src/components/Text.tsx`, exported from
+  `src/index.ts`.
+- **008 mostly landed** — components live under `src/components/form/`; remaining
+  work is exporting `Label` and `Field` from the public API. Execute on branch
+  `cursor/form-elements-e448` **from** `cursor/new-components-e448`.
 
-## Dependency notes
+## Design system plans (UI designer review, 2026-06-24)
+
+Planned against commit `5133872`. Split from a component-level design critique:
+polish existing components (009) vs net-new building blocks (010).
+
+| Plan | Title                                            | Priority | Effort | Depends on | Status |
+| ---- | ------------------------------------------------ | -------- | ------ | ---------- | ------ |
+| 009  | Component design system polish (designer review) | P1       | L      | 010        | TODO   |
+| 010  | New components — Table, Sidebar, Chart, addons   | P1       | L      | —          | TODO   |
+
+- **010 before 009** — new compounds (InputGroup.Addon, Table, etc.) should land
+  before token/state polish to avoid rebase churn.
+- **010 before 008 completion** — branch `cursor/form-elements-e448` stacks on
+  `cursor/new-components-e448`.
+- **Avatar / Progress** landed on `cursor/demo-dashboard-e448` (PR #15) — not part
+  of 010; merge separately.
+
+## Dependency notes (updated)
 
 - **001 first.** It is the verification baseline — there are currently no
   runtime tests at all. 002 and 004 rely on it for their regression tests.
@@ -44,6 +62,9 @@ against commit `d742bcc` (2026-06-16). Independent of 001–006.
 - **004 depends on 001** for the `rgbToHsv` unit tests that pin the fix.
 - **005 and 006 are independent** and can be done at any time (they touch
   isolated files: `Button.tsx` and `README.md`).
+- **010 → 008 → 009** — new components, then form public exports, then design
+  polish. After 010 merges to `main`, rebase `cursor/form-elements-e448` onto
+  `main` and retarget its PR base branch.
 
 ## Recommended sequence
 
