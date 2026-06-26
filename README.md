@@ -58,6 +58,19 @@ export function App() {
 }
 ```
 
+For smaller bundles, import only the components you need via subpath exports:
+
+```tsx
+import { Button } from 'pickle-ui/button';
+import { Input } from 'pickle-ui/input';
+import { Form, FormInput } from 'pickle-ui/form';
+```
+
+Subpaths use the same named exports as the root entry (for example `Button` from
+`pickle-ui/button`, not a default export). Available subpaths match the public
+API in `src/index.ts`, using kebab-case names such as `color-picker`,
+`radio-group`, and `scroll-area`.
+
 Pickle supplies its component styles, light theme, and `.dark` theme. Add the
 `dark` class to an ancestor to enable dark mode:
 
