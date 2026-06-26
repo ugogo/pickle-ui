@@ -140,6 +140,8 @@ export type {
   SidebarGroupProps,
   SidebarHeaderProps,
   SidebarMenuItemProps,
+  SidebarMenuLinkProps,
+  SidebarMenuListProps,
   SidebarMenuProps,
   SidebarProps,
 } from './components/Sidebar';

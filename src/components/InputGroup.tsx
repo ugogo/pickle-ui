@@ -36,7 +36,7 @@ function InputGroupAddon({ className, ...props }: InputGroupAddonProps) {
   return (
     <div
       className={cn(
-        'border-input bg-muted text-muted-foreground inline-flex h-8 shrink-0 items-center border px-2.5 text-sm whitespace-nowrap',
+        'border-input bg-muted/50 text-muted-foreground inline-flex h-8 shrink-0 items-center rounded-l-sm rounded-r-sm border px-2.5 text-sm whitespace-nowrap',
         inputGroupItemClasses,
         className,
       )}

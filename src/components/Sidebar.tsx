@@ -7,8 +7,10 @@ type SidebarFooterProps = React.ComponentProps<'div'>;
 type SidebarGroupLabelProps = React.ComponentProps<'div'>;
 type SidebarGroupProps = React.ComponentProps<'div'>;
 type SidebarHeaderProps = React.ComponentProps<'div'>;
-type SidebarMenuItemProps = React.ComponentProps<'div'>;
-type SidebarMenuProps = React.ComponentProps<'div'>;
+type SidebarMenuItemProps = React.ComponentProps<'li'>;
+type SidebarMenuLinkProps = React.ComponentProps<'a'>;
+type SidebarMenuListProps = React.ComponentProps<'ul'>;
+type SidebarMenuProps = React.ComponentProps<'nav'>;
 type SidebarProps = React.ComponentProps<'aside'>;
 
 function SidebarContent({ className, ...props }: SidebarContentProps) {
@@ -66,7 +68,7 @@ function SidebarHeader({ className, ...props }: SidebarHeaderProps) {
 
 function SidebarMenu({ className, ...props }: SidebarMenuProps) {
   return (
-    <div
+    <nav
       className={cn('flex flex-col gap-1', className)}
       data-slot="sidebar-menu"
       {...props}
@@ -76,9 +78,38 @@ function SidebarMenu({ className, ...props }: SidebarMenuProps) {
 
 function SidebarMenuItem({ className, ...props }: SidebarMenuItemProps) {
   return (
-    <div
+    <li
       className={cn('w-full', className)}
       data-slot="sidebar-menu-item"
+      {...props}
+    />
+  );
+}
+
+function SidebarMenuLink({
+  children,
+  className,
+  ...props
+}: SidebarMenuLinkProps) {
+  return (
+    <a
+      className={cn(
+        'focus-ring text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-[current=page]:bg-sidebar-primary aria-[current=page]:text-sidebar-primary-foreground flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-sm font-medium transition-colors [&_svg]:size-4 [&_svg]:shrink-0',
+        className,
+      )}
+      data-slot="sidebar-menu-link"
+      {...props}
+    >
+      {children}
+    </a>
+  );
+}
+
+function SidebarMenuList({ className, ...props }: SidebarMenuListProps) {
+  return (
+    <ul
+      className={cn('flex list-none flex-col gap-1 p-0', className)}
+      data-slot="sidebar-menu-list"
       {...props}
     />
   );
@@ -105,6 +136,8 @@ const Sidebar = Object.assign(SidebarRoot, {
   Header: SidebarHeader,
   Menu: SidebarMenu,
   MenuItem: SidebarMenuItem,
+  MenuLink: SidebarMenuLink,
+  MenuList: SidebarMenuList,
 });
 
 export {
@@ -116,6 +149,8 @@ export {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
+  SidebarMenuLink,
+  SidebarMenuList,
 };
 export type {
   SidebarContentProps,
@@ -124,6 +159,8 @@ export type {
   SidebarGroupProps,
   SidebarHeaderProps,
   SidebarMenuItemProps,
+  SidebarMenuLinkProps,
+  SidebarMenuListProps,
   SidebarMenuProps,
   SidebarProps,
 };

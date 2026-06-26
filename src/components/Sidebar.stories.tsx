@@ -7,7 +7,6 @@ import {
 } from '@tabler/icons-react';
 
 import { Story } from './_internal/Story';
-import { Button } from './Button';
 import { Sidebar } from './Sidebar';
 import { Text } from './Text';
 import { XStack } from './XStack';
@@ -43,31 +42,43 @@ export const All: StoryDefinition = {
             </XStack>
           </Sidebar.Header>
           <Sidebar.Content>
-            <Sidebar.Menu>
-              <Sidebar.MenuItem>
-                <Button className="w-full justify-start" variant="secondary">
-                  <IconLayoutDashboard stroke={1.75} />
-                  Dashboard
-                </Button>
-              </Sidebar.MenuItem>
-              <Sidebar.MenuItem>
-                <Button className="w-full justify-start" variant="ghost">
-                  <IconSearch stroke={1.75} />
-                  Search
-                </Button>
-              </Sidebar.MenuItem>
-              <Sidebar.MenuItem>
-                <Button className="w-full justify-start" variant="ghost">
-                  <IconSettings stroke={1.75} />
-                  Settings
-                </Button>
-              </Sidebar.MenuItem>
+            <Sidebar.Menu aria-label="Workspace navigation">
+              <Sidebar.MenuList>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuLink aria-current="page" href="#dashboard">
+                    <IconLayoutDashboard stroke={1.75} />
+                    Dashboard
+                  </Sidebar.MenuLink>
+                </Sidebar.MenuItem>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuLink href="#search">
+                    <IconSearch stroke={1.75} />
+                    Search
+                  </Sidebar.MenuLink>
+                </Sidebar.MenuItem>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuLink href="#settings">
+                    <IconSettings stroke={1.75} />
+                    Settings
+                  </Sidebar.MenuLink>
+                </Sidebar.MenuItem>
+              </Sidebar.MenuList>
             </Sidebar.Menu>
           </Sidebar.Content>
           <Sidebar.Footer>
-            <Text tone="muted" variant="small">
-              Sidebar uses `--sidebar-*` tokens from globals.css.
-            </Text>
+            <XStack align="center" gap={3}>
+              <div className="bg-sidebar-accent text-sidebar-accent-foreground flex size-8 items-center justify-center rounded-md text-sm font-semibold">
+                U
+              </div>
+              <YStack gap={0.5}>
+                <Text className="font-medium" variant="small">
+                  Ugo Onali
+                </Text>
+                <Text tone="muted" variant="small">
+                  Pro workspace
+                </Text>
+              </YStack>
+            </XStack>
           </Sidebar.Footer>
         </Sidebar>
       </Story.Section>

@@ -8,9 +8,9 @@ type TableCellProps = React.ComponentProps<'td'>;
 type TableFooterProps = React.ComponentProps<'tfoot'>;
 type TableHeaderProps = React.ComponentProps<'thead'>;
 type TableHeadProps = React.ComponentProps<'th'>;
-type TableProps = {
-  children?: React.ReactNode;
-  className?: string;
+type TableProps = React.ComponentProps<'table'> & {
+  containerClassName?: string;
+  containerProps?: Omit<React.ComponentProps<'div'>, 'children' | 'className'>;
 };
 type TableRowProps = React.ComponentProps<'tr'>;
 
@@ -80,13 +80,26 @@ function TableHeader({ className, ...props }: TableHeaderProps) {
   );
 }
 
-function TableRoot({ children, className }: TableProps) {
+function TableRoot({
+  children,
+  className,
+  containerClassName,
+  containerProps,
+  ref,
+  ...props
+}: TableProps) {
   return (
     <div
-      className={cn('relative w-full overflow-auto', className)}
+      className={cn('relative w-full overflow-auto', containerClassName)}
       data-slot="table-container"
+      {...containerProps}
     >
-      <table className="w-full caption-bottom text-sm" data-slot="table">
+      <table
+        className={cn('w-full caption-bottom text-sm', className)}
+        data-slot="table"
+        ref={ref}
+        {...props}
+      >
         {children}
       </table>
     </div>
@@ -97,7 +110,7 @@ function TableRow({ className, ...props }: TableRowProps) {
   return (
     <tr
       className={cn(
-        'border-border hover:bg-muted/50 border-b transition-colors',
+        'border-border hover:bg-muted/30 border-b transition-none',
         className,
       )}
       data-slot="table-row"

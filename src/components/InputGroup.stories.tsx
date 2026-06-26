@@ -98,15 +98,18 @@ export const All: StoryDefinition = {
         <div className="max-w-md space-y-4">
           <InputGroup>
             <InputGroup.Addon>$</InputGroup.Addon>
-            <Input aria-label="Amount" defaultValue="1200" />
+            <Input aria-label="Amount in USD" defaultValue="1200" />
           </InputGroup>
           <InputGroup>
-            <Input aria-label="Domain" defaultValue="pickle" />
+            <Input
+              aria-label="Pickle subdomain ending in .dev"
+              defaultValue="pickle"
+            />
             <InputGroup.Addon>.dev</InputGroup.Addon>
           </InputGroup>
           <InputGroup>
             <InputGroup.Addon>
-              <IconSearch aria-hidden stroke={1.75} />
+              <IconSearch aria-hidden size={14} />
             </InputGroup.Addon>
             <Input aria-label="Search" placeholder="Search…" />
             <InputGroup.Button aria-label="Submit search">Go</InputGroup.Button>

@@ -42,7 +42,7 @@ export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-4xl" title="Table">
       <Story.Section title="Deployments">
-        <Table>
+        <Table aria-label="Deployments">
           <Table.Header>
             <Table.Row>
               <Table.Head>Deployment</Table.Head>
