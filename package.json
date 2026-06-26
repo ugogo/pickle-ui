@@ -6,7 +6,9 @@
   "main": "dist/index.js",
   "style": "src/globals.css",
   "types": "dist/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "packageManager": "pnpm@10.28.2",
   "repository": {
     "type": "git",
@@ -35,7 +37,7 @@
   "scripts": {
     "dev": "storybook dev -p 6006",
     "clean": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\"",
-    "build": "pnpm run clean && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "pnpm run clean && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
