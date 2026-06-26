@@ -42,7 +42,7 @@ polish existing components (009) vs net-new building blocks (010).
 | Plan | Title                                            | Priority | Effort | Depends on | Status |
 | ---- | ------------------------------------------------ | -------- | ------ | ---------- | ------ |
 | 009  | Component design system polish (designer review) | P1       | L      | 010        | TODO   |
-| 010  | New components — Table, Sidebar, Chart, addons   | P1       | L      | —          | TODO   |
+| 010  | New components — Table, Sidebar, addons          | P1       | L      | —          | TODO   |
 
 - **010 before 009** — new compounds (InputGroup.Addon, Table, etc.) should land
   before token/state polish to avoid rebase churn.

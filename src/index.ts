@@ -104,7 +104,11 @@ export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
 
 export { InputGroup } from './components/InputGroup';
-export type { InputGroupProps } from './components/InputGroup';
+export type {
+  InputGroupAddonProps,
+  InputGroupButtonProps,
+  InputGroupProps,
+} from './components/InputGroup';
 
 export { Popover } from './components/Popover';
 export type {
@@ -128,6 +132,20 @@ export type {
   ScrollAreaViewportProps,
 } from './components/ScrollArea';
 
+export { Sidebar } from './components/Sidebar';
+export type {
+  SidebarContentProps,
+  SidebarFooterProps,
+  SidebarGroupLabelProps,
+  SidebarGroupProps,
+  SidebarHeaderProps,
+  SidebarMenuItemProps,
+  SidebarMenuLinkProps,
+  SidebarMenuListProps,
+  SidebarMenuProps,
+  SidebarProps,
+} from './components/Sidebar';
+
 export { Slider } from './components/Slider';
 export type {
   SliderLabelProps,
@@ -135,6 +153,18 @@ export type {
   SliderProps,
   SliderValueProps,
 } from './components/Slider';
+
+export { Table } from './components/Table';
+export type {
+  TableBodyProps,
+  TableCaptionProps,
+  TableCellProps,
+  TableFooterProps,
+  TableHeaderProps,
+  TableHeadProps,
+  TableProps,
+  TableRowProps,
+} from './components/Table';
 
 export { Text, textVariants } from './components/Text';
 export type { TextProps } from './components/Text';
