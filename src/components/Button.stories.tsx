@@ -46,7 +46,6 @@ const VARIANT_ROWS: {
   { key: 'destructive', label: 'Destructive' },
   { key: 'outline', label: 'Outline' },
   { key: 'ghost', label: 'Ghost' },
-  { key: 'link', label: 'Link' },
 ];
 
 const SIZE_COLUMNS = [
@@ -142,6 +141,20 @@ export const All: StoryDefinition = {
           columns={SIZE_COLUMNS}
           rows={CONTENT_ROWS}
         />
+      </Story.Section>
+
+      <Story.Section title="asChild composition">
+        <div className="flex flex-wrap items-center gap-3">
+          <Button asChild variant="outline">
+            <a href="#docs">Documentation</a>
+          </Button>
+          <Button asChild>
+            <a href="#signup">Create account</a>
+          </Button>
+          <Button asChild size="sm" variant="ghost">
+            <a href="#settings">Settings</a>
+          </Button>
+        </div>
       </Story.Section>
     </Story.Layout>
   ),
