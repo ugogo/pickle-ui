@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
+import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Switch, type SwitchProps } from './Switch';
 
 const meta = {
@@ -8,11 +8,11 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/form/Switch',
+  title: 'components/Switch',
 } satisfies Meta<typeof Switch>;
 
 export default meta;
-type StoryDefinition = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj;
 type SwitchSize = NonNullable<SwitchProps['size']>;
 
 const STATE_COLUMNS: {
@@ -50,7 +50,7 @@ const STATE_PROPS = Object.fromEntries(
 function SwitchStateCell({ column, row }: ComponentMatrixCellProps) {
   return (
     <Switch
-      aria-label={`${row.label} ${column.label}`}
+      label={`${row.label} ${column.label}`}
       size={row.key as SwitchSize}
       {...STATE_PROPS[column.key]}
     />

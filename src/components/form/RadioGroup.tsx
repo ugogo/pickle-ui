@@ -23,6 +23,8 @@ function RadioGroupItem({
   size,
   ...props
 }: RadioGroupItemProps) {
+  const generatedLabelId = React.useId();
+
   if (!label) {
     return (
       <RadioGroupItemControl
@@ -36,8 +38,13 @@ function RadioGroupItem({
   }
 
   return (
-    <RadioGroupItemLabel className={labelClassName} disabled={disabled}>
+    <RadioGroupItemLabel
+      className={labelClassName}
+      disabled={disabled}
+      id={generatedLabelId}
+    >
       <RadioGroupItemControl
+        aria-labelledby={generatedLabelId}
         className={className}
         disabled={disabled}
         id={id}

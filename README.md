@@ -62,8 +62,7 @@ For smaller bundles, import only the components you need via subpath exports:
 
 ```tsx
 import { Button } from 'pickle-ui/button';
-import { Input } from 'pickle-ui/input';
-import { Form, FormInput } from 'pickle-ui/form';
+import { Form } from 'pickle-ui/form';
 ```
 
 Subpaths use the same named exports as the root entry (for example `Button` from
@@ -78,6 +77,48 @@ Pickle supplies its component styles, light theme, and `.dark` theme. Add the
 <div className="dark">
   <App />
 </div>
+```
+
+Use `Form` as a React Hook Form-only compound API. Pass the return value from
+`useForm` to the `form` prop; form-aware controls read that provider and either
+inherit the nearest `Form.Field` name or accept their own `name` prop.
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { Form } from 'pickle-ui/form';
+
+type SignUpValues = {
+  email: string;
+  role: string;
+};
+
+export function SignUpForm() {
+  const form = useForm<SignUpValues>({
+    defaultValues: { email: '', role: 'designer' },
+  });
+
+  return (
+    <Form form={form} onSubmit={(values) => console.log(values)}>
+      <Form.Field label="Email" name="email">
+        <Form.Input autoComplete="email" />
+      </Form.Field>
+
+      <Form.Field label="Role" name="role">
+        <Form.Select>
+          <Form.Select.Trigger>
+            <Form.Select.Value placeholder="Select a role" />
+          </Form.Select.Trigger>
+          <Form.Select.Content>
+            <Form.Select.Item value="designer">Designer</Form.Select.Item>
+            <Form.Select.Item value="engineer">Engineer</Form.Select.Item>
+          </Form.Select.Content>
+        </Form.Select>
+      </Form.Field>
+
+      <Form.Button type="submit">Save</Form.Button>
+    </Form>
+  );
+}
 ```
 
 Override Pickle's semantic variables after the imports to customize the theme:

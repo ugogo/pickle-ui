@@ -23,10 +23,10 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 Forward-looking component additions, not part of the 2026-06-15 audit. Planned
 against commit `d742bcc` (2026-06-16). Independent of 001–006.
 
-| Plan | Title                                                        | Priority | Effort | Depends on | Status |
-| ---- | ------------------------------------------------------------ | -------- | ------ | ---------- | ------ |
-| 007  | Add a Typography (`Text`) component                          | P2       | M      | —          | DONE   |
-| 008  | Round out form elements — Label, Checkbox, RadioGroup, Field | P2       | S      | 010        | TODO   |
+| Plan | Title                                                        | Priority | Effort | Depends on | Status                                    |
+| ---- | ------------------------------------------------------------ | -------- | ------ | ---------- | ----------------------------------------- |
+| 007  | Add a Typography (`Text`) component                          | P2       | M      | —          | DONE                                      |
+| 008  | Round out form elements — Label, Checkbox, RadioGroup, Field | P2       | S      | 010        | DONE (branch `cursor/form-elements-e448`) |
 
 - **007 DONE** — `Text` ships in `src/components/Text.tsx`, exported from
   `src/index.ts`.

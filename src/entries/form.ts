@@ -1,17 +1,12 @@
-export {
-  Form,
-  FormCheckbox,
-  FormInput,
-  FormInputGroup,
-  FormRadioGroup,
-  FormSelect,
-  FormSwitch,
-} from '../components/form/Form';
+export { Form } from '../components/form/Form';
 export type {
   FormCheckboxProps,
+  FormDescriptionProps,
+  FormErrorProps,
   FormFieldProps,
   FormInputGroupProps,
   FormInputProps,
+  FormLabelProps,
   FormProps,
   FormRadioGroupProps,
   FormSelectProps,

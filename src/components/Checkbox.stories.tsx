@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
+import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Checkbox, type CheckboxProps } from './Checkbox';
 
 const meta = {
@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/form/Checkbox',
+  title: 'components/Checkbox',
 } satisfies Meta<typeof Checkbox>;
 
 export default meta;

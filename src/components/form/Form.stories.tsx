@@ -5,15 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 
 import { Story } from '../_internal/Story';
-import {
-  Form,
-  FormCheckbox,
-  FormInput,
-  FormInputGroup,
-  FormRadioGroup,
-  FormSelect,
-  FormSwitch,
-} from './Form';
+import { Form } from './Form';
 
 const meta = {
   args: {},
@@ -26,7 +18,7 @@ const meta = {
 
 export default meta;
 
-type StoryDefinition = StoryObj<typeof meta>;
+type StoryDefinition = StoryObj;
 
 const roles = [
   { label: 'Designer', value: 'designer' },
@@ -81,11 +73,11 @@ function SignUpForm() {
         label="Email"
         name="email"
       >
-        <FormInput autoComplete="email" inputMode="email" />
+        <Form.Input autoComplete="email" inputMode="email" />
       </Form.Field>
 
       <Form.Field label="Username" name="username">
-        <FormInput autoComplete="username" />
+        <Form.Input autoComplete="username" />
       </Form.Field>
 
       <Form.Field
@@ -93,41 +85,41 @@ function SignUpForm() {
         label="Password"
         name="password"
       >
-        <FormInput autoComplete="new-password" type="password" />
+        <Form.Input autoComplete="new-password" type="password" />
       </Form.Field>
 
-      <Form.Field label="Full name">
-        <FormInputGroup>
-          <FormInput
+      <Form.Field controlId="full-name" label="Full name">
+        <Form.InputGroup>
+          <Form.Input
             aria-label="First name"
             name="firstName"
             placeholder="First"
           />
-          <FormInput
+          <Form.Input
             aria-label="Last name"
             name="lastName"
             placeholder="Last"
           />
-        </FormInputGroup>
+        </Form.InputGroup>
       </Form.Field>
 
       <Form.Field label="Role" name="role">
-        <FormSelect>
-          <FormSelect.Trigger className="w-full">
-            <FormSelect.Value placeholder="Select a role" />
-          </FormSelect.Trigger>
-          <FormSelect.Content>
+        <Form.Select>
+          <Form.Select.Trigger className="w-full">
+            <Form.Select.Value placeholder="Select a role" />
+          </Form.Select.Trigger>
+          <Form.Select.Content>
             {roles.map((role) => (
-              <FormSelect.Item key={role.value} value={role.value}>
+              <Form.Select.Item key={role.value} value={role.value}>
                 {role.label}
-              </FormSelect.Item>
+              </Form.Select.Item>
             ))}
-          </FormSelect.Content>
-        </FormSelect>
+          </Form.Select.Content>
+        </Form.Select>
       </Form.Field>
 
       <Form.Field name="productUpdates">
-        <FormSwitch label="Email me about new features and releases" />
+        <Form.Switch label="Email me about new features and releases" />
       </Form.Field>
 
       <Form.Field
@@ -135,20 +127,20 @@ function SignUpForm() {
         label="Notification channel"
         name="notificationChannel"
       >
-        <FormRadioGroup>
+        <Form.RadioGroup>
           {notificationChannels.map((channel) => (
-            <FormRadioGroup.Item
+            <Form.RadioGroup.Item
               disabled={channel.disabled}
               key={channel.value}
               label={channel.label}
               value={channel.value}
             />
           ))}
-        </FormRadioGroup>
+        </Form.RadioGroup>
       </Form.Field>
 
       <Form.Field name="terms">
-        <FormCheckbox label="I agree to the terms of service and privacy policy" />
+        <Form.Checkbox label="I agree to the terms of service and privacy policy" />
       </Form.Field>
 
       <Form.Button type="submit">Create account</Form.Button>
