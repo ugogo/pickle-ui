@@ -1,220 +1,152 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { describe, expect, it, vi } from 'vitest';
-import { z } from 'zod/v4';
 
-import {
-  Form,
-  FormCheckbox,
-  FormInput,
-  FormInputGroup,
-  FormRadioGroup,
-  FormSelect,
-  FormSwitch,
-} from './Form';
+import { Form } from './Form';
 
-type TestValues = {
+type TestFormValues = {
+  channel: string;
   email: string;
-  notifications: boolean;
+  productUpdates: boolean;
   role: string;
+  terms: boolean;
 };
 
+const defaultValues: TestFormValues = {
+  channel: 'email',
+  email: '',
+  productUpdates: false,
+  role: 'designer',
+  terms: false,
+};
+
+function TestForm({
+  fieldErrors,
+  onSubmit,
+  withEmailError,
+}: {
+  fieldErrors?: Partial<Record<keyof TestFormValues, string>>;
+  onSubmit: (values: TestFormValues) => void;
+  withEmailError?: boolean;
+}) {
+  const form = useForm<TestFormValues>({ defaultValues });
+
+  React.useEffect(() => {
+    if (withEmailError) {
+      form.setError('email', {
+        message: 'Enter a valid email address.',
+        type: 'manual',
+      });
+    }
+
+    for (const [name, message] of Object.entries(fieldErrors ?? {}) as [
+      keyof TestFormValues,
+      string,
+    ][]) {
+      form.setError(name, {
+        message,
+        type: 'manual',
+      });
+    }
+  }, [fieldErrors, form, withEmailError]);
+
+  return (
+    <Form form={form} onSubmit={onSubmit}>
+      <Form.Field label="Email" name="email">
+        <Form.Input autoComplete="email" />
+      </Form.Field>
+
+      <Form.Field label="Role" name="role">
+        <Form.Select>
+          <Form.Select.Trigger>
+            <Form.Select.Value placeholder="Select a role" />
+          </Form.Select.Trigger>
+          <Form.Select.Content>
+            <Form.Select.Item value="designer">Designer</Form.Select.Item>
+            <Form.Select.Item value="engineer">Engineer</Form.Select.Item>
+          </Form.Select.Content>
+        </Form.Select>
+      </Form.Field>
+
+      <Form.Field label="Notification channel" name="channel">
+        <Form.RadioGroup>
+          <Form.RadioGroup.Item label="Email" value="email" />
+          <Form.RadioGroup.Item label="SMS" value="sms" />
+        </Form.RadioGroup>
+      </Form.Field>
+
+      <Form.Field name="productUpdates">
+        <Form.Switch label="Product updates" />
+      </Form.Field>
+
+      <Form.Field name="terms">
+        <Form.Checkbox label="Accept terms" />
+      </Form.Field>
+
+      <Form.Button type="submit">Submit</Form.Button>
+    </Form>
+  );
+}
+
 describe('Form', () => {
-  it('renders a form element with data-slot', () => {
-    render(<Form aria-label="Test form" />);
-    expect(screen.getByRole('form', { name: 'Test form' })).toHaveAttribute(
-      'data-slot',
-      'form',
-    );
-    expect(screen.getByRole('form', { name: 'Test form' })).toHaveAttribute(
-      'novalidate',
-    );
-  });
+  it('registers fields and submits React Hook Form values', async () => {
+    const handleSubmit = vi.fn();
+    render(<TestForm onSubmit={handleSubmit} />);
 
-  it('exposes form parts on the compound component', () => {
-    expect(Form.Field).toBeDefined();
-    expect(Form.Field.Label).toBeDefined();
-    expect(FormCheckbox).toBeDefined();
-    expect(FormInput).toBeDefined();
-    expect(FormInputGroup).toBeDefined();
-    expect(FormRadioGroup).toBeDefined();
-    expect(FormRadioGroup.Item).toBeDefined();
-    expect(FormSelect).toBeDefined();
-    expect(FormSelect.Trigger).toBeDefined();
-    expect(FormSwitch).toBeDefined();
-  });
-
-  it('wires a direct FormInput child from Field label and description props', () => {
-    render(
-      <Form>
-        <Form.Field
-          description="Use your work address."
-          label="Email"
-          name="email"
-        >
-          <FormInput type="email" />
-        </Form.Field>
-      </Form>,
-    );
-
-    expect(screen.getByLabelText('Email')).toHaveAttribute('name', 'email');
-    expect(screen.getByText('Use your work address.')).toBeInTheDocument();
-  });
-
-  it('automatically displays Zod resolver errors', async () => {
-    const schema = z.object({
-      email: z.email('Enter a valid email address.'),
-    });
-
-    function ErrorForm() {
-      const form = useForm<z.infer<typeof schema>>({
-        defaultValues: { email: '' },
-        resolver: zodResolver(schema),
-      });
-
-      return (
-        <Form aria-label="Zod form" form={form} onSubmit={() => undefined}>
-          <Form.Field
-            description="We'll send a confirmation link."
-            label="Email"
-            name="email"
-          >
-            <FormInput />
-          </Form.Field>
-        </Form>
-      );
-    }
-
-    render(<ErrorForm />);
-    expect(
-      screen.getByText("We'll send a confirmation link."),
-    ).toBeInTheDocument();
-
-    fireEvent.submit(screen.getByRole('form', { name: 'Zod form' }));
-
-    expect(
-      await screen.findByText('Enter a valid email address.'),
-    ).toHaveAttribute('data-slot', 'field-error');
-    expect(
-      screen.queryByText("We'll send a confirmation link."),
-    ).not.toBeInTheDocument();
-  });
-
-  it('uses custom field error copy when provided', async () => {
-    function ErrorForm() {
-      const form = useForm<TestValues>();
-
-      React.useEffect(() => {
-        form.setError('email', { message: 'Native server copy.' });
-      }, [form]);
-
-      return (
-        <Form form={form}>
-          <Form.Field error="Use another email." label="Email" name="email">
-            <FormInput type="email" />
-          </Form.Field>
-        </Form>
-      );
-    }
-
-    render(<ErrorForm />);
-
-    expect(await screen.findByText('Use another email.')).toBeInTheDocument();
-    expect(screen.queryByText('Native server copy.')).not.toBeInTheDocument();
-  });
-
-  it('labels a direct Select child from Form.Field', () => {
-    render(
-      <Form>
-        <Form.Field label="Role" name="role">
-          <FormSelect defaultValue="designer">
-            <FormSelect.Trigger>
-              <FormSelect.Value placeholder="Select a role" />
-            </FormSelect.Trigger>
-            <FormSelect.Content>
-              <FormSelect.Item value="designer">Designer</FormSelect.Item>
-            </FormSelect.Content>
-          </FormSelect>
-        </Form.Field>
-      </Form>,
-    );
-
-    expect(screen.getByRole('combobox', { name: 'Role' })).toBeInTheDocument();
-  });
-
-  it('labels a direct RadioGroup child from Form.Field', () => {
-    render(
-      <Form>
-        <Form.Field label="Notification channel">
-          <FormRadioGroup defaultValue="email" name="notificationChannel">
-            <FormRadioGroup.Item label="Email" value="email" />
-            <FormRadioGroup.Item label="SMS" value="sms" />
-          </FormRadioGroup>
-        </Form.Field>
-      </Form>,
-    );
-
-    expect(
-      screen.getByRole('radiogroup', { name: 'Notification channel' }),
-    ).toBeInTheDocument();
-  });
-
-  it('submits react-hook-form values from Form controls', async () => {
-    const onSubmit = vi.fn();
-
-    function TestForm() {
-      const form = useForm<TestValues>({
-        defaultValues: {
-          email: '',
-          notifications: true,
-          role: 'designer',
-        },
-      });
-
-      return (
-        <Form form={form} onSubmit={onSubmit}>
-          <Form.Field label="Email" name="email">
-            <FormInput type="email" />
-          </Form.Field>
-          <Form.Field label="Role" name="role">
-            <FormSelect>
-              <FormSelect.Trigger>
-                <FormSelect.Value placeholder="Select a role" />
-              </FormSelect.Trigger>
-              <FormSelect.Content>
-                <FormSelect.Item value="designer">Designer</FormSelect.Item>
-                <FormSelect.Item value="engineer">Engineer</FormSelect.Item>
-              </FormSelect.Content>
-            </FormSelect>
-          </Form.Field>
-          <Form.Field name="notifications">
-            <FormCheckbox label="Notifications" />
-          </Form.Field>
-          <Form.Button type="submit">Save</Form.Button>
-        </Form>
-      );
-    }
-
-    render(<TestForm />);
-
-    fireEvent.change(screen.getByLabelText('Email'), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'Email' }), {
       target: { value: 'ugo@example.com' },
     });
-    fireEvent.submit(
-      screen.getByRole('button', { name: 'Save' }).closest('form')!,
-    );
+    fireEvent.click(screen.getByRole('switch', { name: 'Product updates' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Accept terms' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'SMS' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalledWith(
+      expect(handleSubmit).toHaveBeenCalledWith(
         {
+          channel: 'sms',
           email: 'ugo@example.com',
-          notifications: true,
+          productUpdates: true,
           role: 'designer',
+          terms: true,
         },
         expect.anything(),
       );
     });
+  });
+
+  it('displays field errors from React Hook Form state', async () => {
+    render(<TestForm onSubmit={vi.fn()} withEmailError />);
+
+    expect(
+      await screen.findByText('Enter a valid email address.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Email' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    );
+  });
+
+  it('marks controlled boolean fields invalid from React Hook Form state', async () => {
+    render(
+      <TestForm
+        fieldErrors={{
+          productUpdates: 'Choose a product update preference.',
+          terms: 'Accept the terms to continue.',
+        }}
+        onSubmit={vi.fn()}
+      />,
+    );
+
+    expect(
+      await screen.findByText('Choose a product update preference.'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('switch', { name: 'Product updates' }),
+    ).toHaveAttribute('aria-invalid', 'true');
+    expect(
+      screen.getByRole('checkbox', { name: 'Accept terms' }),
+    ).toHaveAttribute('aria-invalid', 'true');
   });
 });

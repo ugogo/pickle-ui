@@ -17,7 +17,11 @@ export type {
   CardTitleProps,
 } from './components/Card';
 
+export { Checkbox } from './components/Checkbox';
+export type { CheckboxLabelProps, CheckboxProps } from './components/Checkbox';
+
 export { ColorPicker } from './components/ColorPicker';
+
 export type {
   ColorPickerAlphaSliderProps,
   ColorPickerAreaProps,
@@ -30,7 +34,6 @@ export type {
   ColorPickerSwatchProps,
   ColorPickerTriggerProps,
 } from './components/ColorPicker';
-
 export {
   ColorPickerAlphaSlider,
   ColorPickerArea,
@@ -46,29 +49,18 @@ export {
 } from './components/ColorPickerPrimitive';
 
 export { Flex } from './components/Flex';
+
 export type { FlexProps } from './components/Flex';
 
-export { Checkbox } from './components/form/Checkbox';
-
-export type {
-  CheckboxLabelProps,
-  CheckboxProps,
-} from './components/form/Checkbox';
-
-export {
-  Form,
-  FormCheckbox,
-  FormInput,
-  FormInputGroup,
-  FormRadioGroup,
-  FormSelect,
-  FormSwitch,
-} from './components/form/Form';
+export { Form } from './components/form/Form';
 export type {
   FormCheckboxProps,
+  FormDescriptionProps,
+  FormErrorProps,
   FormFieldProps,
   FormInputGroupProps,
   FormInputProps,
+  FormLabelProps,
   FormProps,
   FormRadioGroupProps,
   FormSelectProps,
@@ -93,9 +85,6 @@ export type {
   SelectTriggerProps,
   SelectValueProps,
 } from './components/form/Select';
-
-export { Switch } from './components/form/Switch';
-export type { SwitchLabelProps, SwitchProps } from './components/form/Switch';
 
 export { Grid } from './components/Grid';
 export type { GridProps } from './components/Grid';
@@ -153,6 +142,9 @@ export type {
   SliderProps,
   SliderValueProps,
 } from './components/Slider';
+
+export { Switch } from './components/Switch';
+export type { SwitchLabelProps, SwitchProps } from './components/Switch';
 
 export { Table } from './components/Table';
 export type {

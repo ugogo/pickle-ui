@@ -12,3 +12,6 @@ trustPolicyExclude:
 
 # Block transitive deps resolved from non-registry sources (git/file/tarball).
 blockExoticSubdeps: true
+
+allowBuilds:
+  esbuild: set this to true or false

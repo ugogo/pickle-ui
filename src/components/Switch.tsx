@@ -5,20 +5,23 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+type SwitchControlProps = React.ComponentProps<typeof SwitchPrimitive.Root> & {
+  size?: 'default' | 'sm';
+};
+type SwitchLabelContent = Exclude<React.ReactNode, boolean | null | undefined>;
 type SwitchLabelProps = Omit<React.ComponentProps<'label'>, 'htmlFor'> & {
   htmlFor: string;
 };
-type SwitchProps = React.ComponentProps<typeof SwitchPrimitive.Root> & {
-  label?: React.ReactNode;
+type SwitchProps = SwitchControlProps & {
+  label: SwitchLabelContent;
   labelClassName?: string;
-  size?: 'default' | 'sm';
 };
 
 function SwitchControl({
   className,
   size = 'default',
   ...props
-}: Omit<SwitchProps, 'label' | 'labelClassName'>) {
+}: SwitchControlProps) {
   return (
     <SwitchPrimitive.Root
       className={cn(
@@ -53,11 +56,6 @@ function SwitchLabel({ className, htmlFor, ...props }: SwitchLabelProps) {
 
 function SwitchRoot({ id, label, labelClassName, ...props }: SwitchProps) {
   const generatedId = React.useId();
-
-  if (!label) {
-    return <SwitchControl id={id} {...props} />;
-  }
-
   const switchId = id ?? generatedId;
 
   return (
@@ -74,5 +72,5 @@ const Switch = Object.assign(SwitchRoot, {
   Label: SwitchLabel,
 });
 
-export { Switch };
-export type { SwitchLabelProps, SwitchProps };
+export { Switch, SwitchControl, SwitchLabel };
+export type { SwitchControlProps, SwitchLabelProps, SwitchProps };

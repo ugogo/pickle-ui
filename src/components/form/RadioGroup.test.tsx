@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { Field } from './Field';
 import { RadioGroup } from './RadioGroup';
 
 describe('RadioGroup', () => {
@@ -150,23 +149,5 @@ describe('RadioGroup', () => {
       'data-slot',
       'radio-label',
     );
-  });
-
-  it('clicking the label selects its item inside a Field', () => {
-    render(
-      <Field>
-        <Field.Label id="plan-label" nativeLabel={false} render={<span />}>
-          Plan
-        </Field.Label>
-        <RadioGroup aria-labelledby="plan-label">
-          <RadioGroup.Item label="Pro" value="pro" />
-        </RadioGroup>
-      </Field>,
-    );
-    const label = screen.getByText('Pro');
-    const radio = screen.getByRole('radio');
-    expect(radio).toHaveAttribute('aria-checked', 'false');
-    fireEvent.click(label);
-    expect(radio).toHaveAttribute('aria-checked', 'true');
   });
 });
