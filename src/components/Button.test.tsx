@@ -34,4 +34,16 @@ describe('Button', () => {
       'data-icon-only',
     );
   });
+
+  it('merges button styles onto a child element with asChild', () => {
+    render(
+      <Button asChild variant="outline">
+        <a href="/docs">Documentation</a>
+      </Button>,
+    );
+
+    const link = screen.getByRole('link', { name: 'Documentation' });
+    expect(link).toHaveAttribute('data-slot', 'button');
+    expect(link.className).toContain('border');
+  });
 });
