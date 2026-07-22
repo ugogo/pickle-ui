@@ -31,6 +31,7 @@ const STATE_COLUMNS: {
   },
   { key: 'active', label: 'Active', props: { className: 'pseudo-active' } },
   { key: 'disabled', label: 'Disabled', props: { disabled: true } },
+  { key: 'loading', label: 'Loading', props: { loading: true } },
 ];
 
 const STATE_PROPS = Object.fromEntries(
@@ -41,24 +42,28 @@ const VARIANT_ROWS: {
   key: ButtonVariant;
   label: string;
 }[] = [
-  { key: 'primary', label: 'Primary' },
+  { key: 'default', label: 'Default' },
   { key: 'secondary', label: 'Secondary' },
   { key: 'destructive', label: 'Destructive' },
+  { key: 'destructive-outline', label: 'Destructive outline' },
   { key: 'outline', label: 'Outline' },
   { key: 'ghost', label: 'Ghost' },
+  { key: 'link', label: 'Link' },
 ];
 
 const SIZE_COLUMNS = [
-  { description: 'h-7', key: 'sm', label: 'Small' },
-  { description: 'h-8 · default', key: 'md', label: 'Medium' },
+  { description: 'h-7', key: 'xs', label: 'Extra small' },
+  { description: 'h-8', key: 'sm', label: 'Small' },
+  { description: 'h-8', key: 'md', label: 'Medium' },
   { description: 'h-9', key: 'lg', label: 'Large' },
+  { description: 'h-10', key: 'xl', label: 'Extra large' },
 ];
 
 const CONTENT_ROWS = [
   { key: 'text', label: 'Text' },
   { key: 'with-icon', label: 'Icon and text' },
   {
-    description: 'Squared automatically — no icon size needed',
+    description: 'Use size="icon" with aria-label',
     key: 'icon',
     label: 'Icon only',
   },
@@ -71,15 +76,17 @@ function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
 
   if (row.key === 'icon') {
     return (
-      <Button aria-label="Add" variant={variant}>
-        <IconPlus stroke={2} />
+      <Button aria-label="Add" size="icon" variant={variant}>
+        <IconPlus aria-hidden="true" stroke={2} />
       </Button>
     );
   }
 
   return (
     <Button variant={variant}>
-      {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
+      {row.key === 'with-icon' ? (
+        <IconPlus aria-hidden="true" stroke={2} />
+      ) : null}
       Add
     </Button>
   );
@@ -90,15 +97,17 @@ function ButtonSizeCell({ column, row }: ComponentMatrixCellProps) {
 
   if (row.key === 'icon') {
     return (
-      <Button aria-label="Add" size={size}>
-        <IconPlus stroke={2} />
+      <Button aria-label="Add" size="icon">
+        <IconPlus aria-hidden="true" stroke={2} />
       </Button>
     );
   }
 
   return (
     <Button size={size}>
-      {row.key === 'with-icon' ? <IconPlus stroke={2} /> : null}
+      {row.key === 'with-icon' ? (
+        <IconPlus aria-hidden="true" stroke={2} />
+      ) : null}
       Add
     </Button>
   );
@@ -127,7 +136,7 @@ export const All: StoryDefinition = {
         <Story.Matrix
           Cell={ButtonContentCell}
           columns={[
-            { key: 'primary', label: 'Primary' },
+            { key: 'default', label: 'Default' },
             { key: 'outline', label: 'Outline' },
             { key: 'ghost', label: 'Ghost' },
           ]}

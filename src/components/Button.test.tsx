@@ -11,28 +11,11 @@ describe('Button', () => {
     expect(button).toHaveAttribute('type', 'button');
   });
 
-  it('does not collapse text and icon content to an icon-only button', () => {
-    render(
-      <Button>
-        View report <svg aria-hidden="true" />
-      </Button>,
-    );
+  it('shows a loading indicator when loading', () => {
+    render(<Button loading>Save</Button>);
 
-    expect(
-      screen.getByRole('button', { name: 'View report' }),
-    ).not.toHaveAttribute('data-icon-only');
-  });
-
-  it('marks a lone icon button for square sizing', () => {
-    render(
-      <Button aria-label="Options">
-        <svg aria-hidden="true" />
-      </Button>,
-    );
-
-    expect(screen.getByRole('button', { name: 'Options' })).toHaveAttribute(
-      'data-icon-only',
-    );
+    expect(screen.getByRole('button', { name: /Save/ })).toBeDisabled();
+    expect(screen.getByRole('status', { name: 'Loading' })).toBeInTheDocument();
   });
 
   it('merges button styles onto a child element with asChild', () => {

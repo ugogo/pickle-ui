@@ -25,7 +25,7 @@ const TRIGGER_COLUMNS: {
   key: NonNullable<ButtonProps['variant']>;
   label: string;
 }[] = [
-  { key: 'primary', label: 'Primary trigger' },
+  { key: 'default', label: 'Default trigger' },
   { key: 'outline', label: 'Outline trigger' },
   { key: 'ghost', label: 'Ghost trigger' },
 ];
