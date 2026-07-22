@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/form/Select';
 import { Input } from '@/components/Input';
-import { InputGroup } from '@/components/InputGroup';
+import { InputGroup, InputGroupInput } from '@/components/InputGroup';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
 import { Slider } from '@/components/Slider';
 import { useAsRef } from '@/hooks/use-as-ref';
@@ -984,7 +984,7 @@ function HexInput(props: FormatInputProps) {
 
   return (
     <InputGroup className={className}>
-      <Input
+      <InputGroupInput
         aria-label="Hex color value"
         {...inputProps}
         className="flex-1 font-mono"
@@ -993,7 +993,7 @@ function HexInput(props: FormatInputProps) {
         placeholder="#000000"
         value={hexValue}
       />
-      <Input
+      <InputGroupInput
         aria-label="Alpha transparency percentage"
         {...inputProps}
         className="w-14"
@@ -1048,7 +1048,7 @@ function HsbInput(props: HsbInputProps) {
 
   return (
     <InputGroup className={className}>
-      <Input
+      <InputGroupInput
         aria-label="Hue degree (0-360)"
         {...inputProps}
         className="w-14"
@@ -1061,7 +1061,7 @@ function HsbInput(props: HsbInputProps) {
         placeholder="0"
         value={hsv?.h ?? 0}
       />
-      <Input
+      <InputGroupInput
         aria-label="Saturation percentage (0-100)"
         {...inputProps}
         className="w-14"
@@ -1074,7 +1074,7 @@ function HsbInput(props: HsbInputProps) {
         placeholder="0"
         value={hsv?.s ?? 0}
       />
-      <Input
+      <InputGroupInput
         aria-label="Brightness percentage (0-100)"
         {...inputProps}
         className="w-14"
@@ -1088,7 +1088,7 @@ function HsbInput(props: HsbInputProps) {
         value={hsv?.v ?? 0}
       />
       {!withoutAlpha && (
-        <Input
+        <InputGroupInput
           aria-label="Alpha transparency percentage"
           {...inputProps}
           className="w-14"
@@ -1144,7 +1144,7 @@ function HslInput(props: FormatInputProps) {
 
   return (
     <InputGroup className={className}>
-      <Input
+      <InputGroupInput
         aria-label="Hue degree (0-360)"
         {...inputProps}
         className="w-14"
@@ -1157,7 +1157,7 @@ function HslInput(props: FormatInputProps) {
         placeholder="0"
         value={hsl.h}
       />
-      <Input
+      <InputGroupInput
         aria-label="Saturation percentage (0-100)"
         {...inputProps}
         className="w-14"
@@ -1170,7 +1170,7 @@ function HslInput(props: FormatInputProps) {
         placeholder="0"
         value={hsl.s}
       />
-      <Input
+      <InputGroupInput
         aria-label="Lightness percentage (0-100)"
         {...inputProps}
         className="w-14"
@@ -1184,7 +1184,7 @@ function HslInput(props: FormatInputProps) {
         value={hsl.l}
       />
       {!withoutAlpha && (
-        <Input
+        <InputGroupInput
           aria-label="Alpha transparency percentage"
           {...inputProps}
           className="w-14"
@@ -1231,7 +1231,7 @@ function RgbInput(props: FormatInputProps) {
 
   return (
     <InputGroup className={className}>
-      <Input
+      <InputGroupInput
         aria-label="Red color component (0-255)"
         {...inputProps}
         className="w-14"
@@ -1244,7 +1244,7 @@ function RgbInput(props: FormatInputProps) {
         placeholder="0"
         value={rValue}
       />
-      <Input
+      <InputGroupInput
         aria-label="Green color component (0-255)"
         {...inputProps}
         className="w-14"
@@ -1257,7 +1257,7 @@ function RgbInput(props: FormatInputProps) {
         placeholder="0"
         value={gValue}
       />
-      <Input
+      <InputGroupInput
         aria-label="Blue color component (0-255)"
         {...inputProps}
         className="w-14"
@@ -1271,7 +1271,7 @@ function RgbInput(props: FormatInputProps) {
         value={bValue}
       />
       {!withoutAlpha && (
-        <Input
+        <InputGroupInput
           aria-label="Alpha transparency percentage"
           {...inputProps}
           className="w-14"

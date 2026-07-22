@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import { Input } from '@/components/Input';
+import { InputGroupInput } from '@/components/InputGroup';
 
 import {
   FormInputGroupContext,
@@ -24,8 +25,15 @@ function FormInput({ id: idProp, name: nameProp, ...props }: FormInputProps) {
     { enabled: !isInsideInputGroup },
   );
 
+  const InputComponent = isInsideInputGroup ? InputGroupInput : Input;
+
   return (
-    <Input {...props} {...registeredProps} {...controlProps} name={name} />
+    <InputComponent
+      {...props}
+      {...registeredProps}
+      {...controlProps}
+      name={name}
+    />
   );
 }
 

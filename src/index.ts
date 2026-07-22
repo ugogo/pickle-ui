@@ -99,11 +99,19 @@ export type { GridProps } from './components/Grid';
 export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
 
-export { InputGroup } from './components/InputGroup';
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+} from './components/InputGroup';
 export type {
   InputGroupAddonProps,
   InputGroupButtonProps,
+  InputGroupInputProps,
   InputGroupProps,
+  InputGroupTextProps,
 } from './components/InputGroup';
 
 export { Popover } from './components/Popover';

@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { IconSearch } from '@tabler/icons-react';
+import { IconEye, IconEyeOff, IconSearch } from '@tabler/icons-react';
+import * as React from 'react';
 
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
-import { Input } from './Input';
+import { Button } from './Button';
 import { InputGroup } from './InputGroup';
 
 const meta = {
@@ -23,21 +24,31 @@ const STATE_COLUMNS = [
   { key: 'invalid', label: 'Invalid' },
 ];
 
-const COMPOSITION_ROWS = [
+const PATTERN_ROWS = [
   {
-    description: 'Single input keeps the standard radius',
-    key: 'isolated',
-    label: 'Isolated',
+    description: 'Leading icon addon',
+    key: 'search',
+    label: 'Search',
   },
   {
-    description: 'Leading and trailing inputs',
-    key: 'pair',
-    label: 'Two inputs',
+    description: 'Trailing visibility toggle',
+    key: 'password',
+    label: 'Password',
   },
   {
-    description: 'Leading, middle, and trailing inputs',
-    key: 'trio',
-    label: 'Three inputs',
+    description: 'Leading text addon',
+    key: 'currency',
+    label: 'Currency',
+  },
+  {
+    description: 'Trailing text addon',
+    key: 'domain',
+    label: 'Domain',
+  },
+  {
+    description: 'Adjacent inputs with a divider',
+    key: 'multi-input',
+    label: 'Multi-input',
   },
 ];
 
@@ -47,74 +58,124 @@ function InputGroupMatrixCell({ column, row }: ComponentMatrixCellProps) {
     disabled: column.key === 'disabled',
   };
 
-  if (row.key === 'isolated') {
+  if (row.key === 'search') {
     return (
-      <InputGroup className="w-full max-w-[15rem]">
-        <Input
-          aria-label="Standalone value"
-          defaultValue="Standalone"
+      <InputGroup className="w-full max-w-64">
+        <InputGroup.Addon>
+          <IconSearch aria-hidden size={16} />
+        </InputGroup.Addon>
+        <InputGroup.Input
+          aria-label="Search"
+          placeholder="Search…"
+          type="search"
           {...inputProps}
         />
       </InputGroup>
     );
   }
 
-  if (row.key === 'pair') {
+  if (row.key === 'password') {
     return (
-      <InputGroup className="w-full max-w-[15rem]">
-        <Input
-          aria-label="Hex value"
-          className="font-mono"
-          defaultValue="#40c080"
+      <PasswordInputGroupCell
+        disabled={column.key === 'disabled'}
+        invalid={column.key === 'invalid'}
+      />
+    );
+  }
+
+  if (row.key === 'currency') {
+    return (
+      <InputGroup className="w-full max-w-64">
+        <InputGroup.Addon>$</InputGroup.Addon>
+        <InputGroup.Input
+          aria-label="Amount in USD"
+          defaultValue="1200"
           {...inputProps}
         />
-        <Input aria-label="Alpha" defaultValue="100" {...inputProps} />
+      </InputGroup>
+    );
+  }
+
+  if (row.key === 'domain') {
+    return (
+      <InputGroup className="w-full max-w-64">
+        <InputGroup.Input
+          aria-label="Pickle subdomain ending in .dev"
+          defaultValue="pickle"
+          {...inputProps}
+        />
+        <InputGroup.Addon align="inline-end">.dev</InputGroup.Addon>
       </InputGroup>
     );
   }
 
   return (
-    <InputGroup className="w-full max-w-[15rem]">
-      <Input aria-label="Red" defaultValue="64" {...inputProps} />
-      <Input aria-label="Green" defaultValue="128" {...inputProps} />
-      <Input aria-label="Blue" defaultValue="192" {...inputProps} />
+    <InputGroup className="w-full max-w-64">
+      <InputGroup.Input
+        aria-label="Hex color value"
+        className="flex-1 font-mono"
+        defaultValue="#40c080"
+        {...inputProps}
+      />
+      <InputGroup.Input
+        aria-label="Alpha transparency percentage"
+        className="w-14"
+        defaultValue="100"
+        {...inputProps}
+      />
+    </InputGroup>
+  );
+}
+
+function PasswordInputGroupCell({
+  disabled,
+  invalid,
+}: {
+  disabled?: boolean;
+  invalid?: boolean;
+}) {
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  return (
+    <InputGroup className="w-full max-w-64">
+      <InputGroup.Input
+        aria-invalid={invalid || undefined}
+        aria-label="Password with toggle visibility"
+        disabled={disabled}
+        placeholder="Enter your password"
+        type={showPassword ? 'text' : 'password'}
+      />
+      <InputGroup.Addon align="inline-end">
+        <Button
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+          disabled={disabled}
+          onClick={() => setShowPassword((visible) => !visible)}
+          size="icon-xs"
+          type="button"
+          variant="ghost"
+        >
+          {showPassword ? (
+            <IconEyeOff aria-hidden size={16} />
+          ) : (
+            <IconEye aria-hidden size={16} />
+          )}
+        </Button>
+      </InputGroup.Addon>
     </InputGroup>
   );
 }
 
 export const All: StoryDefinition = {
   render: () => (
-    <Story.Layout className="max-w-5xl" title="InputGroup">
-      <Story.Section title="Composition and states">
+    <Story.Layout className="max-w-6xl" title="InputGroup">
+      <Story.Section title="Patterns and states">
         <Story.Matrix
           Cell={InputGroupMatrixCell}
           cellClassName="justify-stretch"
           cellWidth="16rem"
           columns={STATE_COLUMNS}
-          rows={COMPOSITION_ROWS}
+          rows={PATTERN_ROWS}
         />
-      </Story.Section>
-      <Story.Section title="Addons and buttons">
-        <div className="max-w-md space-y-4">
-          <InputGroup>
-            <InputGroup.Addon>$</InputGroup.Addon>
-            <Input aria-label="Amount in USD" defaultValue="1200" />
-          </InputGroup>
-          <InputGroup>
-            <Input
-              aria-label="Pickle subdomain ending in .dev"
-              defaultValue="pickle"
-            />
-            <InputGroup.Addon>.dev</InputGroup.Addon>
-          </InputGroup>
-          <InputGroup>
-            <InputGroup.Addon>
-              <IconSearch aria-hidden size={14} />
-            </InputGroup.Addon>
-            <Input aria-label="Search" placeholder="Search…" />
-            <InputGroup.Button aria-label="Submit search">Go</InputGroup.Button>
-          </InputGroup>
-        </div>
       </Story.Section>
     </Story.Layout>
   ),
