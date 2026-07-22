@@ -56,36 +56,22 @@ const STATE_PROPS = Object.fromEntries(
   STATE_COLUMNS.map((state) => [state.key, state.props]),
 ) as Record<string, ThemeSelectStateProps>;
 
-const SIZE_ROWS = [
-  { description: 'Standard control height', key: 'default', label: 'Default' },
-  { description: 'Compact dense forms', key: 'sm', label: 'Small' },
-];
-
-function SelectMatrixCell({ column, row }: ComponentMatrixCellProps) {
-  return (
-    <ThemeSelect
-      size={row.key as 'default' | 'sm'}
-      {...STATE_PROPS[column.key]}
-    />
-  );
+function SelectMatrixCell({ column }: ComponentMatrixCellProps) {
+  return <ThemeSelect {...STATE_PROPS[column.key]} />;
 }
 
 function ThemeSelect({
   disabled,
   invalid,
-  size,
   triggerClassName,
   value,
-}: ThemeSelectStateProps & {
-  size: 'default' | 'sm';
-}) {
+}: ThemeSelectStateProps) {
   return (
     <Select defaultValue={value} disabled={disabled}>
       <Select.Label className="sr-only">Theme</Select.Label>
       <Select.Trigger
         aria-invalid={invalid || undefined}
         className={cn('w-44', triggerClassName)}
-        size={size}
       >
         <Select.Value placeholder="Theme" />
       </Select.Trigger>
@@ -104,11 +90,11 @@ function ThemeSelect({
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Select">
-      <Story.Section title="Sizes and states">
+      <Story.Section title="States">
         <Story.Matrix
           Cell={SelectMatrixCell}
           columns={STATE_COLUMNS}
-          rows={SIZE_ROWS}
+          rows={[{ key: 'select', label: 'Select' }]}
         />
       </Story.Section>
 

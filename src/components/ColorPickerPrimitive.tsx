@@ -178,7 +178,7 @@ type ColorPickerContentProps = Omit<
 interface ColorPickerFormatSelectProps
   extends
     Omit<React.ComponentProps<typeof Select>, 'onValueChange' | 'value'>,
-    Pick<React.ComponentProps<typeof SelectTrigger>, 'className' | 'size'> {}
+    Pick<React.ComponentProps<typeof SelectTrigger>, 'className'> {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- a named props interface that is intentionally an alias of the Omit below, kept as an interface for naming and future extension
 interface ColorPickerImplProps extends Omit<
@@ -193,8 +193,9 @@ interface ColorPickerImplProps extends Omit<
 
 interface ColorPickerInputProps extends Omit<
   React.ComponentProps<typeof Input>,
-  'color' | 'onChange' | 'value'
+  'className' | 'color' | 'onChange' | 'value'
 > {
+  className?: string;
   withoutAlpha?: boolean;
 }
 
@@ -614,7 +615,7 @@ function ColorPickerEyeDropper(props: React.ComponentProps<typeof Button>) {
 }
 
 function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
-  const { className, disabled, size, ...selectProps } = props;
+  const { className, disabled, ...selectProps } = props;
 
   const context = useColorPickerContext(FORMAT_SELECT_NAME);
   const store = useStoreContext(FORMAT_SELECT_NAME);
@@ -640,7 +641,6 @@ function ColorPickerFormatSelect(props: ColorPickerFormatSelectProps) {
       <SelectTrigger
         className={cn(className)}
         data-slot="color-picker-format-select-trigger"
-        size={size ?? 'sm'}
       >
         <SelectValue />
       </SelectTrigger>
