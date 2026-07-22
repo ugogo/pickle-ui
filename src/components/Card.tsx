@@ -15,7 +15,10 @@ type CardTitleProps = Omit<TextProps, 'as' | 'tone' | 'variant'>;
 function CardAction({ className, ...props }: CardActionProps) {
   return (
     <div
-      className={cn('col-start-2 row-span-2 row-start-1 self-start', className)}
+      className={cn(
+        'col-start-2 row-span-2 row-start-1 inline-flex self-start justify-self-end',
+        className,
+      )}
       data-slot="card-action"
       {...props}
     />
@@ -25,7 +28,10 @@ function CardAction({ className, ...props }: CardActionProps) {
 function CardContent({ className, ...props }: CardContentProps) {
   return (
     <div
-      className={cn('px-6', className)}
+      className={cn(
+        'flex-1 p-6 in-[[data-slot=card]:has(>[data-slot=card-footer]:not(.border-t))]:pb-0 in-[[data-slot=card]:has(>[data-slot=card-header]:not(.border-b))]:pt-0',
+        className,
+      )}
       data-slot="card-content"
       {...props}
     />
@@ -35,7 +41,7 @@ function CardContent({ className, ...props }: CardContentProps) {
 function CardDescription({ className, ...props }: CardDescriptionProps) {
   return (
     <Text
-      className={cn('col-start-1', className)}
+      className={cn('text-muted-foreground text-sm', className)}
       data-slot="card-description"
       tone="muted"
       variant="body"
@@ -47,7 +53,10 @@ function CardDescription({ className, ...props }: CardDescriptionProps) {
 function CardFooter({ className, ...props }: CardFooterProps) {
   return (
     <div
-      className={cn('flex items-center px-6', className)}
+      className={cn(
+        'flex items-center p-6 in-[[data-slot=card]:has(>[data-slot=card-content])]:pt-4',
+        className,
+      )}
       data-slot="card-footer"
       {...props}
     />
@@ -58,7 +67,7 @@ function CardHeader({ className, ...props }: CardHeaderProps) {
   return (
     <div
       className={cn(
-        'grid auto-rows-min grid-cols-[1fr_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto]',
+        'grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 p-6 in-[[data-slot=card]:has(>[data-slot=card-content])]:pb-4 has-data-[slot=card-action]:grid-cols-[1fr_auto]',
         className,
       )}
       data-slot="card-header"
@@ -71,7 +80,7 @@ function CardRoot({ className, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        'border-border bg-card text-card-foreground flex flex-col gap-6 rounded-lg border py-6 shadow-sm',
+        'bg-card text-card-foreground relative flex flex-col rounded-2xl border shadow-xs/5 not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]',
         className,
       )}
       data-slot="card"
@@ -83,7 +92,7 @@ function CardRoot({ className, ...props }: CardProps) {
 function CardTitle({ className, ...props }: CardTitleProps) {
   return (
     <Text
-      className={cn('leading-none', className)}
+      className={cn('font-heading leading-none font-semibold', className)}
       data-slot="card-title"
       variant="h3"
       {...props}
