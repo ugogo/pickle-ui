@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "coss": {
+      "source": "cosscom/coss",
+      "sourceType": "github",
+      "skillPath": "apps/ui/skills/coss/SKILL.md",
+      "computedHash": "coss-ui-migration"
+    },
     "improve": {
       "source": "shadcn/improve",
       "sourceType": "github",
