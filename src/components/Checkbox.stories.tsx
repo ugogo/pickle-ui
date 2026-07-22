@@ -40,7 +40,7 @@ const SIZE_ROWS: {
   key: CheckboxSize;
   label: string;
 }[] = [
-  { key: 'default', label: 'Default' },
+  { key: 'md', label: 'Medium' },
   { key: 'sm', label: 'Small' },
 ];
 
