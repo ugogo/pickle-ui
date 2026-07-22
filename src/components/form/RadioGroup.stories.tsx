@@ -19,7 +19,7 @@ const SIZE_ROWS: {
   key: RadioSize;
   label: string;
 }[] = [
-  { key: 'default', label: 'Default' },
+  { key: 'md', label: 'Medium' },
   { key: 'sm', label: 'Small' },
 ];
 

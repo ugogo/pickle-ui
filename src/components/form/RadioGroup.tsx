@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 type RadioGroupItemProps = React.ComponentProps<typeof RadioPrimitive.Root> & {
   label?: React.ReactNode;
   labelClassName?: string;
-  size?: 'default' | 'sm';
+  size?: 'md' | 'sm';
 };
 
 type RadioGroupProps = React.ComponentProps<typeof RadioGroupPrimitive>;
@@ -58,13 +58,13 @@ function RadioGroupItem({
 
 function RadioGroupItemControl({
   className,
-  size = 'default',
+  size = 'md',
   ...props
 }: RadioGroupItemProps) {
   return (
     <RadioPrimitive.Root
       className={cn(
-        'peer group/radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:border-primary focus-ring inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=default]:size-4 data-[size=sm]:size-3.5',
+        'peer group/radio aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 border-input bg-background data-checked:border-primary focus-ring inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border aria-invalid:ring-[3px] data-disabled:cursor-not-allowed data-disabled:opacity-50 data-[size=md]:size-4 data-[size=sm]:size-3.5',
         className,
       )}
       data-size={size}
@@ -72,7 +72,7 @@ function RadioGroupItemControl({
       {...props}
     >
       <RadioPrimitive.Indicator
-        className="bg-primary rounded-full group-data-[size=default]/radio:size-2 group-data-[size=sm]/radio:size-1.5"
+        className="bg-primary rounded-full group-data-[size=md]/radio:size-2 group-data-[size=sm]/radio:size-1.5"
         data-slot="radio-indicator"
       />
     </RadioPrimitive.Root>
