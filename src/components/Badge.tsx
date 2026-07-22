@@ -4,31 +4,40 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const badgeVariants = cva(
-  'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md px-2 py-1 text-xs leading-none font-medium whitespace-nowrap [&>svg]:pointer-events-none [&>svg]:size-3 [&>svg]:shrink-0',
+  "relative inline-flex shrink-0 items-center justify-center gap-1 whitespace-nowrap rounded-sm border border-transparent font-medium outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-64 [&_svg:not([class*='opacity-'])]:opacity-80 [&_svg:not([class*='size-'])]:size-3.5 sm:[&_svg:not([class*='size-'])]:size-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [button&,a&]:cursor-pointer [button&,a&]:pointer-coarse:after:absolute [button&,a&]:pointer-coarse:after:size-full [button&,a&]:pointer-coarse:after:min-h-11 [button&,a&]:pointer-coarse:after:min-w-11",
   {
     defaultVariants: {
-      variant: 'primary',
+      size: 'md',
+      variant: 'default',
     },
     variants: {
+      size: {
+        lg: 'h-6.5 min-w-6.5 px-[calc(--spacing(1.5)-1px)] text-base sm:h-5.5 sm:min-w-5.5 sm:text-sm',
+        md: 'h-5.5 min-w-5.5 px-[calc(--spacing(1)-1px)] text-sm sm:h-4.5 sm:min-w-4.5 sm:text-xs',
+        sm: 'h-5 min-w-5 rounded-[.25rem] px-[calc(--spacing(1)-1px)] text-xs sm:h-4 sm:min-w-4 sm:text-[.625rem]',
+      },
       variant: {
+        default:
+          'bg-primary text-primary-foreground [button&,a&]:hover:bg-primary/90',
         destructive:
-          'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300',
+          'bg-destructive text-white [button&,a&]:hover:bg-destructive/90',
+        error:
+          'bg-destructive/8 text-destructive-foreground dark:bg-destructive/16',
         expired:
-          'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300',
-        failed: 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300',
-        inProgress:
-          'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300',
-        inReview:
-          'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300',
-        outline: 'border-border text-foreground border',
-        pending:
-          'bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300',
-        primary: 'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300',
+          'bg-secondary text-secondary-foreground [button&,a&]:hover:bg-secondary/90',
+        failed:
+          'bg-destructive/8 text-destructive-foreground dark:bg-destructive/16',
+        info: 'bg-info/8 text-info-foreground dark:bg-info/16',
+        inProgress: 'bg-info/8 text-info-foreground dark:bg-info/16',
+        inReview: 'bg-warning/8 text-warning-foreground dark:bg-warning/16',
+        outline:
+          'border-input bg-background text-foreground dark:bg-input/32 [button&,a&]:hover:bg-accent/50 dark:[button&,a&]:hover:bg-input/48',
+        pending: 'bg-warning/8 text-warning-foreground dark:bg-warning/16',
         secondary:
-          'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300',
-        submitted:
-          'bg-violet-50 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300',
-        success: 'bg-success text-success-foreground',
+          'bg-secondary text-secondary-foreground [button&,a&]:hover:bg-secondary/90',
+        submitted: 'bg-info/8 text-info-foreground dark:bg-info/16',
+        success: 'bg-success/8 text-success-foreground dark:bg-success/16',
+        warning: 'bg-warning/8 text-warning-foreground dark:bg-warning/16',
       },
     },
   },
@@ -37,10 +46,10 @@ const badgeVariants = cva(
 interface BadgeProps
   extends React.ComponentProps<'span'>, VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, size, variant, ...props }: BadgeProps) {
   return (
     <span
-      className={cn(badgeVariants({ variant }), className)}
+      className={cn(badgeVariants({ size, variant }), className)}
       data-slot="badge"
       {...props}
     />

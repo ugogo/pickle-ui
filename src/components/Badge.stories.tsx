@@ -49,6 +49,17 @@ const STATUS_ROWS = [
   { key: 'expired', label: 'Expired' },
 ];
 
+const SEMANTIC_ROWS = [
+  { key: 'default', label: 'Default' },
+  { key: 'secondary', label: 'Secondary' },
+  { key: 'outline', label: 'Outline' },
+  { key: 'info', label: 'Info' },
+  { key: 'success', label: 'Success' },
+  { key: 'warning', label: 'Warning' },
+  { key: 'error', label: 'Error' },
+  { key: 'destructive', label: 'Destructive' },
+];
+
 const statusIcons: Record<StatusVariant, ElementType> = {
   expired: IconClock,
   failed: IconCircleX,
@@ -65,7 +76,15 @@ function BadgeMatrixCell({ column, row }: ComponentMatrixCellProps) {
 
   return (
     <Badge variant={variant}>
-      {column.key === 'icon' ? <Icon /> : null}
+      {column.key === 'icon' ? <Icon aria-hidden="true" /> : null}
+      {row.label}
+    </Badge>
+  );
+}
+
+function SemanticBadgeCell({ row }: ComponentMatrixCellProps) {
+  return (
+    <Badge variant={row.key as NonNullable<BadgeProps['variant']>}>
       {row.label}
     </Badge>
   );
@@ -74,6 +93,14 @@ function BadgeMatrixCell({ column, row }: ComponentMatrixCellProps) {
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-4xl" title="Badge">
+      <Story.Section title="Semantic badges">
+        <Story.Matrix
+          Cell={SemanticBadgeCell}
+          cellClassName="min-h-16"
+          columns={DISPLAY_COLUMNS}
+          rows={SEMANTIC_ROWS}
+        />
+      </Story.Section>
       <Story.Section title="Status badges">
         <Story.Matrix
           Cell={BadgeMatrixCell}

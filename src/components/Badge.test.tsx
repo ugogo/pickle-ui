@@ -11,6 +11,6 @@ describe('Badge', () => {
 
   it('supports the success variant', () => {
     render(<Badge variant="success">Complete</Badge>);
-    expect(screen.getByText('Complete')).toHaveClass('bg-success');
+    expect(screen.getByText('Complete')).toHaveClass('bg-success/8');
   });
 });
