@@ -45,11 +45,6 @@ const PATTERN_ROWS = [
     key: 'domain',
     label: 'Domain',
   },
-  {
-    description: 'Adjacent inputs with a divider',
-    key: 'multi-input',
-    label: 'Multi-input',
-  },
 ];
 
 function InputGroupMatrixCell({ column, row }: ComponentMatrixCellProps) {
@@ -109,22 +104,7 @@ function InputGroupMatrixCell({ column, row }: ComponentMatrixCellProps) {
     );
   }
 
-  return (
-    <InputGroup className="w-full max-w-64">
-      <InputGroup.Input
-        aria-label="Hex color value"
-        className="flex-1 font-mono"
-        defaultValue="#40c080"
-        {...inputProps}
-      />
-      <InputGroup.Input
-        aria-label="Alpha transparency percentage"
-        className="w-14"
-        defaultValue="100"
-        {...inputProps}
-      />
-    </InputGroup>
-  );
+  return null;
 }
 
 function PasswordInputGroupCell({

@@ -97,6 +97,19 @@ export type {
 export { Grid } from './components/Grid';
 export type { GridProps } from './components/Grid';
 
+export {
+  Group,
+  GroupRoot,
+  GroupSeparator,
+  GroupText,
+  groupVariants,
+} from './components/Group';
+export type {
+  GroupProps,
+  GroupSeparatorProps,
+  GroupTextProps,
+} from './components/Group';
+
 export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
 
