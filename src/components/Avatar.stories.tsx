@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Avatar } from './Avatar';
-import { XStack } from './XStack';
 
 const meta = {
   component: Avatar,
@@ -77,16 +76,16 @@ export const All: StoryDefinition = {
       </Story.Section>
 
       <Story.Section title="Grouped">
-        <XStack className="-space-x-2">
+        <Avatar.Group>
           {people.map((person) => (
-            <Avatar className="ring-background ring-2" key={person.name}>
+            <Avatar key={person.name}>
               {person.src ? (
                 <Avatar.Image alt={person.name} src={person.src} />
               ) : null}
               <Avatar.Fallback>{person.fallback}</Avatar.Fallback>
             </Avatar>
           ))}
-        </XStack>
+        </Avatar.Group>
       </Story.Section>
     </Story.Layout>
   ),
