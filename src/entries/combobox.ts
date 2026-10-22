@@ -1,0 +1,20 @@
+export { Combobox } from '../components/form/Combobox';
+export type {
+  ComboboxChipProps,
+  ComboboxChipsInputProps,
+  ComboboxChipsProps,
+  ComboboxClearProps,
+  ComboboxCollectionProps,
+  ComboboxContentProps,
+  ComboboxEmptyProps,
+  ComboboxGroupLabelProps,
+  ComboboxGroupProps,
+  ComboboxInputProps,
+  ComboboxItemProps,
+  ComboboxListProps,
+  ComboboxProps,
+  ComboboxSeparatorProps,
+  ComboboxStatusProps,
+  ComboboxTriggerProps,
+  ComboboxValueProps,
+} from '../components/form/Combobox';
