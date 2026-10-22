@@ -22,6 +22,7 @@ export * from './entries/select';
 export * from './entries/separator';
 export * from './entries/sidebar';
 export * from './entries/slider';
+export * from './entries/spinner';
 export * from './entries/switch';
 export * from './entries/table';
 export * from './entries/text';
