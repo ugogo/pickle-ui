@@ -12,6 +12,12 @@ on:
           - patch
           - minor
           - major
+          - prerelease
+      preid:
+        description: Pre-release identifier (e.g. beta), published under that npm dist-tag; empty for a stable release
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -23,7 +29,7 @@ concurrency:
 
 jobs:
   release:
-    name: Release ${{ inputs.bump }} version
+    name: Release ${{ inputs.bump }} ${{ inputs.preid }} version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
@@ -56,6 +62,21 @@ jobs:
           git branch --set-upstream-to=origin/main main
 
       - name: Release
-        run: pnpm exec release-it "${{ inputs.bump }}" --ci
+        run: |
+          args=("$BUMP" --ci)
+          if [ -n "$PREID" ]; then
+            if [[ ! "$PREID" =~ ^[a-z]+$ ]]; then
+              echo "::error::preid must be lowercase letters (e.g. beta)"
+              exit 1
+            fi
+            # Pre-releases go to their own dist-tag and never become the latest GitHub release
+            args+=(--preRelease="$PREID" --npm.tag="$PREID" --github.makeLatest=false)
+          elif [ "$BUMP" = prerelease ]; then
+            echo "::error::bump=prerelease requires a preid"
+            exit 1
+          fi
+          pnpm exec release-it "${args[@]}"
         env:
+          BUMP: ${{ inputs.bump }}
+          PREID: ${{ inputs.preid }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
