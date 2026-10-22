@@ -211,6 +211,33 @@ function FruitCombobox({
   );
 }
 
+function StartsWithFruit() {
+  return (
+    <Combobox
+      filter={(fruit: Fruit, query) =>
+        fruit.label.toLowerCase().startsWith(query.toLowerCase())
+      }
+      items={FRUITS}
+    >
+      <Combobox.Input
+        aria-label="Fruit (starts with)"
+        className="w-64"
+        placeholder="Matches the start of names"
+      />
+      <Combobox.Content>
+        <Combobox.Empty>No fruit starts with that.</Combobox.Empty>
+        <Combobox.List>
+          {(fruit: Fruit) => (
+            <Combobox.Item key={fruit.value} value={fruit}>
+              {fruit.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
+}
+
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Combobox">
@@ -333,6 +360,10 @@ export const All: StoryDefinition = {
             </Combobox.List>
           </Combobox.Content>
         </Combobox>
+      </Story.Section>
+
+      <Story.Section title="Custom filter">
+        <StartsWithFruit />
       </Story.Section>
 
       <Story.Section title="Creatable">

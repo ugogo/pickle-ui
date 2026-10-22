@@ -59,6 +59,14 @@ type ComboboxProps<
    */
   createLabel?: (inputValue: string) => React.ReactNode;
   /**
+   * Overrides how items are matched against the typed query. Receives the
+   * item, the trimmed query and the item-to-label function; return `true` to
+   * keep the item. Pass `null` to disable filtering (e.g. when `items` are
+   * already filtered on a server). Defaults to a case- and accent-insensitive
+   * "contains" match on the item label. The create option is never filtered.
+   */
+  filter?: ComboboxPrimitive.Root.Props<Value, Multiple>['filter'];
+  /**
    * Called when the user picks the create option. Return the new item to
    * select it; add it to `items` so it stays in the list. Requires `items`.
    */

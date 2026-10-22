@@ -262,4 +262,73 @@ describe('Combobox', () => {
       ]);
     });
   });
+
+  describe('filter', () => {
+    function typeQuery(text: string) {
+      const input = screen.getByRole('combobox', { name: 'Fruit' });
+      fireEvent.focus(input);
+      fireEvent.input(input, {
+        inputType: 'insertText',
+        target: { value: text },
+      });
+    }
+
+    function options() {
+      return screen.queryAllByRole('option').map((o) => o.textContent);
+    }
+
+    const startsWith = (fruit: Fruit, query: string) =>
+      fruit.label.toLowerCase().startsWith(query.toLowerCase());
+
+    it('uses a custom filter function', () => {
+      const filter = vi.fn(startsWith);
+      render(
+        <Combobox filter={filter} items={FRUITS}>
+          <Combobox.Input aria-label="Fruit" />
+          {renderList()}
+        </Combobox>,
+      );
+
+      typeQuery('an');
+      expect(options()).toEqual([]);
+      expect(
+        filter.mock.calls.some(
+          ([item, query]) => item === FRUITS[1] && query === 'an',
+        ),
+      ).toBe(true);
+
+      typeQuery('ba');
+      expect(options()).toEqual(['Banana']);
+    });
+
+    it('disables filtering with filter={null}', () => {
+      render(
+        <Combobox filter={null} items={FRUITS}>
+          <Combobox.Input aria-label="Fruit" />
+          {renderList()}
+        </Combobox>,
+      );
+
+      typeQuery('zzz');
+
+      expect(options()).toEqual(['Apple', 'Banana', 'Cherry']);
+    });
+
+    it('keeps the create option with a custom filter', () => {
+      render(
+        <Combobox
+          filter={startsWith}
+          items={FRUITS}
+          onCreate={(label) => ({ label, value: label })}
+        >
+          <Combobox.Input aria-label="Fruit" />
+          {renderList()}
+        </Combobox>,
+      );
+
+      typeQuery('an');
+
+      expect(options()).toEqual(['Create "an"']);
+    });
+  });
 });
