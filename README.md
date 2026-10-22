@@ -100,11 +100,14 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/radio-group`                  | `RadioGroup` with `Item`                                                                               |
 | `pickle-ui/scroll-area`                  | `ScrollArea` with `Viewport`, `Scrollbar`, `Thumb`, `Corner`                                           |
 | `pickle-ui/select`                       | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                        |
+| `pickle-ui/separator`                    | `Separator`                                                                                            |
 | `pickle-ui/sidebar`                      | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                       |
 | `pickle-ui/slider`                       | `Slider` with `Label`, `Value`, `Marks`                                                                |
+| `pickle-ui/spinner`                      | `Spinner`                                                                                              |
 | `pickle-ui/switch`                       | `Switch` with `Label`                                                                                  |
 | `pickle-ui/table`                        | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                              |
 | `pickle-ui/text`                         | `Text`, `textVariants` for headings and body copy                                                      |
+| `pickle-ui/textarea`                     | `Textarea`, growing with its content                                                                   |
 | `pickle-ui/cn`                           | `cn` class helper, `SlotClassNames` type                                                               |
 | `pickle-ui/theme`                        | `createTheme`, `themeToCss`                                                                            |
 

@@ -12,4 +12,5 @@ export type {
   FormRadioGroupProps,
   FormSelectProps,
   FormSwitchProps,
+  FormTextareaProps,
 } from '../components/form/Form';
