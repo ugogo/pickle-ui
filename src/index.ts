@@ -1,5 +1,6 @@
 // The public API is the union of the subpath entries in ./entries: add a
 // component there and re-export it here (see "Public API" in AGENTS.md).
+export * from './entries/alert-dialog';
 export * from './entries/avatar';
 export * from './entries/badge';
 export * from './entries/button';
@@ -8,22 +9,27 @@ export * from './entries/checkbox';
 export * from './entries/cn';
 export * from './entries/color-picker';
 export * from './entries/combobox';
+export * from './entries/dialog';
 export * from './entries/flex';
 export * from './entries/form';
 export * from './entries/grid';
 export * from './entries/group';
 export * from './entries/input';
 export * from './entries/input-group';
+export * from './entries/menu';
 export * from './entries/popover';
 export * from './entries/progress';
 export * from './entries/radio-group';
 export * from './entries/scroll-area';
 export * from './entries/select';
+export * from './entries/separator';
 export * from './entries/sidebar';
 export * from './entries/slider';
+export * from './entries/spinner';
 export * from './entries/switch';
 export * from './entries/table';
 export * from './entries/text';
+export * from './entries/textarea';
 export * from './entries/theme';
 export * from './entries/tooltip';
 export * from './entries/x-stack';
