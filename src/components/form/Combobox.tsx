@@ -1,7 +1,7 @@
 'use client';
 
 import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
-import { IconCheck, IconSelector, IconX } from '@tabler/icons-react';
+import { IconCheck, IconPlus, IconSelector, IconX } from '@tabler/icons-react';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -24,6 +24,16 @@ type ComboboxContentProps = Pick<
   'align' | 'anchor' | 'side' | 'sideOffset'
 > &
   React.ComponentProps<typeof ComboboxPrimitive.Popup>;
+type ComboboxCreateGroup = {
+  [CREATE_ITEM]: true;
+  items: [ComboboxCreateItem];
+  value: string;
+};
+type ComboboxCreateItem = {
+  [CREATE_ITEM]: true;
+  label: string;
+  value: string;
+};
 type ComboboxEmptyProps = React.ComponentProps<typeof ComboboxPrimitive.Empty>;
 type ComboboxGroupLabelProps = React.ComponentProps<
   typeof ComboboxPrimitive.GroupLabel
@@ -42,7 +52,18 @@ type ComboboxListProps = React.ComponentProps<typeof ComboboxPrimitive.List>;
 type ComboboxProps<
   Value,
   Multiple extends boolean | undefined = false,
-> = ComboboxPrimitive.Root.Props<Value, Multiple>;
+> = ComboboxPrimitive.Root.Props<Value, Multiple> & {
+  /**
+   * Content of the option offered when the typed text matches no item.
+   * @default (inputValue) => `Create "${inputValue}"`
+   */
+  createLabel?: (inputValue: string) => React.ReactNode;
+  /**
+   * Called when the user picks the create option. Return the new item to
+   * select it; add it to `items` so it stays in the list. Requires `items`.
+   */
+  onCreate?: (inputValue: string) => undefined | Value;
+};
 type ComboboxSeparatorProps = React.ComponentProps<
   typeof ComboboxPrimitive.Separator
 >;
@@ -53,6 +74,18 @@ type ComboboxTriggerProps = React.ComponentProps<
   typeof ComboboxPrimitive.Trigger
 >;
 type ComboboxValueProps = React.ComponentProps<typeof ComboboxPrimitive.Value>;
+
+const CREATE_ITEM = Symbol('pickle-ui.combobox.create');
+// Stable fallback so an unset multiple value keeps the same identity.
+const EMPTY_VALUE: never[] = [];
+
+const ComboboxCreateLabelContext =
+  React.createContext<(inputValue: string) => React.ReactNode>(
+    defaultCreateLabel,
+  );
+
+const comboboxItemClassName =
+  "data-highlighted:bg-accent data-highlighted:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
 
 const comboboxIconButtonClassName =
   "text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 inline-flex size-6 shrink-0 cursor-default items-center justify-center rounded-md outline-none focus-visible:ring-2 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4";
@@ -162,6 +195,153 @@ function ComboboxContent({
   );
 }
 
+function ComboboxCreatableRoot<
+  Value,
+  Multiple extends boolean | undefined = false,
+>({
+  createLabel = defaultCreateLabel,
+  defaultValue,
+  filter,
+  inputValue: inputValueProp,
+  isItemEqualToValue,
+  items,
+  itemToStringLabel,
+  itemToStringValue,
+  onCreate,
+  onInputValueChange,
+  onValueChange,
+  value: valueProp,
+  ...props
+}: ComboboxProps<Value, Multiple> & {
+  onCreate: (inputValue: string) => undefined | Value;
+}) {
+  type RootProps = ComboboxPrimitive.Root.Props<Value, Multiple>;
+
+  const [uncontrolledInputValue, setUncontrolledInputValue] = React.useState(
+    String(props.defaultInputValue ?? ''),
+  );
+  const [uncontrolledValue, setUncontrolledValue] =
+    React.useState(defaultValue);
+  const query = String(inputValueProp ?? uncontrolledInputValue).trim();
+  const value =
+    valueProp !== undefined
+      ? valueProp
+      : (uncontrolledValue ?? (props.multiple ? EMPTY_VALUE : null));
+
+  const itemsWithCreate = React.useMemo(() => {
+    if (!items || !query || hasItemLabel(items, query, itemToStringLabel)) {
+      return items;
+    }
+
+    const createItem: ComboboxCreateItem = {
+      [CREATE_ITEM]: true,
+      label: query,
+      value: `${CREATE_ITEM.description}:${query}`,
+    };
+
+    if (isGroupedItems(items)) {
+      const createGroup: ComboboxCreateGroup = {
+        [CREATE_ITEM]: true,
+        items: [createItem],
+        value: CREATE_ITEM.description ?? '',
+      };
+
+      return [...items, createGroup];
+    }
+
+    return [...items, createItem];
+  }, [items, itemToStringLabel, query]);
+
+  const resolveCreated = (item: unknown): unknown[] => {
+    if (!isCreateItem(item)) {
+      return [item];
+    }
+
+    const created = onCreate(item.label);
+
+    return created === undefined ? [] : [created];
+  };
+
+  const handleValueChange: RootProps['onValueChange'] = (
+    nextValue,
+    eventDetails,
+  ) => {
+    let resolvedValue: unknown = nextValue;
+
+    if (Array.isArray(nextValue)) {
+      resolvedValue = nextValue.flatMap(resolveCreated);
+    } else if (isCreateItem(nextValue)) {
+      const [created] = resolveCreated(nextValue);
+
+      if (created === undefined) {
+        return;
+      }
+
+      resolvedValue = created;
+    }
+
+    const typedValue = resolvedValue as Parameters<
+      NonNullable<RootProps['onValueChange']>
+    >[0];
+
+    setUncontrolledValue(typedValue as RootProps['defaultValue']);
+    onValueChange?.(typedValue, eventDetails);
+  };
+
+  return (
+    <ComboboxCreateLabelContext.Provider value={createLabel}>
+      <ComboboxPrimitive.Root
+        {...props}
+        filter={
+          filter &&
+          ((item, filterQuery, toLabel) =>
+            isCreateItem(item) || filter(item, filterQuery, toLabel))
+        }
+        inputValue={inputValueProp}
+        isItemEqualToValue={
+          isItemEqualToValue &&
+          ((item, selected) =>
+            isCreateItem(item) || isCreateItem(selected)
+              ? Object.is(item, selected)
+              : isItemEqualToValue(item, selected))
+        }
+        items={itemsWithCreate}
+        itemToStringLabel={
+          itemToStringLabel &&
+          ((item) =>
+            isCreateItem(item) ? item.label : itemToStringLabel(item))
+        }
+        itemToStringValue={
+          itemToStringValue &&
+          ((item) =>
+            isCreateItem(item) ? item.value : itemToStringValue(item))
+        }
+        onInputValueChange={(nextInputValue, eventDetails) => {
+          setUncontrolledInputValue(nextInputValue);
+          onInputValueChange?.(nextInputValue, eventDetails);
+        }}
+        onValueChange={handleValueChange}
+        value={value as RootProps['value']}
+      />
+    </ComboboxCreateLabelContext.Provider>
+  );
+}
+
+function ComboboxCreateOption({ item }: { item: ComboboxCreateItem }) {
+  const createLabel = React.useContext(ComboboxCreateLabelContext);
+
+  return (
+    <ComboboxPrimitive.Item
+      className={comboboxItemClassName}
+      data-slot="combobox-create"
+      value={item}
+    >
+      <IconPlus className="text-muted-foreground" />
+      {createLabel(item.label)}
+    </ComboboxPrimitive.Item>
+  );
+}
+
 function ComboboxEmpty({ className, ...props }: ComboboxEmptyProps) {
   return (
     <ComboboxPrimitive.Empty
@@ -243,10 +423,7 @@ function ComboboxInput({
 function ComboboxItem({ children, className, ...props }: ComboboxItemProps) {
   return (
     <ComboboxPrimitive.Item
-      className={cn(
-        "data-highlighted:bg-accent data-highlighted:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
+      className={cn(comboboxItemClassName, className)}
       data-slot="combobox-item"
       {...props}
     >
@@ -260,7 +437,7 @@ function ComboboxItem({ children, className, ...props }: ComboboxItemProps) {
   );
 }
 
-function ComboboxList({ className, ...props }: ComboboxListProps) {
+function ComboboxList({ children, className, ...props }: ComboboxListProps) {
   return (
     <ComboboxPrimitive.List
       className={cn(
@@ -269,14 +446,47 @@ function ComboboxList({ className, ...props }: ComboboxListProps) {
       )}
       data-slot="combobox-list"
       {...props}
-    />
+    >
+      {typeof children === 'function'
+        ? (item: unknown, index: number) =>
+            isCreateGroup(item) ? (
+              <ComboboxPrimitive.Group items={item.items} key={item.value}>
+                {index > 0 ? <ComboboxSeparator /> : null}
+                <ComboboxPrimitive.Collection>
+                  {(createItem: ComboboxCreateItem) => (
+                    <ComboboxCreateOption
+                      item={createItem}
+                      key={createItem.value}
+                    />
+                  )}
+                </ComboboxPrimitive.Collection>
+              </ComboboxPrimitive.Group>
+            ) : isCreateItem(item) ? (
+              <ComboboxCreateOption item={item} key={item.value} />
+            ) : (
+              children(item, index)
+            )
+        : children}
+    </ComboboxPrimitive.List>
   );
 }
 
-function ComboboxRoot<Value, Multiple extends boolean | undefined = false>(
-  props: ComboboxProps<Value, Multiple>,
-) {
-  return <ComboboxPrimitive.Root {...props} />;
+function ComboboxRoot<Value, Multiple extends boolean | undefined = false>({
+  createLabel,
+  onCreate,
+  ...props
+}: ComboboxProps<Value, Multiple>) {
+  if (!onCreate) {
+    return <ComboboxPrimitive.Root {...props} />;
+  }
+
+  return (
+    <ComboboxCreatableRoot
+      createLabel={createLabel}
+      onCreate={onCreate}
+      {...props}
+    />
+  );
 }
 
 function ComboboxSeparator({ className, ...props }: ComboboxSeparatorProps) {
@@ -324,6 +534,70 @@ function ComboboxTrigger({
 
 function ComboboxValue(props: ComboboxValueProps) {
   return <ComboboxPrimitive.Value {...props} />;
+}
+
+function defaultCreateLabel(inputValue: string) {
+  return `Create "${inputValue}"`;
+}
+
+// Mirrors Base UI's label resolution so the create option only appears when
+// the typed text matches no existing item.
+function getItemLabel(
+  item: unknown,
+  itemToStringLabel?: (item: never) => string,
+): string {
+  if (itemToStringLabel && item != null) {
+    return itemToStringLabel(item as never) ?? '';
+  }
+
+  if (item && typeof item === 'object') {
+    if ('label' in item && item.label != null) {
+      return String(item.label);
+    }
+
+    if ('value' in item) {
+      return String(item.value);
+    }
+  }
+
+  return item == null ? '' : String(item);
+}
+
+function hasItemLabel(
+  items: readonly unknown[],
+  query: string,
+  itemToStringLabel?: (item: never) => string,
+) {
+  const normalizedQuery = query.toLocaleLowerCase();
+  const flatItems = isGroupedItems(items)
+    ? items.flatMap((group) => group.items)
+    : items;
+
+  return flatItems.some(
+    (item) =>
+      getItemLabel(item, itemToStringLabel).trim().toLocaleLowerCase() ===
+      normalizedQuery,
+  );
+}
+
+function isCreateGroup(item: unknown): item is ComboboxCreateGroup {
+  return isCreateMarked(item) && 'items' in item;
+}
+
+function isCreateItem(item: unknown): item is ComboboxCreateItem {
+  return isCreateMarked(item) && !('items' in item);
+}
+
+function isCreateMarked(item: unknown): item is object {
+  return typeof item === 'object' && item !== null && CREATE_ITEM in item;
+}
+
+function isGroupedItems(
+  items: readonly unknown[],
+): items is readonly { items: readonly unknown[] }[] {
+  const [first] = items;
+
+  return typeof first === 'object' && first !== null && 'items' in first;
 }
 
 const Combobox = Object.assign(ComboboxRoot, {

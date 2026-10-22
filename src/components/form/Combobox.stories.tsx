@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import * as React from 'react';
+
 import { cn } from '@/lib/utils';
 
 import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
@@ -100,6 +102,85 @@ const STATE_PROPS = Object.fromEntries(
 
 function ComboboxMatrixCell({ column }: ComponentMatrixCellProps) {
   return <FruitCombobox {...STATE_PROPS[column.key]} />;
+}
+
+function CreatableFruit() {
+  const [fruits, setFruits] = React.useState(FRUITS);
+
+  return (
+    <Combobox
+      createLabel={(inputValue) => `Add "${inputValue}" to the list`}
+      items={fruits}
+      onCreate={(label) => {
+        const fruit = { label, value: label.toLowerCase() };
+        setFruits((current) => [...current, fruit]);
+
+        return fruit;
+      }}
+    >
+      <Combobox.Input
+        aria-label="Fruit"
+        className="w-64"
+        placeholder="Type a new fruit…"
+      />
+      <Combobox.Content>
+        <Combobox.List>
+          {(fruit: Fruit) => (
+            <Combobox.Item key={fruit.value} value={fruit}>
+              {fruit.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
+}
+
+function CreatableTags() {
+  const [tags, setTags] = React.useState<Fruit[]>([
+    { label: 'Design', value: 'design' },
+    { label: 'Engineering', value: 'engineering' },
+    { label: 'Marketing', value: 'marketing' },
+  ]);
+
+  return (
+    <Combobox
+      defaultValue={[tags[0]]}
+      items={tags}
+      multiple
+      onCreate={(label) => {
+        const tag = { label, value: label.toLowerCase() };
+        setTags((current) => [...current, tag]);
+
+        return tag;
+      }}
+    >
+      <Combobox.Chips className="w-80">
+        <Combobox.Value>
+          {(value: Fruit[]) => (
+            <>
+              {value.map((tag) => (
+                <Combobox.Chip key={tag.value}>{tag.label}</Combobox.Chip>
+              ))}
+              <Combobox.ChipsInput
+                aria-label="Tags"
+                placeholder={value.length > 0 ? '' : 'Add tags…'}
+              />
+            </>
+          )}
+        </Combobox.Value>
+      </Combobox.Chips>
+      <Combobox.Content>
+        <Combobox.List>
+          {(tag: Fruit) => (
+            <Combobox.Item key={tag.value} value={tag}>
+              {tag.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
 }
 
 function FruitCombobox({
@@ -252,6 +333,13 @@ export const All: StoryDefinition = {
             </Combobox.List>
           </Combobox.Content>
         </Combobox>
+      </Story.Section>
+
+      <Story.Section title="Creatable">
+        <div className="flex flex-wrap items-start gap-4">
+          <CreatableFruit />
+          <CreatableTags />
+        </div>
       </Story.Section>
     </Story.Layout>
   ),
