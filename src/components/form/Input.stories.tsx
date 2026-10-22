@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from './_internal/Story';
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
 import { Input } from './Input';
 
 const meta = {
@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/Input',
+  title: 'components/form/Input',
 } satisfies Meta<typeof Input>;
 
 export default meta;

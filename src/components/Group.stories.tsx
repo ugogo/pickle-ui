@@ -10,8 +10,8 @@ import {
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Badge } from './Badge';
 import { Button } from './Button';
+import { Input } from './form/Input';
 import { Group } from './Group';
-import { Input } from './Input';
 import { Popover } from './Popover';
 
 const meta = {

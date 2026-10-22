@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from './_internal/Story';
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
 import { Switch, type SwitchProps } from './Switch';
 
 const meta = {
@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/Switch',
+  title: 'components/form/Switch',
 } satisfies Meta<typeof Switch>;
 
 export default meta;

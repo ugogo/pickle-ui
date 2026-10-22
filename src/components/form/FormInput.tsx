@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 
-import { Input } from '@/components/Input';
-import { InputGroupInput } from '@/components/InputGroup';
+import { Input } from '@/components/form/Input';
+import { InputGroupInput } from '@/components/form/InputGroup';
 
 import {
   FormInputGroupContext,

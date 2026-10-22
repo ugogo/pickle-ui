@@ -5,6 +5,8 @@ import { IconColorPicker } from '@tabler/icons-react';
 import * as React from 'react';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/form/Input';
+import { InputGroup, InputGroupInput } from '@/components/form/InputGroup';
 import {
   Select,
   SelectContent,
@@ -12,10 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/form/Select';
-import { Input } from '@/components/Input';
-import { InputGroup, InputGroupInput } from '@/components/InputGroup';
+import { Slider } from '@/components/form/Slider';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
-import { Slider } from '@/components/Slider';
 import { useAsRef } from '@/hooks/use-as-ref';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { useLazyRef } from '@/hooks/use-lazy-ref';
@@ -38,7 +38,7 @@ import {
 import { useComposedRefs } from '@/lib/compose-refs';
 import { cn } from '@/lib/utils';
 
-import { VisuallyHiddenInput } from './_internal/VisuallyHiddenInput';
+import { VisuallyHiddenInput } from '../_internal/VisuallyHiddenInput';
 
 const ROOT_NAME = 'ColorPicker';
 const ROOT_IMPL_NAME = 'ColorPickerImpl';

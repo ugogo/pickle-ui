@@ -2,7 +2,7 @@
 
 import { useController } from 'react-hook-form';
 
-import { Switch, type SwitchProps } from '@/components/Switch';
+import { Switch, type SwitchProps } from '@/components/form/Switch';
 
 import {
   useFormControlProps,

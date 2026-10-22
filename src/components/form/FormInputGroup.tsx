@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { InputGroup } from '@/components/InputGroup';
+import { InputGroup } from '@/components/form/InputGroup';
 
 import { FormFieldContext, FormInputGroupContext } from './Form.context';
 import { FormInput, type FormInputProps } from './FormInput';
