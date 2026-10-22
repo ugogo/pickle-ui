@@ -104,6 +104,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/switch`                       | `Switch` with `Label`                                                                                  |
 | `pickle-ui/table`                        | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                              |
 | `pickle-ui/text`                         | `Text`, `textVariants` for headings and body copy                                                      |
+| `pickle-ui/tooltip`                      | `Tooltip` with `Trigger`, `Content`, `Provider`                                                        |
 | `pickle-ui/cn`                           | `cn` class helper, `SlotClassNames` type                                                               |
 | `pickle-ui/theme`                        | `createTheme`, `themeToCss`                                                                            |
 
