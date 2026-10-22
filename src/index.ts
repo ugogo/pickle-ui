@@ -25,10 +25,16 @@ export type {
   CardTitleProps,
 } from './components/Card';
 
-export { Checkbox } from './components/Checkbox';
-export type { CheckboxLabelProps, CheckboxProps } from './components/Checkbox';
+export { Flex } from './components/Flex';
+export type { FlexProps } from './components/Flex';
 
-export { ColorPicker } from './components/ColorPicker';
+export { Checkbox } from './components/form/Checkbox';
+
+export type {
+  CheckboxLabelProps,
+  CheckboxProps,
+} from './components/form/Checkbox';
+export { ColorPicker } from './components/form/ColorPicker';
 
 export type {
   ColorPickerAlphaSliderProps,
@@ -41,7 +47,8 @@ export type {
   ColorPickerProps,
   ColorPickerSwatchProps,
   ColorPickerTriggerProps,
-} from './components/ColorPicker';
+} from './components/form/ColorPicker';
+
 export {
   ColorPickerAlphaSlider,
   ColorPickerArea,
@@ -54,11 +61,7 @@ export {
   type ColorPickerProps as ColorPickerPrimitiveProps,
   ColorPickerSwatch,
   ColorPickerTrigger,
-} from './components/ColorPickerPrimitive';
-
-export { Flex } from './components/Flex';
-
-export type { FlexProps } from './components/Flex';
+} from './components/form/ColorPickerPrimitive';
 
 export { Form } from './components/form/Form';
 export type {
@@ -74,6 +77,24 @@ export type {
   FormSelectProps,
   FormSwitchProps,
 } from './components/form/Form';
+
+export { Input } from './components/form/Input';
+export type { InputProps } from './components/form/Input';
+
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+} from './components/form/InputGroup';
+export type {
+  InputGroupAddonProps,
+  InputGroupButtonProps,
+  InputGroupInputProps,
+  InputGroupProps,
+  InputGroupTextProps,
+} from './components/form/InputGroup';
 
 export { RadioGroup } from './components/form/RadioGroup';
 export type {
@@ -94,6 +115,17 @@ export type {
   SelectValueProps,
 } from './components/form/Select';
 
+export { Slider } from './components/form/Slider';
+export type {
+  SliderLabelProps,
+  SliderMarksProps,
+  SliderProps,
+  SliderValueProps,
+} from './components/form/Slider';
+
+export { Switch } from './components/form/Switch';
+export type { SwitchLabelProps, SwitchProps } from './components/form/Switch';
+
 export { Grid } from './components/Grid';
 export type { GridProps } from './components/Grid';
 
@@ -109,24 +141,6 @@ export type {
   GroupSeparatorProps,
   GroupTextProps,
 } from './components/Group';
-
-export { Input } from './components/Input';
-export type { InputProps } from './components/Input';
-
-export {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-} from './components/InputGroup';
-export type {
-  InputGroupAddonProps,
-  InputGroupButtonProps,
-  InputGroupInputProps,
-  InputGroupProps,
-  InputGroupTextProps,
-} from './components/InputGroup';
 
 export { Popover } from './components/Popover';
 export type {
@@ -172,17 +186,6 @@ export type {
   SidebarMenuProps,
   SidebarProps,
 } from './components/Sidebar';
-
-export { Slider } from './components/Slider';
-export type {
-  SliderLabelProps,
-  SliderMarksProps,
-  SliderProps,
-  SliderValueProps,
-} from './components/Slider';
-
-export { Switch } from './components/Switch';
-export type { SwitchLabelProps, SwitchProps } from './components/Switch';
 
 export { Table } from './components/Table';
 export type {

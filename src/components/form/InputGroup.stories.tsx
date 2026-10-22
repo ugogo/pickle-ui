@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconEye, IconEyeOff, IconSearch } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { type ComponentMatrixCellProps, Story } from './_internal/Story';
-import { Button } from './Button';
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
+import { Button } from '../Button';
 import { InputGroup } from './InputGroup';
 
 const meta = {
@@ -12,7 +12,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/InputGroup',
+  title: 'components/form/InputGroup',
 } satisfies Meta<typeof InputGroup>;
 
 export default meta;

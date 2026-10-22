@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { useState } from 'react';
 
-import { type ComponentMatrixCellProps, Story } from './_internal/Story';
-import { Button } from './Button';
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
+import { Button } from '../Button';
 import { ColorPicker } from './ColorPicker';
 
 const meta = {
@@ -11,7 +11,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/ColorPicker',
+  title: 'components/form/ColorPicker',
 } satisfies Meta<typeof ColorPicker>;
 
 export default meta;

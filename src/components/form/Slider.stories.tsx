@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { type ComponentMatrixCellProps, Story } from './_internal/Story';
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
 import { Slider } from './Slider';
 
 const meta = {
@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  title: 'components/Slider',
+  title: 'components/form/Slider',
 } satisfies Meta<typeof Slider>;
 
 export default meta;

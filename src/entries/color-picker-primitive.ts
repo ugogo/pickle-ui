@@ -10,4 +10,4 @@ export {
   type ColorPickerProps as ColorPickerPrimitiveProps,
   ColorPickerSwatch,
   ColorPickerTrigger,
-} from '../components/ColorPickerPrimitive';
+} from '../components/form/ColorPickerPrimitive';

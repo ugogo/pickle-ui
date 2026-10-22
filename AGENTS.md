@@ -23,10 +23,12 @@ Guidance for AI agents (and humans) working in this repository.
 
 ## Component layout
 
-- **Exported components** — one top-level file per component in `src/components` (e.g. `Button.tsx`, `Slider.tsx`), each with a co-located `*.stories.tsx` for Storybook. Export every exported component and its types from `src/index.ts`; that file is the library's public API.
+- **Exported components** — one top-level file per component in `src/components` (e.g. `Button.tsx`, `Card.tsx`), each with a co-located `*.stories.tsx` for Storybook. Export every exported component and its types from `src/index.ts`; that file is the library's public API.
+- **Form components** — form controls (e.g. `Input.tsx`, `Select.tsx`, `Checkbox.tsx`) and the React Hook Form bindings (`Form.tsx`, `FormInput.tsx`, …) live in `src/components/form`, with stories titled `components/form/<Name>`.
+- **Subpath entries** — each exported component also gets a `src/entries/<kebab-name>.ts` re-exporting it and its types, so consumers can import `pickle-ui/<kebab-name>`.
 - **Internal components** — helpers and Storybook-only utilities that are not part of the public API belong in `src/components/_internal` (e.g. `Story.tsx`, `VisuallyHiddenInput.tsx`). Do not export these from `src/index.ts`.
-- **Co-located modules** — when an exported component has a lower-level building block consumers may compose directly, keep it alongside the facade in `src/components` (e.g. `ColorPicker.tsx` + `ColorPickerPrimitive.tsx`) and export both from `src/index.ts`.
-- Stories import internal utilities from `./_internal/…`; exported components import internal modules the same way (e.g. `./_internal/VisuallyHiddenInput`).
+- **Co-located modules** — when an exported component has a lower-level building block consumers may compose directly, keep it alongside the facade (e.g. `form/ColorPicker.tsx` + `form/ColorPickerPrimitive.tsx`) and export both from `src/index.ts`.
+- Stories import internal utilities from `./_internal/…` (`../_internal/…` from `src/components/form`); exported components import internal modules the same way (e.g. `../_internal/VisuallyHiddenInput`).
 
 ## Component API
 

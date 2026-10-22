@@ -1,4 +1,4 @@
-export { ColorPicker } from '../components/ColorPicker';
+export { ColorPicker } from '../components/form/ColorPicker';
 export type {
   ColorPickerAlphaSliderProps,
   ColorPickerAreaProps,
@@ -10,4 +10,4 @@ export type {
   ColorPickerProps,
   ColorPickerSwatchProps,
   ColorPickerTriggerProps,
-} from '../components/ColorPicker';
+} from '../components/form/ColorPicker';
