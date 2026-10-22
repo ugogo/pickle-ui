@@ -101,6 +101,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/select`                       | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                        |
 | `pickle-ui/sidebar`                      | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                       |
 | `pickle-ui/slider`                       | `Slider` with `Label`, `Value`, `Marks`                                                                |
+| `pickle-ui/spinner`                      | `Spinner`                                                                                              |
 | `pickle-ui/switch`                       | `Switch` with `Label`                                                                                  |
 | `pickle-ui/table`                        | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                              |
 | `pickle-ui/text`                         | `Text`, `textVariants` for headings and body copy                                                      |
