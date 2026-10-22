@@ -4,11 +4,15 @@ A React component library built with Base UI and Tailwind CSS v4.
 
 ## Use Pickle UI
 
-Install Pickle and Tailwind:
+Install Pickle with its peer dependencies. React Hook Form is only used by
+the `Form` components, but it is declared as a peer so your package manager
+expects it:
 
 ```bash
-pnpm add pickle-ui tailwindcss
+pnpm add pickle-ui tailwindcss react-hook-form
 ```
+
+Pickle requires Tailwind CSS v4 and React 18 or 19.
 
 To match Pickle's Storybook typography, install Geist and JetBrains Mono:
 
@@ -48,6 +52,13 @@ Create `app.css`:
 }
 ```
 
+The font packages are optional. Omit their imports and the `@theme` block to
+use Tailwind's system font stacks.
+
+You do not need to add Pickle to your Tailwind `@source` list: the stylesheet
+declares its own component sources, so every class Pickle uses is generated
+alongside yours.
+
 Import components from `pickle-ui`:
 
 ```tsx
@@ -66,9 +77,41 @@ import { Form } from 'pickle-ui/form';
 ```
 
 Subpaths use the same named exports as the root entry (for example `Button` from
-`pickle-ui/button`, not a default export). Available subpaths match the public
-API in `src/index.ts`, using kebab-case names such as `color-picker`,
-`radio-group`, and `scroll-area`.
+`pickle-ui/button`, not a default export).
+
+| Subpath                                  | Exports                                                                                                |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pickle-ui/avatar`                       | `Avatar` with `Image`, `Fallback`, `Group`                                                             |
+| `pickle-ui/badge`                        | `Badge`, `badgeVariants`                                                                               |
+| `pickle-ui/button`                       | `Button`, `buttonVariants`                                                                             |
+| `pickle-ui/card`                         | `Card` with `Header`, `Title`, `Description`, `Action`, `Content`, `Footer`                            |
+| `pickle-ui/checkbox`                     | `Checkbox` with `Label`                                                                                |
+| `pickle-ui/color-picker`                 | `ColorPicker` facade                                                                                   |
+| `pickle-ui/color-picker-primitive`       | `ColorPickerPrimitive` and its parts, for custom layouts                                               |
+| `pickle-ui/combobox`                     | `Combobox` with `Input`, `Content`, `List`, `Item`, `Chips`, …                                         |
+| `pickle-ui/flex`, `pickle-ui/grid`       | `Flex`, `Grid` layout primitives                                                                       |
+| `pickle-ui/x-stack`, `pickle-ui/y-stack` | `XStack`, `YStack` row and column shorthands                                                           |
+| `pickle-ui/form`                         | `Form` with `Field`, `Label`, `Description`, `Error`, `Button` and every React Hook Form-bound control |
+| `pickle-ui/group`                        | `Group`, `groupVariants` for attached button and input groups                                          |
+| `pickle-ui/input`                        | `Input`                                                                                                |
+| `pickle-ui/input-group`                  | `InputGroup` with addons, `inputGroupAddonVariants`                                                    |
+| `pickle-ui/popover`                      | `Popover` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Anchor`                        |
+| `pickle-ui/progress`                     | `Progress` with `Label`, `Value`, `Track`, `Indicator`                                                 |
+| `pickle-ui/radio-group`                  | `RadioGroup` with `Item`                                                                               |
+| `pickle-ui/scroll-area`                  | `ScrollArea` with `Viewport`, `Scrollbar`, `Thumb`, `Corner`                                           |
+| `pickle-ui/select`                       | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                        |
+| `pickle-ui/sidebar`                      | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                       |
+| `pickle-ui/slider`                       | `Slider` with `Label`, `Value`, `Marks`                                                                |
+| `pickle-ui/switch`                       | `Switch` with `Label`                                                                                  |
+| `pickle-ui/table`                        | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                              |
+| `pickle-ui/text`                         | `Text`, `textVariants` for headings and body copy                                                      |
+| `pickle-ui/cn`                           | `cn` class helper, `SlotClassNames` type                                                               |
+| `pickle-ui/theme`                        | `createTheme`, `themeToCss`                                                                            |
+
+Components built on [Base UI](https://base-ui.com) accept its `render` prop to
+swap the underlying element; `Button` offers `asChild` for the same purpose.
+Icons are plain SVG children: any icon library works, and buttons, badges and
+input addons size and space the SVG for you.
 
 Pickle supplies its component styles, light theme, and `.dark` theme. Add the
 `dark` class to an ancestor to enable dark mode:
@@ -77,6 +120,18 @@ Pickle supplies its component styles, light theme, and `.dark` theme. Add the
 <div className="dark">
   <App />
 </div>
+```
+
+Pickle only reacts to that class, never to `prefers-color-scheme` on its own,
+so you decide how the scheme is chosen. To follow the system preference, mirror
+the media query onto the root element:
+
+```ts
+const media = window.matchMedia('(prefers-color-scheme: dark)');
+const sync = () =>
+  document.documentElement.classList.toggle('dark', media.matches);
+sync();
+media.addEventListener('change', sync);
 ```
 
 Use `Form` as a React Hook Form-only compound API. Pass the return value from
@@ -120,9 +175,6 @@ export function SignUpForm() {
   );
 }
 ```
-
-The font packages are optional. Omit their imports and the `@theme` block to
-use Tailwind's system font stacks.
 
 ## Theming
 
@@ -318,6 +370,28 @@ or to reach parts that do not take their own `className`:
 
 `data-slot` names are part of the public API and follow the component name in
 kebab-case, so a renaming is a breaking change.
+
+## Upgrading from 0.x
+
+The next major release renames a few styling APIs. Search your code for these
+and update them:
+
+- **Status tokens.** `--destructive-foreground`, `--info-foreground`,
+  `--success-foreground` and `--warning-foreground` now hold the text color for
+  a solid fill (white, or amber-950 for warning). Tinted text such as
+  `text-destructive-foreground` on a badge becomes
+  `text-destructive-subtle-foreground`, and tinted backgrounds like
+  `bg-destructive/8` become `bg-destructive-subtle`, which already adapts to
+  dark mode.
+- **Chart palette.** The light `--chart-1` … `--chart-5` values changed to
+  match the dark hues (blue, emerald, amber, purple, rose). Override them if
+  your charts relied on the previous colors.
+- **Slot class props.** `labelClassName` on `Checkbox`, `Switch` and
+  `RadioGroup.Item` becomes `classNames={{ label }}`; `thumbClassName` and
+  `trackClassName` on `Slider` become `classNames={{ thumb, track }}`.
+- **Stylesheet.** `pickle-ui/styles.css` is unchanged as the entry point. It is
+  now split into `pickle-ui/theme.css` and `pickle-ui/base.css`, and no longer
+  depends on the `shadcn` package.
 
 ## Development
 
