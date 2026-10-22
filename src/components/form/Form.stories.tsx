@@ -46,6 +46,7 @@ const defaultInterests = [
 type Interest = (typeof defaultInterests)[number];
 
 const signUpSchema = z.object({
+  bio: z.string().max(160, 'Keep it under 160 characters.'),
   email: z.email('Enter a valid email address.'),
   firstName: z.string().trim().min(1, 'Enter your first name.'),
   interests: z
@@ -65,6 +66,7 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 function SignUpForm() {
   const form = useForm<SignUpValues>({
     defaultValues: {
+      bio: '',
       email: '',
       firstName: '',
       interests: [],
@@ -173,6 +175,14 @@ function SignUpForm() {
             </Form.Combobox.List>
           </Form.Combobox.Content>
         </Form.Combobox>
+      </Form.Field>
+
+      <Form.Field
+        description="A sentence or two for your public profile."
+        label="Bio"
+        name="bio"
+      >
+        <Form.Textarea placeholder="Tell us about yourself" />
       </Form.Field>
 
       <Form.Field name="productUpdates">
