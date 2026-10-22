@@ -82,6 +82,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | Subpath                                  | Exports                                                                                                |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `pickle-ui/alert`                        | `Alert` with `Icon`, `Title`, `Description`, `Action`                                                  |
+| `pickle-ui/alert-dialog`                 | `AlertDialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`           |
 | `pickle-ui/avatar`                       | `Avatar` with `Image`, `Fallback`, `Group`                                                             |
 | `pickle-ui/badge`                        | `Badge`, `badgeVariants`                                                                               |
 | `pickle-ui/button`                       | `Button`, `buttonVariants`                                                                             |
@@ -89,22 +90,28 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/checkbox`                     | `Checkbox` with `Label`                                                                                |
 | `pickle-ui/color-picker`                 | `ColorPicker` with `Trigger`, `Content`, `Area`, `HueSlider`, `AlphaSlider`, `Swatch`, `Input`, …      |
 | `pickle-ui/combobox`                     | `Combobox` with `Input`, `Content`, `List`, `Item`, `Chips`, …                                         |
+| `pickle-ui/dialog`                       | `Dialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`                |
 | `pickle-ui/flex`, `pickle-ui/grid`       | `Flex`, `Grid` layout primitives                                                                       |
 | `pickle-ui/x-stack`, `pickle-ui/y-stack` | `XStack`, `YStack` row and column shorthands                                                           |
 | `pickle-ui/form`                         | `Form` with `Field`, `Label`, `Description`, `Error`, `Button` and every React Hook Form-bound control |
 | `pickle-ui/group`                        | `Group` with `Separator`, `Text`, for attached button and input groups                                 |
 | `pickle-ui/input`                        | `Input`                                                                                                |
 | `pickle-ui/input-group`                  | `InputGroup` with `Input`, `Addon`, `Button`, `Text`                                                   |
+| `pickle-ui/menu`                         | `Menu` with `Trigger`, `Content`, `Item`, `CheckboxItem`, `RadioGroup`, `Sub`, `Shortcut`, …           |
 | `pickle-ui/popover`                      | `Popover` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Anchor`                        |
 | `pickle-ui/progress`                     | `Progress` with `Label`, `Value`, `Track`, `Indicator`                                                 |
 | `pickle-ui/radio-group`                  | `RadioGroup` with `Item`                                                                               |
 | `pickle-ui/scroll-area`                  | `ScrollArea` with `Viewport`, `Scrollbar`, `Thumb`, `Corner`                                           |
 | `pickle-ui/select`                       | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                        |
+| `pickle-ui/separator`                    | `Separator`                                                                                            |
 | `pickle-ui/sidebar`                      | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                       |
 | `pickle-ui/slider`                       | `Slider` with `Label`, `Value`, `Marks`                                                                |
+| `pickle-ui/spinner`                      | `Spinner`                                                                                              |
 | `pickle-ui/switch`                       | `Switch` with `Label`                                                                                  |
 | `pickle-ui/table`                        | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                              |
 | `pickle-ui/text`                         | `Text`, `textVariants` for headings and body copy                                                      |
+| `pickle-ui/textarea`                     | `Textarea`, growing with its content                                                                   |
+| `pickle-ui/tooltip`                      | `Tooltip` with `Trigger`, `Content`, `Provider`                                                        |
 | `pickle-ui/cn`                           | `cn` class helper, `SlotClassNames` type                                                               |
 | `pickle-ui/theme`                        | `createTheme`, `themeToCss`                                                                            |
 
