@@ -2,8 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-
 import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
 import { Combobox } from './Combobox';
 
@@ -64,7 +62,7 @@ const PRODUCE: FruitGroup[] = [
 
 type FruitComboboxStateProps = {
   disabled?: boolean;
-  inputClassName?: string;
+  focus?: boolean;
   invalid?: boolean;
   value?: Fruit;
 };
@@ -79,10 +77,7 @@ const STATE_COLUMNS: {
   {
     key: 'focus',
     label: 'Focus',
-    props: {
-      inputClassName: 'pseudo-focus-visible',
-      value: FRUITS[0],
-    },
+    props: { focus: true, value: FRUITS[0] },
   },
   {
     key: 'disabled',
@@ -185,7 +180,7 @@ function CreatableTags() {
 
 function FruitCombobox({
   disabled,
-  inputClassName,
+  focus,
   invalid,
   value,
 }: FruitComboboxStateProps) {
@@ -194,7 +189,10 @@ function FruitCombobox({
       <Combobox.Input
         aria-invalid={invalid || undefined}
         aria-label="Fruit"
-        className={cn('w-48', inputClassName)}
+        className="w-48"
+        // Targeted by the pseudo-states parameter below: only the inner
+        // <input> gets :focus-visible, not the trigger or clear buttons.
+        data-pseudo-focus={focus || undefined}
         placeholder="Select a fruit"
       />
       <Combobox.Content>
@@ -239,6 +237,9 @@ function StartsWithFruit() {
 }
 
 export const All: StoryDefinition = {
+  parameters: {
+    pseudo: { focusVisible: ['[data-pseudo-focus]'] },
+  },
   render: () => (
     <Story.Layout className="max-w-5xl" title="Combobox">
       <Story.Section title="States">
