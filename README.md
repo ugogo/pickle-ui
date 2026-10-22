@@ -96,6 +96,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/group`                        | `Group` with `Separator`, `Text`, for attached button and input groups                                 |
 | `pickle-ui/input`                        | `Input`                                                                                                |
 | `pickle-ui/input-group`                  | `InputGroup` with `Input`, `Addon`, `Button`, `Text`                                                   |
+| `pickle-ui/menu`                         | `Menu` with `Trigger`, `Content`, `Item`, `CheckboxItem`, `RadioGroup`, `Sub`, `Shortcut`, …           |
 | `pickle-ui/popover`                      | `Popover` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Anchor`                        |
 | `pickle-ui/progress`                     | `Progress` with `Label`, `Value`, `Track`, `Indicator`                                                 |
 | `pickle-ui/radio-group`                  | `RadioGroup` with `Item`                                                                               |
