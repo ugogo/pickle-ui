@@ -17,6 +17,7 @@ type StoryDefinition = StoryObj<typeof meta>;
 const STATE_COLUMNS = [
   { key: 'empty', label: 'Empty' },
   { key: 'filled', label: 'Filled' },
+  { key: 'focus', label: 'Focus' },
   { key: 'disabled', label: 'Disabled' },
   { key: 'invalid', label: 'Invalid' },
 ];
@@ -29,13 +30,12 @@ const TYPE_ROWS = [
 
 function InputMatrixCell({ column, row }: ComponentMatrixCellProps) {
   const isInvalid = column.key === 'invalid';
-
-  return (
+  const input = (
     <Input
       aria-invalid={isInvalid || undefined}
       aria-label={`${row.label} ${column.label}`}
       defaultValue={
-        column.key === 'filled'
+        column.key === 'filled' || column.key === 'focus'
           ? row.key === 'email'
             ? 'hello@pickle.dev'
             : 'Pickle UI'
@@ -45,6 +45,14 @@ function InputMatrixCell({ column, row }: ComponentMatrixCellProps) {
       placeholder={isInvalid ? 'Check this value' : row.label}
       type={row.key}
     />
+  );
+
+  // The focus ring is styled on the wrapper via :has(:focus-visible), so the
+  // pseudo-state class goes on an ancestor to reach the inner <input>.
+  return column.key === 'focus' ? (
+    <div className="pseudo-focus-visible-all w-full">{input}</div>
+  ) : (
+    input
   );
 }
 
