@@ -80,10 +80,12 @@ function GroupMatrixCell({ column, row }: ComponentMatrixCellProps) {
         </Button>
         <Group.Separator />
         <Popover>
-          <Popover.Trigger asChild>
-            <Button aria-label="Fork options" size="icon" variant="outline">
-              <IconChevronDown aria-hidden="true" stroke={2} />
-            </Button>
+          <Popover.Trigger
+            render={
+              <Button aria-label="Fork options" size="icon" variant="outline" />
+            }
+          >
+            <IconChevronDown aria-hidden="true" stroke={2} />
           </Popover.Trigger>
           <Popover.Content align="end" className="w-64">
             <Popover.Header>

@@ -152,16 +152,17 @@ export const All: StoryDefinition = {
         />
       </Story.Section>
 
-      <Story.Section title="asChild composition">
+      <Story.Section title="Render as a link">
         <div className="flex flex-wrap items-center gap-3">
-          <Button asChild variant="outline">
-            <a href="#docs">Documentation</a>
+          {/* react-doctor-disable-next-line react-doctor/anchor-has-content -- Button renders its children inside the anchor */}
+          <Button render={<a href="#docs" />} variant="outline">
+            Documentation
           </Button>
-          <Button asChild>
-            <a href="#signup">Create account</a>
-          </Button>
-          <Button asChild size="sm" variant="ghost">
-            <a href="#settings">Settings</a>
+          {/* react-doctor-disable-next-line react-doctor/anchor-has-content -- Button renders its children inside the anchor */}
+          <Button render={<a href="#signup" />}>Create account</Button>
+          {/* react-doctor-disable-next-line react-doctor/anchor-has-content -- Button renders its children inside the anchor */}
+          <Button render={<a href="#settings" />} size="sm" variant="ghost">
+            Settings
           </Button>
         </div>
       </Story.Section>

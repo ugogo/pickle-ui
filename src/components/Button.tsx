@@ -1,9 +1,11 @@
+'use client';
+
+import { mergeProps } from '@base-ui/react/merge-props';
+import { useRender } from '@base-ui/react/use-render';
 import { cva, type VariantProps } from 'class-variance-authority';
-import * as React from 'react';
 
 import { cn, type SlotClassNames } from '@/lib/utils';
 
-import { Slot } from './_internal/Slot';
 import { Spinner } from './_internal/Spinner';
 
 const buttonVariants = cva(
@@ -48,82 +50,64 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+  extends
+    useRender.ComponentProps<'button'>,
+    VariantProps<typeof buttonVariants> {
   classNames?: SlotClassNames<'loadingIndicator'>;
   loading?: boolean;
 }
 
 /**
  * Icon-only buttons need an explicit `size="icon"` (or `icon-*`) and
- * `aria-label`. Use `asChild` to render a semantic element such as an anchor
- * while keeping button styling.
+ * `aria-label`. Use `render` to render a semantic element such as an anchor
+ * while keeping button styling: `<Button render={<a href="/docs" />}>`.
  */
 function Button({
-  asChild = false,
   children,
   className,
   classNames,
   disabled,
   loading = false,
   ref,
+  render,
   size,
-  type = 'button',
+  type,
   variant,
   ...props
 }: ButtonProps) {
+  // A rendered element such as a link has no `disabled` or `type`: it only
+  // reports the state through `aria-disabled`.
+  const isNativeButton = render === undefined;
   const isDisabled = Boolean(loading || disabled);
-  const classes = cn(buttonVariants({ className, size, variant }));
-  const content = (
-    <>
-      {children}
-      {loading ? (
-        <Spinner
-          className={cn(
-            'pointer-events-none absolute',
-            classNames?.loadingIndicator,
-          )}
-          data-slot="button-loading-indicator"
-        />
-      ) : null}
-    </>
-  );
+  const defaultProps = {
+    'aria-disabled': (isNativeButton ? loading : isDisabled) || undefined,
+    children: (
+      <>
+        {children}
+        {loading ? (
+          <Spinner
+            className={cn(
+              'pointer-events-none absolute',
+              classNames?.loadingIndicator,
+            )}
+            data-slot="button-loading-indicator"
+          />
+        ) : null}
+      </>
+    ),
+    className: cn(buttonVariants({ className, size, variant })),
+    'data-loading': loading ? '' : undefined,
+    'data-slot': 'button',
+    disabled: isNativeButton ? isDisabled : undefined,
+    type: isNativeButton ? (type ?? 'button') : type,
+  };
 
-  if (asChild) {
-    const child = React.Children.only(children);
-
-    if (!React.isValidElement(child)) {
-      throw new Error('Button with asChild expects a single React element.');
-    }
-
-    return (
-      <Slot
-        aria-disabled={loading || undefined}
-        className={classes}
-        data-loading={loading ? '' : undefined}
-        data-slot="button"
-        ref={ref}
-        {...props}
-      >
-        {child}
-      </Slot>
-    );
-  }
-
-  return (
-    <button
-      aria-disabled={loading || undefined}
-      className={classes}
-      data-loading={loading ? '' : undefined}
-      data-slot="button"
-      disabled={isDisabled}
-      ref={ref}
-      type={type}
-      {...props}
-    >
-      {content}
-    </button>
-  );
+  return useRender({
+    defaultTagName: 'button',
+    props: mergeProps<'button'>(defaultProps, props),
+    ref,
+    render,
+  });
 }
 
 export { Button, buttonVariants };

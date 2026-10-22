@@ -2,7 +2,7 @@ export { Progress } from '../components/Progress';
 export type {
   ProgressIndicatorProps,
   ProgressLabelProps,
-  ProgressRootProps,
+  ProgressProps,
   ProgressTrackProps,
   ProgressValueProps,
 } from '../components/Progress';

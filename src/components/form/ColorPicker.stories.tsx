@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 
 import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
-import { Button } from '../Button';
 import { ColorPicker } from './ColorPicker';
 
 const meta = {
@@ -130,11 +129,12 @@ function PickerPreview({ format, mode }: { format: string; mode: string }) {
       disabled={mode === 'disabled'}
       onValueChange={setColor}
     >
-      <ColorPicker.Trigger asChild>
-        <Button className="w-52 justify-start gap-2" variant="outline">
-          <ColorPicker.Swatch className="size-5" />
-          <span className="font-mono">{color}</span>
-        </Button>
+      <ColorPicker.Trigger
+        className="w-52 justify-start gap-2"
+        variant="outline"
+      >
+        <ColorPicker.Swatch className="size-5" />
+        <span className="font-mono">{color}</span>
       </ColorPicker.Trigger>
       <ColorPicker.Content>
         <PickerControls />

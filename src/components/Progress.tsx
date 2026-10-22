@@ -10,7 +10,7 @@ type ProgressIndicatorProps = React.ComponentProps<
 };
 
 type ProgressLabelProps = React.ComponentProps<typeof ProgressPrimitive.Label>;
-type ProgressRootProps = React.ComponentProps<typeof ProgressPrimitive.Root>;
+type ProgressProps = React.ComponentProps<typeof ProgressPrimitive.Root>;
 type ProgressTrackProps = React.ComponentProps<typeof ProgressPrimitive.Track>;
 
 type ProgressValueProps = React.ComponentProps<typeof ProgressPrimitive.Value>;
@@ -43,7 +43,7 @@ function ProgressLabel({ className, ...props }: ProgressLabelProps) {
   );
 }
 
-function ProgressRoot({ children, className, ...props }: ProgressRootProps) {
+function ProgressRoot({ children, className, ...props }: ProgressProps) {
   return (
     <ProgressPrimitive.Root
       className={cn('grid w-full gap-2', className)}
@@ -105,7 +105,7 @@ export {
 export type {
   ProgressIndicatorProps,
   ProgressLabelProps,
-  ProgressRootProps,
+  ProgressProps,
   ProgressTrackProps,
   ProgressValueProps,
 };
