@@ -2,6 +2,8 @@
 
 A React component library built with Base UI and Tailwind CSS v4.
 
+Browse every component in the [Storybook](https://ugogo.github.io/pickle-ui/).
+
 ## Use Pickle UI
 
 Install Pickle with its peer dependencies. React Hook Form is only used by
