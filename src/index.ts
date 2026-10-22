@@ -14,6 +14,7 @@ export * from './entries/grid';
 export * from './entries/group';
 export * from './entries/input';
 export * from './entries/input-group';
+export * from './entries/menu';
 export * from './entries/popover';
 export * from './entries/progress';
 export * from './entries/radio-group';
