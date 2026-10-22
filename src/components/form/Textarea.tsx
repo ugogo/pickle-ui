@@ -30,10 +30,9 @@ function Textarea({
     >
       <textarea
         className={cn(
-          'placeholder:text-muted-foreground/72 field-sizing-content min-h-17.5 w-full resize-none rounded-[inherit] px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] outline-none',
-          size === 'sm' &&
-            'min-h-16 px-[calc(--spacing(2.5)-1px)] py-[calc(--spacing(1)-1px)]',
-          size === 'lg' && 'min-h-18 py-[calc(--spacing(2)-1px)]',
+          'placeholder:text-muted-foreground/72 field-sizing-content min-h-17.5 w-full resize-none rounded-[inherit] px-[calc(--spacing(3)-1px)] py-2 outline-none',
+          size === 'sm' && 'min-h-16 px-[calc(--spacing(2.5)-1px)]',
+          size === 'lg' && 'min-h-18',
           classNames?.textarea,
         )}
         data-slot="textarea"
