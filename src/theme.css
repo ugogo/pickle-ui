@@ -1,17 +1,8 @@
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
-
-@source './components/**/*.{ts,tsx}';
-
-@custom-variant dark (&:is(.dark *));
-
 /**
- * Shared focus-visible ring for components that opt into focus-ring.
+ * Pickle design tokens: Tailwind theme mapping plus light and dark values.
+ * Import this file alone to reuse the tokens without Pickle's base styles,
+ * or override any variable after importing `pickle-ui/styles.css`.
  */
-@utility focus-ring {
-  @apply transition-shadow outline-none;
-  @apply focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none;
-}
 
 @theme inline {
   --font-sans: var(--font-sans);
@@ -201,17 +192,4 @@
   --sidebar-accent-foreground: var(--color-neutral-100);
   --sidebar-border: --alpha(var(--color-white) / 5%);
   --sidebar-ring: var(--color-neutral-500);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  code,
-  kbd,
-  samp,
-  pre {
-    font-family: var(--font-mono);
-  }
 }

@@ -231,5 +231,14 @@ export type { XStackProps } from './components/XStack';
 export { YStack } from './components/YStack';
 export type { YStackProps } from './components/YStack';
 
+export { createTheme, themeToCss } from './lib/theme';
+export type {
+  Theme,
+  ThemeCssOptions,
+  ThemeFonts,
+  ThemeOptions,
+  ThemeVariables,
+} from './lib/theme';
+
 export { cn } from './lib/utils';
 export type { SlotClassNames } from './lib/utils';

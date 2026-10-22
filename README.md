@@ -156,6 +156,16 @@ Each token is also exposed as a Tailwind color (`bg-primary`,
 `text-muted-foreground`, `border-sidebar-border`, …) so your own markup can
 share Pickle's palette.
 
+`pickle-ui/styles.css` is the sum of two files you can also import on their
+own:
+
+- `pickle-ui/theme.css` holds the tokens only: the Tailwind theme mapping and
+  the light and dark values. Import it to share Pickle's palette in a project
+  that does not use the components.
+- `pickle-ui/base.css` holds everything else: animation and variant plugins,
+  the `.dark` variant, shared utilities, and element resets. Import it with a
+  token set of your own instead of `theme.css`.
+
 Tokens follow one naming rule: `--x` is a fill and `--x-foreground` is the text
 placed on that fill. Status colors (`destructive`, `info`, `success`,
 `warning`) add a `-subtle` pair for tinted surfaces such as badges and
@@ -181,6 +191,37 @@ text on it, which also works as colored text on a neutral surface.
 
 Pickle avoids raw Tailwind palette colors on themed surfaces, so changing
 a token updates every component that depends on it.
+
+### 1b. Generate a theme from a brand color
+
+`createTheme` derives the brand-dependent tokens (`--primary`,
+`--primary-foreground`, `--ring`, and their sidebar counterparts) for both
+schemes from one color, picking a readable foreground automatically. Radius
+and fonts pass through. Everything else keeps the defaults from `theme.css`.
+
+```ts
+import { createTheme, themeToCss } from 'pickle-ui/theme';
+
+const theme = createTheme({
+  fonts: { sans: 'Inter, sans-serif' },
+  primary: '#16a34a',
+  primaryDark: '#4ade80', // optional, defaults to a lighter primary
+  radius: '0.5rem',
+});
+
+themeToCss(theme);
+// :root { --primary: oklch(…); --primary-foreground: oklch(1 0 0); … }
+// .dark { … }
+```
+
+Write that string to a stylesheet at build time, or apply a scheme at runtime
+by spreading its variables as inline styles:
+
+```tsx
+<div className="dark" style={theme.dark}>
+  <App />
+</div>
+```
 
 ### 2. Pass `className`
 
@@ -282,7 +323,7 @@ kebab-case, so a renaming is a breaking change.
 
 ```bash
 pnpm install
-pnpm run dev        # Storybook on http://localhost:6006
+pnpm run dev        # Storybook on http://localhost:6006, theme toggle in the toolbar
 pnpm run build
 pnpm run typecheck
 pnpm run test
