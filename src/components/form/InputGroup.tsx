@@ -100,6 +100,8 @@ function InputGroupRoot({ className, ...props }: InputGroupProps) {
   return (
     <div
       className={cn(
+        // Divide adjacent inputs, like Group.Separator does between Inputs.
+        '[&>[data-slot=input-control]~[data-slot=input-control]>[data-slot=input]]:border-input [&>[data-slot=input-control]~[data-slot=input-control]>[data-slot=input]]:border-s',
         'border-input bg-background text-foreground ring-ring/24 has-[input:focus-visible]:has-[input[aria-invalid]]:border-destructive/64 has-[input:focus-visible]:has-[input[aria-invalid]]:ring-destructive/16 has-[input[aria-invalid]]:border-destructive/36 has-[input:focus-visible]:border-ring dark:bg-input/32 dark:has-[input[aria-invalid]]:ring-destructive/24 relative inline-flex h-8 w-full min-w-0 items-center rounded-lg border text-base shadow-xs/5 transition-shadow not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-[input:disabled]:not-has-[input:focus-visible]:not-has-[input[aria-invalid]]:before:shadow-[0_1px_--theme(--color-black/4%)] has-[input:disabled]:opacity-64 has-[input:disabled,input:focus-visible,input[aria-invalid]]:shadow-none has-[input:focus-visible]:ring-[3px] sm:text-sm dark:not-has-[input:disabled]:not-has-[input:focus-visible]:not-has-[input[aria-invalid]]:before:shadow-[0_-1px_--theme(--color-white/6%)] has-data-[align=inline-end]:**:[[data-size=sm]_input]:pe-1.5 has-data-[align=inline-start]:**:[[data-size=sm]_input]:ps-1.5 *:[[data-slot=input-control]]:contents *:[[data-slot=input-control]]:before:hidden has-data-[align=inline-end]:**:[input]:pe-2 has-data-[align=inline-start]:**:[input]:ps-2',
         className,
       )}
