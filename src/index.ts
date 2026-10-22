@@ -1,5 +1,6 @@
 // The public API is the union of the subpath entries in ./entries: add a
 // component there and re-export it here (see "Public API" in AGENTS.md).
+export * from './entries/alert-dialog';
 export * from './entries/avatar';
 export * from './entries/badge';
 export * from './entries/button';
