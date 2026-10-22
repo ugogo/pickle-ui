@@ -4,11 +4,11 @@ import { Radio as RadioPrimitive } from '@base-ui/react/radio';
 import { RadioGroup as RadioGroupPrimitive } from '@base-ui/react/radio-group';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 type RadioGroupItemProps = React.ComponentProps<typeof RadioPrimitive.Root> & {
+  classNames?: SlotClassNames<'indicator' | 'label'>;
   label?: React.ReactNode;
-  labelClassName?: string;
   size?: 'md' | 'sm';
 };
 
@@ -16,10 +16,10 @@ type RadioGroupProps = React.ComponentProps<typeof RadioGroupPrimitive>;
 
 function RadioGroupItem({
   className,
+  classNames,
   disabled,
   id,
   label,
-  labelClassName,
   size,
   ...props
 }: RadioGroupItemProps) {
@@ -29,6 +29,7 @@ function RadioGroupItem({
     return (
       <RadioGroupItemControl
         className={className}
+        classNames={classNames}
         disabled={disabled}
         id={id}
         size={size}
@@ -39,13 +40,14 @@ function RadioGroupItem({
 
   return (
     <RadioGroupItemLabel
-      className={labelClassName}
+      className={classNames?.label}
       disabled={disabled}
       id={generatedLabelId}
     >
       <RadioGroupItemControl
         aria-labelledby={generatedLabelId}
         className={className}
+        classNames={classNames}
         disabled={disabled}
         id={id}
         size={size}
@@ -58,6 +60,7 @@ function RadioGroupItem({
 
 function RadioGroupItemControl({
   className,
+  classNames,
   size = 'md',
   ...props
 }: RadioGroupItemProps) {
@@ -72,7 +75,10 @@ function RadioGroupItemControl({
       {...props}
     >
       <RadioPrimitive.Indicator
-        className="bg-primary rounded-full group-data-[size=md]/radio:size-2 group-data-[size=sm]/radio:size-1.5"
+        className={cn(
+          'bg-primary rounded-full group-data-[size=md]/radio:size-2 group-data-[size=sm]/radio:size-1.5',
+          classNames?.indicator,
+        )}
         data-slot="radio-indicator"
       />
     </RadioPrimitive.Root>

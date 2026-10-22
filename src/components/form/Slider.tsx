@@ -2,7 +2,7 @@ import type { CSSProperties, Ref } from 'react';
 
 import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 type SliderLabelProps = SliderPrimitive.Label.Props & {
   ref?: Ref<HTMLDivElement>;
@@ -17,13 +17,12 @@ type SliderMarksProps = {
 };
 
 type SliderProps = SliderPrimitive.Root.Props & {
+  classNames?: SlotClassNames<'control' | 'indicator' | 'thumb' | 'track'>;
   getAriaLabel?: SliderPrimitive.Thumb.Props['getAriaLabel'];
   getAriaValueText?: SliderPrimitive.Thumb.Props['getAriaValueText'];
   /** Render the filled indicator. Set to `false` for sliders with a custom track (e.g. color pickers). Defaults to `true`. */
   indicator?: boolean;
   ref?: Ref<HTMLDivElement>;
-  thumbClassName?: string;
-  trackClassName?: string;
   trackStyle?: CSSProperties;
 };
 
@@ -92,6 +91,7 @@ function SliderRoot({
   'aria-labelledby': ariaLabelledBy,
   children,
   className,
+  classNames,
   defaultValue,
   getAriaLabel,
   getAriaValueText,
@@ -99,8 +99,6 @@ function SliderRoot({
   max = 100,
   min = 0,
   ref,
-  thumbClassName,
-  trackClassName,
   trackStyle,
   value,
   ...props
@@ -131,20 +129,26 @@ function SliderRoot({
     >
       {children}
       <SliderPrimitive.Control
-        className="flex touch-none items-center select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:min-w-44 data-[orientation=horizontal]:py-3 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:flex-col data-[orientation=vertical]:justify-center data-[orientation=vertical]:px-3"
+        className={cn(
+          'flex touch-none items-center select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:min-w-44 data-[orientation=horizontal]:py-3 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:flex-col data-[orientation=vertical]:justify-center data-[orientation=vertical]:px-3',
+          classNames?.control,
+        )}
         data-slot="slider-control"
       >
         <SliderPrimitive.Track
           className={cn(
             'bg-input relative grow rounded-full select-none data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5',
-            trackClassName,
+            classNames?.track,
           )}
           data-slot="slider-track"
           style={trackStyle}
         >
           {indicator ? (
             <SliderPrimitive.Indicator
-              className="bg-primary rounded-full select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+              className={cn(
+                'bg-primary rounded-full select-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full',
+                classNames?.indicator,
+              )}
               data-slot="slider-indicator"
             />
           ) : null}
@@ -155,7 +159,7 @@ function SliderRoot({
               aria-labelledby={ariaLabelledBy}
               className={cn(
                 'border-primary bg-background ring-ring/50 relative block size-4.5 shrink-0 rounded-full border-2 shadow-sm transition-[color,box-shadow] outline-none select-none before:absolute before:-inset-2.5 before:content-[""] hover:ring-5 focus-visible:ring-5 data-disabled:pointer-events-none data-dragging:ring-5',
-                thumbClassName,
+                classNames?.thumb,
               )}
               data-slot="slider-thumb"
               getAriaLabel={getThumbAriaLabel}

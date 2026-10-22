@@ -201,6 +201,37 @@ import { cn } from 'pickle-ui/cn';
 <Badge className={cn('uppercase', isNew && 'animate-pulse')}>New</Badge>;
 ```
 
+Components that render several parts from one props object also take a
+`classNames` object keyed by slot, so you can reach an inner part without
+global CSS. Keys match the suffix of the part's `data-slot` attribute:
+
+```tsx
+<Checkbox
+  classNames={{ indicator: 'bg-success', label: 'text-muted-foreground' }}
+  label="Remember me"
+/>
+
+<Slider classNames={{ thumb: 'size-6', track: 'h-2' }} defaultValue={40} />
+
+<Input className="w-64" classNames={{ input: 'font-mono' }} />
+```
+
+| Component         | Slots                                    |
+| ----------------- | ---------------------------------------- |
+| `Button`          | `loadingIndicator`                       |
+| `Checkbox`        | `field`, `indicator`, `label`            |
+| `Combobox.Chip`   | `remove`                                 |
+| `Combobox.Item`   | `indicator`                              |
+| `Input`           | `input` (`className` styles the wrapper) |
+| `RadioGroup.Item` | `indicator`, `label`                     |
+| `Select.Item`     | `indicator`                              |
+| `Select.Trigger`  | `icon`                                   |
+| `Slider`          | `control`, `indicator`, `thumb`, `track` |
+| `Switch`          | `field`, `label`, `thumb`                |
+
+The `SlotClassNames<'a' | 'b'>` type is exported for wrappers that forward
+these props.
+
 ### 3. Reuse the variant functions
 
 Components built on variants export their `class-variance-authority` function

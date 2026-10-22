@@ -150,4 +150,22 @@ describe('RadioGroup', () => {
       'radio-label',
     );
   });
+
+  it('applies classNames to the indicator and label slots', () => {
+    const { container } = render(
+      <RadioGroup defaultValue="a">
+        <RadioGroup.Item
+          classNames={{ indicator: 'indicator-x', label: 'label-x' }}
+          label="Option A"
+          value="a"
+        />
+      </RadioGroup>,
+    );
+    expect(
+      container.querySelector('[data-slot="radio-indicator"]'),
+    ).toHaveClass('indicator-x');
+    expect(
+      screen.getByText('Option A').closest('[data-slot="radio-label"]'),
+    ).toHaveClass('label-x');
+  });
 });

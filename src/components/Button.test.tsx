@@ -29,4 +29,15 @@ describe('Button', () => {
     expect(link).toHaveAttribute('data-slot', 'button');
     expect(link.className).toContain('border');
   });
+
+  it('applies classNames to the loading indicator slot', () => {
+    const { container } = render(
+      <Button classNames={{ loadingIndicator: 'spinner-x' }} loading>
+        Save
+      </Button>,
+    );
+    expect(
+      container.querySelector('[data-slot="button-loading-indicator"]'),
+    ).toHaveClass('spinner-x');
+  });
 });

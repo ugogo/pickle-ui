@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 import { Slot } from './_internal/Slot';
 import { Spinner } from './_internal/Spinner';
@@ -50,6 +50,7 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  classNames?: SlotClassNames<'loadingIndicator'>;
   loading?: boolean;
 }
 
@@ -62,6 +63,7 @@ function Button({
   asChild = false,
   children,
   className,
+  classNames,
   disabled,
   loading = false,
   ref,
@@ -77,7 +79,10 @@ function Button({
       {children}
       {loading ? (
         <Spinner
-          className="pointer-events-none absolute"
+          className={cn(
+            'pointer-events-none absolute',
+            classNames?.loadingIndicator,
+          )}
           data-slot="button-loading-indicator"
         />
       ) : null}
