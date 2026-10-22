@@ -86,15 +86,14 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/button`                       | `Button`, `buttonVariants`                                                                             |
 | `pickle-ui/card`                         | `Card` with `Header`, `Title`, `Description`, `Action`, `Content`, `Footer`                            |
 | `pickle-ui/checkbox`                     | `Checkbox` with `Label`                                                                                |
-| `pickle-ui/color-picker`                 | `ColorPicker` facade                                                                                   |
-| `pickle-ui/color-picker-primitive`       | `ColorPickerPrimitive` and its parts, for custom layouts                                               |
+| `pickle-ui/color-picker`                 | `ColorPicker` with `Trigger`, `Content`, `Area`, `HueSlider`, `AlphaSlider`, `Swatch`, `Input`, …      |
 | `pickle-ui/combobox`                     | `Combobox` with `Input`, `Content`, `List`, `Item`, `Chips`, …                                         |
 | `pickle-ui/flex`, `pickle-ui/grid`       | `Flex`, `Grid` layout primitives                                                                       |
 | `pickle-ui/x-stack`, `pickle-ui/y-stack` | `XStack`, `YStack` row and column shorthands                                                           |
 | `pickle-ui/form`                         | `Form` with `Field`, `Label`, `Description`, `Error`, `Button` and every React Hook Form-bound control |
-| `pickle-ui/group`                        | `Group`, `groupVariants` for attached button and input groups                                          |
+| `pickle-ui/group`                        | `Group` with `Separator`, `Text`, for attached button and input groups                                 |
 | `pickle-ui/input`                        | `Input`                                                                                                |
-| `pickle-ui/input-group`                  | `InputGroup` with addons, `inputGroupAddonVariants`                                                    |
+| `pickle-ui/input-group`                  | `InputGroup` with `Input`, `Addon`, `Button`, `Text`                                                   |
 | `pickle-ui/popover`                      | `Popover` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Anchor`                        |
 | `pickle-ui/progress`                     | `Progress` with `Label`, `Value`, `Track`, `Indicator`                                                 |
 | `pickle-ui/radio-group`                  | `RadioGroup` with `Item`                                                                               |
@@ -108,8 +107,13 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/cn`                           | `cn` class helper, `SlotClassNames` type                                                               |
 | `pickle-ui/theme`                        | `createTheme`, `themeToCss`                                                                            |
 
-Components built on [Base UI](https://base-ui.com) accept its `render` prop to
-swap the underlying element; `Button` offers `asChild` for the same purpose.
+Interactive components and their parts take Base UI's `render` prop to swap
+the element they render, for example
+`<Button render={<a href="/docs" />}>Docs</Button>` or
+`<Popover.Trigger render={<Button variant="outline" />}>Edit</Popover.Trigger>`.
+`Text` and the layout primitives take `as` to change their tag. Parts are
+reached through their component (`Popover.Title`), never imported under their
+own names.
 Icons are plain SVG children: any icon library works, and buttons, badges and
 input addons size and space the SVG for you.
 

@@ -1,11 +1,4 @@
-export {
-  InputGroup,
-  InputGroupAddon,
-  inputGroupAddonVariants,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-} from '../components/form/InputGroup';
+export { InputGroup } from '../components/form/InputGroup';
 export type {
   InputGroupAddonProps,
   InputGroupButtonProps,

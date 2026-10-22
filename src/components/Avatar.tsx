@@ -16,7 +16,7 @@ type AvatarGroupProps = React.ComponentProps<'div'>;
 
 type AvatarImageProps = React.ComponentProps<typeof AvatarPrimitive.Image>;
 
-type AvatarRootProps = React.ComponentProps<typeof AvatarPrimitive.Root>;
+type AvatarProps = React.ComponentProps<typeof AvatarPrimitive.Root>;
 
 function AvatarFallback({ className, ...props }: AvatarFallbackProps) {
   return (
@@ -68,7 +68,7 @@ function AvatarImage({ className, ...props }: AvatarImageProps) {
   );
 }
 
-function AvatarRoot({ className, ...props }: AvatarRootProps) {
+function AvatarRoot({ className, ...props }: AvatarProps) {
   return (
     <AvatarPrimitive.Root
       className={cn(
@@ -92,5 +92,5 @@ export type {
   AvatarFallbackProps,
   AvatarGroupProps,
   AvatarImageProps,
-  AvatarRootProps,
+  AvatarProps,
 };

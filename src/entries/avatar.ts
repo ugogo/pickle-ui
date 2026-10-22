@@ -3,5 +3,5 @@ export type {
   AvatarFallbackProps,
   AvatarGroupProps,
   AvatarImageProps,
-  AvatarRootProps,
+  AvatarProps,
 } from '../components/Avatar';

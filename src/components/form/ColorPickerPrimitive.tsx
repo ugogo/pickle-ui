@@ -1,6 +1,7 @@
 'use client';
 
 import { useDirection } from '@base-ui/react/direction-provider';
+import { useRender } from '@base-ui/react/use-render';
 import { IconColorPicker } from '@tabler/icons-react';
 import * as React from 'react';
 
@@ -54,9 +55,7 @@ const INPUT_NAME = 'ColorPickerInput';
 
 type AreaElement = React.ComponentRef<typeof ColorPickerArea>;
 
-interface DivProps extends React.ComponentProps<'div'> {
-  asChild?: boolean;
-}
+type DivProps = useRender.ComponentProps<'div'>;
 
 /**
  * @see https://gist.github.com/bkrmendy/f4582173f50fab209ddfef1377ab31e3
@@ -67,41 +66,9 @@ interface EyeDropper {
 
 type InputElement = React.ComponentRef<typeof ColorPickerInput>;
 type RootElement = React.ComponentRef<typeof ColorPicker>;
-type SlotProps = React.HTMLAttributes<HTMLElement> & {
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLElement>;
-};
 
 function getSliderValue(value: number | readonly number[]) {
   return Array.isArray(value) ? (value[0] ?? 0) : value;
-}
-
-function Slot({ children, className, ref, style, ...props }: SlotProps) {
-  const child = React.isValidElement(children) ? children : undefined;
-  const childProps = (child?.props ?? {}) as {
-    className?: string;
-    ref?: React.Ref<HTMLElement>;
-    style?: React.CSSProperties;
-  };
-  const composedRef = useComposedRefs(ref, childProps.ref);
-
-  if (!child) {
-    return null;
-  }
-
-  return React.cloneElement(
-    child as React.ReactElement<Record<string, unknown>>,
-    {
-      ...props,
-      ...(child.props as React.HTMLAttributes<HTMLElement>),
-      className: cn(className, childProps.className),
-      ref: composedRef,
-      style: {
-        ...style,
-        ...childProps.style,
-      },
-    },
-  );
 }
 
 declare global {
@@ -206,7 +173,6 @@ interface ColorPickerProps
       React.ComponentProps<typeof Popover>,
       'defaultOpen' | 'modal' | 'open'
     > {
-  asChild?: boolean;
   defaultFormat?: ColorFormat;
   defaultValue?: string;
   dir?: Direction;
@@ -222,9 +188,7 @@ interface ColorPickerProps
   value?: string;
 }
 
-type ColorPickerTriggerProps = React.ComponentProps<typeof Button> & {
-  asChild?: boolean;
-};
+type ColorPickerTriggerProps = React.ComponentProps<typeof Button>;
 
 interface FormatInputProps extends ColorPickerInputProps {
   color: ColorValue;
@@ -392,12 +356,12 @@ function ColorPickerAlphaSlider(props: React.ComponentProps<typeof Slider>) {
 
 function ColorPickerArea(props: DivProps) {
   const {
-    asChild,
     className,
     onPointerDown: onPointerDownProp,
     onPointerMove: onPointerMoveProp,
     onPointerUp: onPointerUpProp,
     ref,
+    render,
     ...areaProps
   } = props;
 
@@ -478,85 +442,89 @@ function ColorPickerArea(props: DivProps) {
   const hue = hsv?.h ?? 0;
   const backgroundHue = hsvToRgb({ a: 1, h: hue, s: 100, v: 100 });
 
-  const AreaPrimitive = asChild ? Slot : 'div';
-
-  return (
-    <AreaPrimitive
-      data-slot="color-picker-area"
-      {...areaProps}
-      className={cn(
+  return useRender({
+    defaultTagName: 'div',
+    props: {
+      'data-slot': 'color-picker-area',
+      ...areaProps,
+      children: (
+        <>
+          <div className="absolute inset-0 overflow-hidden rounded-sm">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundColor: `rgb(${backgroundHue.r}, ${backgroundHue.g}, ${backgroundHue.b})`,
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(to right, #fff, transparent)',
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(to bottom, transparent, #000)',
+              }}
+            />
+          </div>
+          <div
+            className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
+            style={{
+              left: `${hsv?.s ?? 0}%`,
+              top: `${100 - (hsv?.v ?? 0)}%`,
+            }}
+          />
+        </>
+      ),
+      className: cn(
         'relative h-40 w-full cursor-crosshair touch-none rounded-sm border',
         context.disabled && 'pointer-events-none opacity-50',
         className,
-      )}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      ref={composedRef}
-    >
-      <div className="absolute inset-0 overflow-hidden rounded-sm">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundColor: `rgb(${backgroundHue.r}, ${backgroundHue.g}, ${backgroundHue.b})`,
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to right, #fff, transparent)',
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to bottom, transparent, #000)',
-          }}
-        />
-      </div>
-      <div
-        className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
-        style={{
-          left: `${hsv?.s ?? 0}%`,
-          top: `${100 - (hsv?.v ?? 0)}%`,
-        }}
-      />
-    </AreaPrimitive>
-  );
+      ),
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+    },
+    ref: composedRef,
+    render,
+  });
 }
 
 function ColorPickerContent(props: ColorPickerContentProps) {
   const {
     align,
-    asChild,
     children,
     className,
+    render,
     side,
     sideOffset,
     ...popoverContentProps
   } = props;
 
   const context = useColorPickerContext(CONTENT_NAME);
+  const inlineContent = useRender({
+    defaultTagName: 'div',
+    enabled: Boolean(context.inline),
+    props: {
+      'data-slot': 'color-picker-content',
+      ...(popoverContentProps as React.ComponentProps<'div'>),
+      children,
+      className: cn('flex w-[340px] flex-col gap-4 p-4', className),
+    },
+    render: render as undefined | useRender.RenderProp,
+  });
 
   if (context.inline) {
-    const ContentPrimitive = asChild ? Slot : 'div';
-
-    return (
-      <ContentPrimitive
-        data-slot="color-picker-content"
-        {...popoverContentProps}
-        className={cn('flex w-[340px] flex-col gap-4 p-4', className)}
-      >
-        {children}
-      </ContentPrimitive>
-    );
+    return inlineContent;
   }
 
   return (
     <PopoverContent
       align={align}
-      asChild={asChild}
       data-slot="color-picker-content"
+      render={render}
       side={side}
       sideOffset={sideOffset}
       {...popoverContentProps}
@@ -697,7 +665,6 @@ function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
 
 function ColorPickerImpl(props: ColorPickerImplProps) {
   const {
-    asChild,
     defaultOpen,
     dir: dirProp,
     disabled,
@@ -707,6 +674,7 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
     open: openProp,
     readOnly,
     ref,
+    render,
     required,
     value: valueProp,
     ...rootProps
@@ -754,12 +722,17 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
   const value = useStore((state) => rgbToHex(state.color));
   const open = useStore((state) => state.open);
 
-  const RootPrimitive = asChild ? Slot : 'div';
+  const root = useRender({
+    defaultTagName: 'div',
+    props: rootProps,
+    ref: composedRef,
+    render,
+  });
 
   if (inline) {
     return (
       <ColorPickerContext.Provider value={contextValue}>
-        <RootPrimitive {...rootProps} ref={composedRef} />
+        {root}
         {isFormControl && (
           <VisuallyHiddenInput
             control={formTrigger}
@@ -783,7 +756,7 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
         onOpenChange={store.setOpen}
         open={open}
       >
-        <RootPrimitive {...rootProps} ref={composedRef} />
+        {root}
         {isFormControl && (
           <VisuallyHiddenInput
             control={formTrigger}
@@ -862,7 +835,7 @@ function ColorPickerInput(props: ColorPickerInputProps) {
 }
 
 function ColorPickerSwatch(props: DivProps) {
-  const { asChild, className, ...swatchProps } = props;
+  const { className, render, ...swatchProps } = props;
 
   const context = useColorPickerContext(SWATCH_NAME);
 
@@ -894,43 +867,41 @@ function ColorPickerSwatch(props: DivProps) {
     ? 'No color selected'
     : `Current color: ${colorToString(color, format)}`;
 
-  const SwatchPrimitive = asChild ? Slot : 'div';
-
-  return (
-    <SwatchPrimitive
-      aria-label={ariaLabel}
-      data-slot="color-picker-swatch"
-      role="img"
-      {...swatchProps}
-      className={cn(
+  return useRender({
+    defaultTagName: 'div',
+    props: {
+      'aria-label': ariaLabel,
+      'data-slot': 'color-picker-swatch',
+      role: 'img',
+      ...swatchProps,
+      className: cn(
         'box-border size-8 shrink-0 rounded-sm border shadow-sm',
         context.disabled && 'opacity-50',
         className,
-      )}
-      style={{
+      ),
+      style: {
         ...backgroundStyle,
         forcedColorAdjust: 'none',
-      }}
-    />
-  );
+      },
+    },
+    render,
+  });
 }
 
 function ColorPickerTrigger(props: ColorPickerTriggerProps) {
-  const { asChild, disabled, ...triggerProps } = props;
+  const { disabled, render, ...triggerProps } = props;
 
   const context = useColorPickerContext(TRIGGER_NAME);
 
   const isDisabled = disabled || context.disabled;
 
-  const TriggerPrimitive = asChild ? Slot : Button;
-
   return (
-    <PopoverTrigger asChild disabled={isDisabled}>
-      <TriggerPrimitive
-        data-slot="color-picker-trigger"
-        {...(triggerProps as React.ComponentProps<typeof Button>)}
-      />
-    </PopoverTrigger>
+    <PopoverTrigger
+      data-slot="color-picker-trigger"
+      disabled={isDisabled}
+      render={<Button render={render} />}
+      {...triggerProps}
+    />
   );
 }
 

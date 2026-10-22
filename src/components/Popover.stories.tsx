@@ -33,10 +33,12 @@ const TRIGGER_COLUMNS: {
 function PopoverMatrixCell({ column, row }: ComponentMatrixCellProps) {
   return (
     <Popover>
-      <Popover.Trigger asChild>
-        <Button variant={column.key as NonNullable<ButtonProps['variant']>}>
-          Open
-        </Button>
+      <Popover.Trigger
+        render={
+          <Button variant={column.key as NonNullable<ButtonProps['variant']>} />
+        }
+      >
+        Open
       </Popover.Trigger>
       <Popover.Content align={row.key as 'center' | 'end' | 'start'}>
         <Popover.Header>
