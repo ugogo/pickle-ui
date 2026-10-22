@@ -14,6 +14,7 @@ import { FormRadioGroup, type FormRadioGroupProps } from './FormRadioGroup';
 import { type FormProps, FormRoot } from './FormRoot';
 import { FormSelect, type FormSelectProps } from './FormSelect';
 import { FormSwitch, type FormSwitchProps } from './FormSwitch';
+import { FormTextarea, type FormTextareaProps } from './FormTextarea';
 
 const Form = Object.assign(FormRoot, {
   Button,
@@ -28,6 +29,7 @@ const Form = Object.assign(FormRoot, {
   RadioGroup: FormRadioGroup,
   Select: FormSelect,
   Switch: FormSwitch,
+  Textarea: FormTextarea,
 });
 
 export { Form };
@@ -44,4 +46,5 @@ export type {
   FormRadioGroupProps,
   FormSelectProps,
   FormSwitchProps,
+  FormTextareaProps,
 };
