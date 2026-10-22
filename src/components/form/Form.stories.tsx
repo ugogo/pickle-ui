@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 
@@ -36,9 +37,20 @@ const notificationChannels: {
   { disabled: true, label: 'Push (coming soon)', value: 'push' },
 ];
 
+const defaultInterests = [
+  { label: 'Design systems', value: 'design-systems' },
+  { label: 'Accessibility', value: 'accessibility' },
+  { label: 'Performance', value: 'performance' },
+];
+
+type Interest = (typeof defaultInterests)[number];
+
 const signUpSchema = z.object({
   email: z.email('Enter a valid email address.'),
   firstName: z.string().trim().min(1, 'Enter your first name.'),
+  interests: z
+    .array(z.object({ label: z.string(), value: z.string() }))
+    .min(1, 'Pick at least one interest.'),
   lastName: z.string().trim().min(1, 'Enter your last name.'),
   notificationChannel: z.enum(['email', 'sms']),
   password: z.string().min(8, 'Use at least 8 characters.'),
@@ -55,6 +67,7 @@ function SignUpForm() {
     defaultValues: {
       email: '',
       firstName: '',
+      interests: [],
       lastName: '',
       notificationChannel: 'email',
       password: '',
@@ -65,6 +78,7 @@ function SignUpForm() {
     },
     resolver: zodResolver(signUpSchema),
   });
+  const [interests, setInterests] = React.useState(defaultInterests);
 
   return (
     <Form className="max-w-md" form={form} onSubmit={() => form.clearErrors()}>
@@ -116,6 +130,49 @@ function SignUpForm() {
             ))}
           </Form.Select.Content>
         </Form.Select>
+      </Form.Field>
+
+      <Form.Field
+        description="Pick from the list or type to add your own."
+        label="Interests"
+        name="interests"
+      >
+        <Form.Combobox
+          items={interests}
+          multiple
+          onCreate={(label) => {
+            const interest = { label, value: label.toLowerCase() };
+            setInterests((current) => [...current, interest]);
+
+            return interest;
+          }}
+        >
+          <Form.Combobox.Chips>
+            <Form.Combobox.Value>
+              {(value: Interest[]) => (
+                <>
+                  {value.map((interest) => (
+                    <Form.Combobox.Chip key={interest.value}>
+                      {interest.label}
+                    </Form.Combobox.Chip>
+                  ))}
+                  <Form.Combobox.ChipsInput
+                    placeholder={value.length > 0 ? '' : 'Add interests…'}
+                  />
+                </>
+              )}
+            </Form.Combobox.Value>
+          </Form.Combobox.Chips>
+          <Form.Combobox.Content>
+            <Form.Combobox.List>
+              {(interest: Interest) => (
+                <Form.Combobox.Item key={interest.value} value={interest}>
+                  {interest.label}
+                </Form.Combobox.Item>
+              )}
+            </Form.Combobox.List>
+          </Form.Combobox.Content>
+        </Form.Combobox>
       </Form.Field>
 
       <Form.Field name="productUpdates">

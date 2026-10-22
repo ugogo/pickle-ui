@@ -87,6 +87,7 @@ export type {
 export { Form } from './components/form/Form';
 export type {
   FormCheckboxProps,
+  FormComboboxProps,
   FormDescriptionProps,
   FormErrorProps,
   FormFieldProps,

@@ -149,4 +149,135 @@ describe('Form', () => {
       screen.getByRole('checkbox', { name: 'Accept terms' }),
     ).toHaveAttribute('aria-invalid', 'true');
   });
+
+  describe('Form.Combobox', () => {
+    type Fruit = { label: string; value: string };
+    type FruitFormValues = { fruit: Fruit | null; tags: Fruit[] };
+
+    const FRUITS: Fruit[] = [
+      { label: 'Apple', value: 'apple' },
+      { label: 'Banana', value: 'banana' },
+    ];
+
+    function FruitForm({
+      fruitError,
+      onSubmit,
+    }: {
+      fruitError?: string;
+      onSubmit: (values: FruitFormValues) => void;
+    }) {
+      const form = useForm<FruitFormValues>({
+        defaultValues: { fruit: null, tags: [] },
+      });
+      const [tags, setTags] = React.useState(FRUITS);
+
+      React.useEffect(() => {
+        if (fruitError) {
+          form.setError('fruit', { message: fruitError, type: 'manual' });
+        }
+      }, [form, fruitError]);
+
+      return (
+        <Form form={form} onSubmit={onSubmit}>
+          <Form.Field label="Fruit" name="fruit">
+            <Form.Combobox items={FRUITS}>
+              <Form.Combobox.Input />
+              <Form.Combobox.Content>
+                <Form.Combobox.List>
+                  {(fruit: Fruit) => (
+                    <Form.Combobox.Item key={fruit.value} value={fruit}>
+                      {fruit.label}
+                    </Form.Combobox.Item>
+                  )}
+                </Form.Combobox.List>
+              </Form.Combobox.Content>
+            </Form.Combobox>
+          </Form.Field>
+
+          <Form.Field label="Tags" name="tags">
+            <Form.Combobox
+              items={tags}
+              multiple
+              onCreate={(label) => {
+                const tag = { label, value: label.toLowerCase() };
+                setTags((current) => [...current, tag]);
+
+                return tag;
+              }}
+            >
+              <Form.Combobox.Chips>
+                <Form.Combobox.Value>
+                  {(value: Fruit[]) => (
+                    <>
+                      {value.map((tag) => (
+                        <Form.Combobox.Chip key={tag.value}>
+                          {tag.label}
+                        </Form.Combobox.Chip>
+                      ))}
+                      <Form.Combobox.ChipsInput />
+                    </>
+                  )}
+                </Form.Combobox.Value>
+              </Form.Combobox.Chips>
+              <Form.Combobox.Content>
+                <Form.Combobox.List>
+                  {(tag: Fruit) => (
+                    <Form.Combobox.Item key={tag.value} value={tag}>
+                      {tag.label}
+                    </Form.Combobox.Item>
+                  )}
+                </Form.Combobox.List>
+              </Form.Combobox.Content>
+            </Form.Combobox>
+          </Form.Field>
+
+          <Form.Button type="submit">Submit</Form.Button>
+        </Form>
+      );
+    }
+
+    function type(name: string, text: string) {
+      const input = screen.getByRole('combobox', { name });
+      fireEvent.focus(input);
+      fireEvent.input(input, {
+        inputType: 'insertText',
+        target: { value: text },
+      });
+    }
+
+    it('submits selected and created items', async () => {
+      const handleSubmit = vi.fn();
+      render(<FruitForm onSubmit={handleSubmit} />);
+
+      type('Fruit', 'Ban');
+      fireEvent.click(await screen.findByRole('option', { name: 'Banana' }));
+
+      type('Tags', 'Kiwi');
+      fireEvent.click(
+        await screen.findByRole('option', { name: 'Create "Kiwi"' }),
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+      await waitFor(() => {
+        expect(handleSubmit).toHaveBeenCalledWith(
+          {
+            fruit: FRUITS[1],
+            tags: [{ label: 'Kiwi', value: 'kiwi' }],
+          },
+          expect.anything(),
+        );
+      });
+    });
+
+    it('marks the input invalid from React Hook Form state', async () => {
+      render(<FruitForm fruitError="Pick a fruit." onSubmit={vi.fn()} />);
+
+      expect(await screen.findByText('Pick a fruit.')).toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: 'Fruit' })).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+    });
+  });
 });

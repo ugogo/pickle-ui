@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 
 import { FormCheckbox, type FormCheckboxProps } from './FormCheckbox';
+import { FormCombobox, type FormComboboxProps } from './FormCombobox';
 import { FormDescription, type FormDescriptionProps } from './FormDescription';
 import { FormError, type FormErrorProps } from './FormError';
 import { FormField, type FormFieldProps } from './FormField';
@@ -17,6 +18,7 @@ import { FormSwitch, type FormSwitchProps } from './FormSwitch';
 const Form = Object.assign(FormRoot, {
   Button,
   Checkbox: FormCheckbox,
+  Combobox: FormCombobox,
   Description: FormDescription,
   Error: FormError,
   Field: FormField,
@@ -31,6 +33,7 @@ const Form = Object.assign(FormRoot, {
 export { Form };
 export type {
   FormCheckboxProps,
+  FormComboboxProps,
   FormDescriptionProps,
   FormErrorProps,
   FormFieldProps,
