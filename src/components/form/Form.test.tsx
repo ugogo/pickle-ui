@@ -8,6 +8,7 @@ import { Form } from './Form';
 type TestFormValues = {
   channel: string;
   email: string;
+  message: string;
   productUpdates: boolean;
   role: string;
   terms: boolean;
@@ -16,6 +17,7 @@ type TestFormValues = {
 const defaultValues: TestFormValues = {
   channel: 'email',
   email: '',
+  message: '',
   productUpdates: false,
   role: 'designer',
   terms: false,
@@ -55,6 +57,10 @@ function TestForm({
     <Form form={form} onSubmit={onSubmit}>
       <Form.Field label="Email" name="email">
         <Form.Input autoComplete="email" />
+      </Form.Field>
+
+      <Form.Field label="Message" name="message">
+        <Form.Textarea />
       </Form.Field>
 
       <Form.Field label="Role" name="role">
@@ -97,6 +103,9 @@ describe('Form', () => {
     fireEvent.change(screen.getByRole('textbox', { name: 'Email' }), {
       target: { value: 'ugo@example.com' },
     });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Message' }), {
+      target: { value: 'Hello' },
+    });
     fireEvent.click(screen.getByRole('switch', { name: 'Product updates' }));
     fireEvent.click(screen.getByRole('checkbox', { name: 'Accept terms' }));
     fireEvent.click(screen.getByRole('radio', { name: 'SMS' }));
@@ -107,6 +116,7 @@ describe('Form', () => {
         {
           channel: 'sms',
           email: 'ugo@example.com',
+          message: 'Hello',
           productUpdates: true,
           role: 'designer',
           terms: true,
