@@ -32,6 +32,7 @@ export * from './entries/table';
 export * from './entries/text';
 export * from './entries/textarea';
 export * from './entries/theme';
+export * from './entries/toast';
 export * from './entries/tooltip';
 export * from './entries/x-stack';
 export * from './entries/y-stack';
