@@ -1,0 +1,378 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import * as React from 'react';
+
+import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
+import { Combobox } from './Combobox';
+
+const meta = {
+  component: Combobox,
+  parameters: {
+    layout: 'fullscreen',
+  },
+  title: 'components/form/Combobox',
+} satisfies Meta<typeof Combobox>;
+
+export default meta;
+type Fruit = {
+  label: string;
+  value: string;
+};
+
+type FruitGroup = {
+  items: Fruit[];
+  value: string;
+};
+
+type StoryDefinition = StoryObj<typeof meta>;
+
+const FRUITS: Fruit[] = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Blueberry', value: 'blueberry' },
+  { label: 'Cherry', value: 'cherry' },
+  { label: 'Grape', value: 'grape' },
+  { label: 'Kiwi', value: 'kiwi' },
+  { label: 'Mango', value: 'mango' },
+  { label: 'Orange', value: 'orange' },
+  { label: 'Peach', value: 'peach' },
+  { label: 'Pear', value: 'pear' },
+  { label: 'Pineapple', value: 'pineapple' },
+  { label: 'Strawberry', value: 'strawberry' },
+];
+
+const PRODUCE: FruitGroup[] = [
+  {
+    items: [
+      { label: 'Apple', value: 'apple' },
+      { label: 'Banana', value: 'banana' },
+      { label: 'Cherry', value: 'cherry' },
+    ],
+    value: 'Fruits',
+  },
+  {
+    items: [
+      { label: 'Carrot', value: 'carrot' },
+      { label: 'Leek', value: 'leek' },
+      { label: 'Spinach', value: 'spinach' },
+    ],
+    value: 'Vegetables',
+  },
+];
+
+type FruitComboboxStateProps = {
+  disabled?: boolean;
+  focus?: boolean;
+  invalid?: boolean;
+  value?: Fruit;
+};
+
+const STATE_COLUMNS: {
+  key: string;
+  label: string;
+  props: FruitComboboxStateProps;
+}[] = [
+  { key: 'placeholder', label: 'Placeholder', props: {} },
+  { key: 'selected', label: 'Selected', props: { value: FRUITS[0] } },
+  {
+    key: 'focus',
+    label: 'Focus',
+    props: { focus: true, value: FRUITS[0] },
+  },
+  {
+    key: 'disabled',
+    label: 'Disabled',
+    props: { disabled: true, value: FRUITS[0] },
+  },
+  {
+    key: 'invalid',
+    label: 'Invalid',
+    props: { invalid: true, value: FRUITS[0] },
+  },
+];
+
+const STATE_PROPS = Object.fromEntries(
+  STATE_COLUMNS.map((state) => [state.key, state.props]),
+) as Record<string, FruitComboboxStateProps>;
+
+function ComboboxMatrixCell({ column }: ComponentMatrixCellProps) {
+  return <FruitCombobox {...STATE_PROPS[column.key]} />;
+}
+
+function CreatableFruit() {
+  const [fruits, setFruits] = React.useState(FRUITS);
+
+  return (
+    <Combobox
+      createLabel={(inputValue) => `Add "${inputValue}" to the list`}
+      items={fruits}
+      onCreate={(label) => {
+        const fruit = { label, value: label.toLowerCase() };
+        setFruits((current) => [...current, fruit]);
+
+        return fruit;
+      }}
+    >
+      <Combobox.Input
+        aria-label="Fruit"
+        className="w-64"
+        placeholder="Type a new fruit…"
+      />
+      <Combobox.Content>
+        <Combobox.List>
+          {(fruit: Fruit) => (
+            <Combobox.Item key={fruit.value} value={fruit}>
+              {fruit.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
+}
+
+function CreatableTags() {
+  const [tags, setTags] = React.useState<Fruit[]>([
+    { label: 'Design', value: 'design' },
+    { label: 'Engineering', value: 'engineering' },
+    { label: 'Marketing', value: 'marketing' },
+  ]);
+
+  return (
+    <Combobox
+      defaultValue={[tags[0]]}
+      items={tags}
+      multiple
+      onCreate={(label) => {
+        const tag = { label, value: label.toLowerCase() };
+        setTags((current) => [...current, tag]);
+
+        return tag;
+      }}
+    >
+      <Combobox.Chips className="w-80">
+        <Combobox.Value>
+          {(value: Fruit[]) => (
+            <>
+              {value.map((tag) => (
+                <Combobox.Chip key={tag.value}>{tag.label}</Combobox.Chip>
+              ))}
+              <Combobox.ChipsInput
+                aria-label="Tags"
+                placeholder={value.length > 0 ? '' : 'Add tags…'}
+              />
+            </>
+          )}
+        </Combobox.Value>
+      </Combobox.Chips>
+      <Combobox.Content>
+        <Combobox.List>
+          {(tag: Fruit) => (
+            <Combobox.Item key={tag.value} value={tag}>
+              {tag.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
+}
+
+function FruitCombobox({
+  disabled,
+  focus,
+  invalid,
+  value,
+}: FruitComboboxStateProps) {
+  return (
+    <Combobox defaultValue={value} disabled={disabled} items={FRUITS}>
+      <Combobox.Input
+        aria-invalid={invalid || undefined}
+        aria-label="Fruit"
+        className="w-48"
+        // Targeted by the pseudo-states parameter below: only the inner
+        // <input> gets :focus-visible, not the trigger or clear buttons.
+        data-pseudo-focus={focus || undefined}
+        placeholder="Select a fruit"
+      />
+      <Combobox.Content>
+        <Combobox.Empty>No fruit found.</Combobox.Empty>
+        <Combobox.List>
+          {(fruit: Fruit) => (
+            <Combobox.Item key={fruit.value} value={fruit}>
+              {fruit.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
+}
+
+function StartsWithFruit() {
+  return (
+    <Combobox
+      filter={(fruit: Fruit, query) =>
+        fruit.label.toLowerCase().startsWith(query.toLowerCase())
+      }
+      items={FRUITS}
+    >
+      <Combobox.Input
+        aria-label="Fruit (starts with)"
+        className="w-64"
+        placeholder="Matches the start of names"
+      />
+      <Combobox.Content>
+        <Combobox.Empty>No fruit starts with that.</Combobox.Empty>
+        <Combobox.List>
+          {(fruit: Fruit) => (
+            <Combobox.Item key={fruit.value} value={fruit}>
+              {fruit.label}
+            </Combobox.Item>
+          )}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox>
+  );
+}
+
+export const All: StoryDefinition = {
+  parameters: {
+    pseudo: { focusVisible: ['[data-pseudo-focus]'] },
+  },
+  render: () => (
+    <Story.Layout className="max-w-5xl" title="Combobox">
+      <Story.Section title="States">
+        <Story.Matrix
+          Cell={ComboboxMatrixCell}
+          columns={STATE_COLUMNS}
+          rows={[{ key: 'combobox', label: 'Combobox' }]}
+        />
+      </Story.Section>
+
+      <Story.Section title="Label and clear">
+        <Combobox defaultValue={FRUITS[6]} items={FRUITS}>
+          <div className="flex w-64 flex-col gap-2">
+            <label
+              className="text-sm leading-none font-medium"
+              htmlFor="favorite-fruit"
+            >
+              Favorite fruit
+            </label>
+            <Combobox.Input
+              id="favorite-fruit"
+              placeholder="Search fruits…"
+              showClear
+            />
+          </div>
+          <Combobox.Content>
+            <Combobox.Empty>No fruit found.</Combobox.Empty>
+            <Combobox.List>
+              {(fruit: Fruit) => (
+                <Combobox.Item key={fruit.value} value={fruit}>
+                  {fruit.label}
+                </Combobox.Item>
+              )}
+            </Combobox.List>
+          </Combobox.Content>
+        </Combobox>
+      </Story.Section>
+
+      <Story.Section title="Sizes">
+        <div className="flex flex-wrap items-center gap-4">
+          {(['sm', 'md', 'lg'] as const).map((size) => (
+            <Combobox items={FRUITS} key={size}>
+              <Combobox.Input
+                aria-label={`Fruit (${size})`}
+                className="w-48"
+                placeholder={`Size ${size}`}
+                size={size}
+              />
+              <Combobox.Content>
+                <Combobox.Empty>No fruit found.</Combobox.Empty>
+                <Combobox.List>
+                  {(fruit: Fruit) => (
+                    <Combobox.Item key={fruit.value} value={fruit}>
+                      {fruit.label}
+                    </Combobox.Item>
+                  )}
+                </Combobox.List>
+              </Combobox.Content>
+            </Combobox>
+          ))}
+        </div>
+      </Story.Section>
+
+      <Story.Section title="Groups">
+        <Combobox items={PRODUCE}>
+          <Combobox.Input
+            aria-label="Produce"
+            className="w-64"
+            placeholder="Search produce…"
+          />
+          <Combobox.Content>
+            <Combobox.Empty>Nothing found.</Combobox.Empty>
+            <Combobox.List>
+              {(group: FruitGroup, index: number) => (
+                <Combobox.Group items={group.items} key={group.value}>
+                  {index > 0 ? <Combobox.Separator /> : null}
+                  <Combobox.GroupLabel>{group.value}</Combobox.GroupLabel>
+                  <Combobox.Collection>
+                    {(item: Fruit) => (
+                      <Combobox.Item key={item.value} value={item}>
+                        {item.label}
+                      </Combobox.Item>
+                    )}
+                  </Combobox.Collection>
+                </Combobox.Group>
+              )}
+            </Combobox.List>
+          </Combobox.Content>
+        </Combobox>
+      </Story.Section>
+
+      <Story.Section title="Multiple">
+        <Combobox defaultValue={[FRUITS[0], FRUITS[3]]} items={FRUITS} multiple>
+          <Combobox.Chips className="w-80">
+            <Combobox.Value>
+              {(value: Fruit[]) => (
+                <>
+                  {value.map((fruit) => (
+                    <Combobox.Chip key={fruit.value}>
+                      {fruit.label}
+                    </Combobox.Chip>
+                  ))}
+                  <Combobox.ChipsInput
+                    aria-label="Fruits"
+                    placeholder={value.length > 0 ? '' : 'Select fruits…'}
+                  />
+                </>
+              )}
+            </Combobox.Value>
+          </Combobox.Chips>
+          <Combobox.Content>
+            <Combobox.Empty>No fruit found.</Combobox.Empty>
+            <Combobox.List>
+              {(fruit: Fruit) => (
+                <Combobox.Item key={fruit.value} value={fruit}>
+                  {fruit.label}
+                </Combobox.Item>
+              )}
+            </Combobox.List>
+          </Combobox.Content>
+        </Combobox>
+      </Story.Section>
+
+      <Story.Section title="Custom filter">
+        <StartsWithFruit />
+      </Story.Section>
+
+      <Story.Section title="Creatable">
+        <div className="flex flex-wrap items-start gap-4">
+          <CreatableFruit />
+          <CreatableTags />
+        </div>
+      </Story.Section>
+    </Story.Layout>
+  ),
+};

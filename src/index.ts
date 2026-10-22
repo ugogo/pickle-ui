@@ -63,9 +63,31 @@ export {
   ColorPickerTrigger,
 } from './components/form/ColorPickerPrimitive';
 
+export { Combobox } from './components/form/Combobox';
+export type {
+  ComboboxChipProps,
+  ComboboxChipsInputProps,
+  ComboboxChipsProps,
+  ComboboxClearProps,
+  ComboboxCollectionProps,
+  ComboboxContentProps,
+  ComboboxEmptyProps,
+  ComboboxGroupLabelProps,
+  ComboboxGroupProps,
+  ComboboxInputProps,
+  ComboboxItemProps,
+  ComboboxListProps,
+  ComboboxProps,
+  ComboboxSeparatorProps,
+  ComboboxStatusProps,
+  ComboboxTriggerProps,
+  ComboboxValueProps,
+} from './components/form/Combobox';
+
 export { Form } from './components/form/Form';
 export type {
   FormCheckboxProps,
+  FormComboboxProps,
   FormDescriptionProps,
   FormErrorProps,
   FormFieldProps,
