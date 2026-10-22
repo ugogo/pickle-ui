@@ -1,6 +1,7 @@
 export {
   InputGroup,
   InputGroupAddon,
+  inputGroupAddonVariants,
   InputGroupButton,
   InputGroupInput,
   InputGroupText,
