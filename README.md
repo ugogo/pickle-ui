@@ -81,6 +81,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 
 | Subpath                                  | Exports                                                                                                |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pickle-ui/alert`                        | `Alert` with `Icon`, `Title`, `Description`, `Action`                                                  |
 | `pickle-ui/avatar`                       | `Avatar` with `Image`, `Fallback`, `Group`                                                             |
 | `pickle-ui/badge`                        | `Badge`, `badgeVariants`                                                                               |
 | `pickle-ui/button`                       | `Button`, `buttonVariants`                                                                             |
