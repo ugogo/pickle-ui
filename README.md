@@ -88,6 +88,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `pickle-ui/checkbox`                     | `Checkbox` with `Label`                                                                                |
 | `pickle-ui/color-picker`                 | `ColorPicker` with `Trigger`, `Content`, `Area`, `HueSlider`, `AlphaSlider`, `Swatch`, `Input`, …      |
 | `pickle-ui/combobox`                     | `Combobox` with `Input`, `Content`, `List`, `Item`, `Chips`, …                                         |
+| `pickle-ui/dialog`                       | `Dialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`                |
 | `pickle-ui/flex`, `pickle-ui/grid`       | `Flex`, `Grid` layout primitives                                                                       |
 | `pickle-ui/x-stack`, `pickle-ui/y-stack` | `XStack`, `YStack` row and column shorthands                                                           |
 | `pickle-ui/form`                         | `Form` with `Field`, `Label`, `Description`, `Error`, `Button` and every React Hook Form-bound control |
