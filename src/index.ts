@@ -11,7 +11,7 @@ export type {
 export { Badge, badgeVariants } from './components/Badge';
 export type { BadgeProps } from './components/Badge';
 
-export { Button } from './components/Button';
+export { Button, buttonVariants } from './components/Button';
 export type { ButtonProps } from './components/Button';
 
 export { Card } from './components/Card';
@@ -106,6 +106,7 @@ export type { InputProps } from './components/form/Input';
 export {
   InputGroup,
   InputGroupAddon,
+  inputGroupAddonVariants,
   InputGroupButton,
   InputGroupInput,
   InputGroupText,
@@ -229,3 +230,15 @@ export type { XStackProps } from './components/XStack';
 
 export { YStack } from './components/YStack';
 export type { YStackProps } from './components/YStack';
+
+export { createTheme, themeToCss } from './lib/theme';
+export type {
+  Theme,
+  ThemeCssOptions,
+  ThemeFonts,
+  ThemeOptions,
+  ThemeVariables,
+} from './lib/theme';
+
+export { cn } from './lib/utils';
+export type { SlotClassNames } from './lib/utils';

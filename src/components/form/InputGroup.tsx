@@ -135,6 +135,7 @@ const InputGroup = Object.assign(InputGroupRoot, {
 export {
   InputGroup,
   InputGroupAddon,
+  inputGroupAddonVariants,
   InputGroupButton,
   InputGroupInput,
   InputGroupText,

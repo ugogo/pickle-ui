@@ -4,11 +4,12 @@ import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { IconCheck, IconPlus, IconSelector, IconX } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 import { Input, type InputProps } from './Input';
 
 type ComboboxChipProps = React.ComponentProps<typeof ComboboxPrimitive.Chip> & {
+  classNames?: SlotClassNames<'remove'>;
   removeLabel?: string;
 };
 type ComboboxChipsInputProps = React.ComponentProps<
@@ -47,7 +48,9 @@ type ComboboxInputProps = Omit<
     showClear?: boolean;
     showTrigger?: boolean;
   };
-type ComboboxItemProps = React.ComponentProps<typeof ComboboxPrimitive.Item>;
+type ComboboxItemProps = React.ComponentProps<typeof ComboboxPrimitive.Item> & {
+  classNames?: SlotClassNames<'indicator'>;
+};
 type ComboboxListProps = React.ComponentProps<typeof ComboboxPrimitive.List>;
 type ComboboxProps<
   Value,
@@ -101,6 +104,7 @@ const comboboxIconButtonClassName =
 function ComboboxChip({
   children,
   className,
+  classNames,
   removeLabel = 'Remove',
   ...props
 }: ComboboxChipProps) {
@@ -116,7 +120,10 @@ function ComboboxChip({
       {children}
       <ComboboxPrimitive.ChipRemove
         aria-label={removeLabel}
-        className="text-muted-foreground hover:text-foreground inline-flex size-5 cursor-default items-center justify-center rounded-sm [&_svg]:size-3.5"
+        className={cn(
+          'text-muted-foreground hover:text-foreground inline-flex size-5 cursor-default items-center justify-center rounded-sm [&_svg]:size-3.5',
+          classNames?.remove,
+        )}
         data-slot="combobox-chip-remove"
       >
         <IconX />
@@ -428,7 +435,12 @@ function ComboboxInput({
   );
 }
 
-function ComboboxItem({ children, className, ...props }: ComboboxItemProps) {
+function ComboboxItem({
+  children,
+  className,
+  classNames,
+  ...props
+}: ComboboxItemProps) {
   return (
     <ComboboxPrimitive.Item
       className={cn(comboboxItemClassName, className)}
@@ -436,7 +448,13 @@ function ComboboxItem({ children, className, ...props }: ComboboxItemProps) {
       {...props}
     >
       {children}
-      <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+      <span
+        className={cn(
+          'pointer-events-none absolute right-2 flex size-4 items-center justify-center',
+          classNames?.indicator,
+        )}
+        data-slot="combobox-item-indicator"
+      >
         <ComboboxPrimitive.ItemIndicator>
           <IconCheck className="pointer-events-none" />
         </ComboboxPrimitive.ItemIndicator>

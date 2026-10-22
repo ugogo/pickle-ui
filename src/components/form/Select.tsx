@@ -9,7 +9,7 @@ import {
 } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 type SelectContentProps = Pick<
   React.ComponentProps<typeof SelectPrimitive.Positioner>,
@@ -26,13 +26,19 @@ type SelectItemData = {
   label: React.ReactNode;
   value: unknown;
 };
-type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item>;
+type SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {
+  classNames?: SlotClassNames<'indicator'>;
+};
 type SelectLabelProps = React.ComponentProps<typeof SelectPrimitive.Label>;
 type SelectProps = React.ComponentProps<typeof SelectPrimitive.Root>;
 type SelectSeparatorProps = React.ComponentProps<
   typeof SelectPrimitive.Separator
 >;
-type SelectTriggerProps = React.ComponentProps<typeof SelectPrimitive.Trigger>;
+type SelectTriggerProps = React.ComponentProps<
+  typeof SelectPrimitive.Trigger
+> & {
+  classNames?: SlotClassNames<'icon'>;
+};
 
 type SelectValueProps = React.ComponentProps<typeof SelectPrimitive.Value>;
 
@@ -112,7 +118,12 @@ function SelectGroupLabel({ className, ...props }: SelectGroupLabelProps) {
   );
 }
 
-function SelectItem({ children, className, ...props }: SelectItemProps) {
+function SelectItem({
+  children,
+  className,
+  classNames,
+  ...props
+}: SelectItemProps) {
   return (
     <SelectPrimitive.Item
       className={cn(
@@ -124,7 +135,13 @@ function SelectItem({ children, className, ...props }: SelectItemProps) {
       label={typeof children === 'string' ? children : undefined}
       {...props}
     >
-      <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+      <span
+        className={cn(
+          'pointer-events-none absolute right-2 flex size-4 items-center justify-center',
+          classNames?.indicator,
+        )}
+        data-slot="select-item-indicator"
+      >
         <SelectPrimitive.ItemIndicator>
           <IconCheck className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
@@ -209,7 +226,12 @@ function SelectSeparator({ className, ...props }: SelectSeparatorProps) {
   );
 }
 
-function SelectTrigger({ children, className, ...props }: SelectTriggerProps) {
+function SelectTrigger({
+  children,
+  className,
+  classNames,
+  ...props
+}: SelectTriggerProps) {
   return (
     <SelectPrimitive.Trigger
       className={cn(
@@ -220,8 +242,11 @@ function SelectTrigger({ children, className, ...props }: SelectTriggerProps) {
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon>
-        <IconSelector className="text-muted-foreground pointer-events-none size-4" />
+      <SelectPrimitive.Icon
+        className={cn('text-muted-foreground', classNames?.icon)}
+        data-slot="select-trigger-icon"
+      >
+        <IconSelector className="pointer-events-none size-4" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );

@@ -83,4 +83,25 @@ describe('Checkbox', () => {
       'checkbox-label',
     );
   });
+
+  it('applies classNames to the field, indicator, and label slots', () => {
+    const { container } = render(
+      <Checkbox
+        classNames={{
+          field: 'field-x',
+          indicator: 'indicator-x',
+          label: 'label-x',
+        }}
+        defaultChecked
+        label="Accept"
+      />,
+    );
+    expect(container.querySelector('[data-slot="checkbox-field"]')).toHaveClass(
+      'field-x',
+    );
+    expect(
+      container.querySelector('[data-slot="checkbox-indicator"]'),
+    ).toHaveClass('indicator-x');
+    expect(screen.getByText('Accept')).toHaveClass('label-x');
+  });
 });

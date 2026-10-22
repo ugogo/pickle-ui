@@ -96,4 +96,20 @@ describe('Select', () => {
     );
     expect(screen.getByRole('combobox')).toHaveTextContent('Light');
   });
+
+  it('applies classNames to the trigger icon slot', () => {
+    const { container } = render(
+      <Select defaultValue="a">
+        <Select.Trigger classNames={{ icon: 'icon-x' }}>
+          <Select.Value />
+        </Select.Trigger>
+        <Select.Content>
+          <Select.Item value="a">A</Select.Item>
+        </Select.Content>
+      </Select>,
+    );
+    expect(
+      container.querySelector('[data-slot="select-trigger-icon"]'),
+    ).toHaveClass('icon-x');
+  });
 });

@@ -3,7 +3,7 @@
 import { Input as InputPrimitive } from '@base-ui/react/input';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 const inputControlHeights = {
   lg: 'h-10',
@@ -15,6 +15,8 @@ type InputProps = Omit<
   InputPrimitive.Props & React.RefAttributes<HTMLInputElement>,
   'size'
 > & {
+  /** Class overrides for the inner `input`; `className` styles the control wrapper. */
+  classNames?: SlotClassNames<'input'>;
   nativeInput?: boolean;
   size?: 'lg' | 'md' | 'sm' | number;
   unstyled?: boolean;
@@ -22,6 +24,7 @@ type InputProps = Omit<
 
 function Input({
   className,
+  classNames,
   nativeInput = false,
   size = 'md',
   style,
@@ -45,6 +48,7 @@ function Input({
       '[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none [&::-webkit-search-results-button]:appearance-none [&::-webkit-search-results-decoration]:appearance-none',
     props.type === 'file' &&
       'text-muted-foreground file:me-3 file:bg-transparent file:font-medium file:text-foreground file:text-sm',
+    classNames?.input,
   );
 
   return (

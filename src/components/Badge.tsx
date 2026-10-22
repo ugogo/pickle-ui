@@ -20,24 +20,22 @@ const badgeVariants = cva(
         default:
           'bg-primary text-primary-foreground [button&,a&]:hover:bg-primary/90',
         destructive:
-          'bg-destructive text-white [button&,a&]:hover:bg-destructive/90',
-        error:
-          'bg-destructive/8 text-destructive-foreground dark:bg-destructive/16',
+          'bg-destructive text-destructive-foreground [button&,a&]:hover:bg-destructive/90',
+        error: 'bg-destructive-subtle text-destructive-subtle-foreground',
         expired:
           'bg-secondary text-secondary-foreground [button&,a&]:hover:bg-secondary/90',
-        failed:
-          'bg-destructive/8 text-destructive-foreground dark:bg-destructive/16',
-        info: 'bg-info/8 text-info-foreground dark:bg-info/16',
-        inProgress: 'bg-info/8 text-info-foreground dark:bg-info/16',
-        inReview: 'bg-warning/8 text-warning-foreground dark:bg-warning/16',
+        failed: 'bg-destructive-subtle text-destructive-subtle-foreground',
+        info: 'bg-info-subtle text-info-subtle-foreground',
+        inProgress: 'bg-info-subtle text-info-subtle-foreground',
+        inReview: 'bg-warning-subtle text-warning-subtle-foreground',
         outline:
           'border-input bg-background text-foreground dark:bg-input/32 [button&,a&]:hover:bg-accent/50 dark:[button&,a&]:hover:bg-input/48',
-        pending: 'bg-warning/8 text-warning-foreground dark:bg-warning/16',
+        pending: 'bg-warning-subtle text-warning-subtle-foreground',
         secondary:
           'bg-secondary text-secondary-foreground [button&,a&]:hover:bg-secondary/90',
-        submitted: 'bg-info/8 text-info-foreground dark:bg-info/16',
-        success: 'bg-success/8 text-success-foreground dark:bg-success/16',
-        warning: 'bg-warning/8 text-warning-foreground dark:bg-warning/16',
+        submitted: 'bg-info-subtle text-info-subtle-foreground',
+        success: 'bg-success-subtle text-success-subtle-foreground',
+        warning: 'bg-warning-subtle text-warning-subtle-foreground',
       },
     },
   },

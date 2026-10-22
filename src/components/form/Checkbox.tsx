@@ -4,26 +4,27 @@ import { Checkbox as CheckboxPrimitive } from '@base-ui/react/checkbox';
 import { IconCheck, IconMinus } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn, type SlotClassNames } from '@/lib/utils';
 
 type CheckboxLabelProps = Omit<React.ComponentProps<'label'>, 'htmlFor'> & {
   htmlFor: string;
 };
 
 type CheckboxProps = React.ComponentProps<typeof CheckboxPrimitive.Root> & {
+  classNames?: SlotClassNames<'field' | 'indicator' | 'label'>;
   label?: React.ReactNode;
-  labelClassName?: string;
   size?: 'md' | 'sm';
 };
 
 function CheckboxControl({
   className,
+  classNames,
   nativeButton = true,
   // react-doctor-disable-next-line react-doctor/control-has-associated-label -- consumers provide aria-label/aria-labelledby, or CheckboxRoot wires this button to the sibling label by id
   render = <button type="button" />,
   size = 'md',
   ...props
-}: Omit<CheckboxProps, 'label' | 'labelClassName'>) {
+}: Omit<CheckboxProps, 'label'>) {
   return (
     <CheckboxPrimitive.Root
       className={cn(
@@ -37,7 +38,10 @@ function CheckboxControl({
       {...props}
     >
       <CheckboxPrimitive.Indicator
-        className="text-primary-foreground data-indeterminate:text-foreground data-checked:bg-primary absolute -inset-px flex items-center justify-center rounded-[.25rem] data-unchecked:hidden"
+        className={cn(
+          'text-primary-foreground data-indeterminate:text-foreground data-checked:bg-primary absolute -inset-px flex items-center justify-center rounded-[.25rem] data-unchecked:hidden',
+          classNames?.indicator,
+        )}
         data-slot="checkbox-indicator"
       >
         <IconCheck className="group-data-[size=md]/checkbox:size-3 group-data-[size=sm]/checkbox:size-2.5 data-indeterminate:hidden [[data-indeterminate]_&]:hidden" />
@@ -61,19 +65,22 @@ function CheckboxLabel({ className, htmlFor, ...props }: CheckboxLabelProps) {
   );
 }
 
-function CheckboxRoot({ id, label, labelClassName, ...props }: CheckboxProps) {
+function CheckboxRoot({ classNames, id, label, ...props }: CheckboxProps) {
   const generatedId = React.useId();
 
   if (!label) {
-    return <CheckboxControl id={id} {...props} />;
+    return <CheckboxControl classNames={classNames} id={id} {...props} />;
   }
 
   const checkboxId = id ?? generatedId;
 
   return (
-    <div className="flex items-center gap-2" data-slot="checkbox-field">
-      <CheckboxControl id={checkboxId} {...props} />
-      <CheckboxLabel className={labelClassName} htmlFor={checkboxId}>
+    <div
+      className={cn('flex items-center gap-2', classNames?.field)}
+      data-slot="checkbox-field"
+    >
+      <CheckboxControl classNames={classNames} id={checkboxId} {...props} />
+      <CheckboxLabel className={classNames?.label} htmlFor={checkboxId}>
         {label}
       </CheckboxLabel>
     </div>
