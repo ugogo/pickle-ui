@@ -19,6 +19,7 @@ export * from './entries/progress';
 export * from './entries/radio-group';
 export * from './entries/scroll-area';
 export * from './entries/select';
+export * from './entries/separator';
 export * from './entries/sidebar';
 export * from './entries/slider';
 export * from './entries/switch';
