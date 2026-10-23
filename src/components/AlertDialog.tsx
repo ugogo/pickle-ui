@@ -1,4 +1,5 @@
 import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog';
+import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
@@ -28,7 +29,16 @@ type AlertDialogDescriptionProps = React.ComponentProps<
 >;
 type AlertDialogFooterProps = React.ComponentProps<'div'>;
 type AlertDialogHeaderProps = React.ComponentProps<'div'>;
-type AlertDialogProps = React.ComponentProps<typeof AlertDialogPrimitive.Root>;
+type AlertDialogProps = React.ComponentProps<
+  typeof AlertDialogPrimitive.Root
+> & {
+  /**
+   * Keeps the dialog open when the backdrop is clicked, so it only closes
+   * through `AlertDialog.Close` or Escape. Defaults to `false`: a backdrop
+   * click closes the dialog.
+   */
+  disablePointerDismissal?: boolean;
+};
 type AlertDialogTitleProps = React.ComponentProps<
   typeof AlertDialogPrimitive.Title
 >;
@@ -58,6 +68,8 @@ function AlertDialogContent({
           className={cn(dialogPopupVariants({ size }), className)}
           data-size={size}
           data-slot="alert-dialog-content"
+          // The Dialog root used for pointer dismissal would render `dialog`.
+          role="alertdialog"
           {...props}
         />
       </AlertDialogPrimitive.Viewport>
@@ -98,8 +110,19 @@ function AlertDialogHeader({ className, ...props }: AlertDialogHeaderProps) {
   );
 }
 
-function AlertDialogRoot({ ...props }: AlertDialogProps) {
-  return <AlertDialogPrimitive.Root {...props} />;
+function AlertDialogRoot({
+  disablePointerDismissal = false,
+  ...props
+}: AlertDialogProps) {
+  if (disablePointerDismissal) {
+    return <AlertDialogPrimitive.Root {...props} />;
+  }
+
+  // Base UI's alert dialog always ignores outside presses. A modal Dialog root
+  // shares every part and closes on them with the `outside-press` reason.
+  return (
+    <DialogPrimitive.Root {...props} disablePointerDismissal={false} modal />
+  );
 }
 
 function AlertDialogTitle({ className, ...props }: AlertDialogTitleProps) {

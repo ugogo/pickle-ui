@@ -35,7 +35,7 @@ const dialogFooterClassName =
 
 const dialogTitleClassName = cn(
   textVariants({ variant: 'h4' }),
-  'font-heading leading-none font-semibold',
+  'font-heading leading-snug font-semibold',
 );
 
 const dialogDescriptionClassName = textVariants({
