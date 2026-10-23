@@ -1,10 +1,7 @@
-'use client';
-
 import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog';
+import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import * as React from 'react';
 
-import { useOnClickOutside } from '@/hooks/use-on-click-outside';
-import { useComposedRefs } from '@/lib/compose-refs';
 import { cn } from '@/lib/utils';
 
 import {
@@ -49,11 +46,6 @@ type AlertDialogTriggerProps = React.ComponentProps<
   typeof AlertDialogPrimitive.Trigger
 >;
 
-/** Closes the dialog on a backdrop click; `null` when pointer dismissal is off. */
-const AlertDialogDismissContext = React.createContext<(() => void) | null>(
-  null,
-);
-
 function AlertDialogClose({ ...props }: AlertDialogCloseProps) {
   return (
     <AlertDialogPrimitive.Close data-slot="alert-dialog-close" {...props} />
@@ -62,42 +54,22 @@ function AlertDialogClose({ ...props }: AlertDialogCloseProps) {
 
 function AlertDialogContent({
   className,
-  ref,
   size = 'md',
   ...props
 }: AlertDialogContentProps) {
-  const dismiss = React.useContext(AlertDialogDismissContext);
-  const popupRef = React.useRef<HTMLDivElement>(null);
-  const viewportRef = React.useRef<HTMLDivElement>(null);
-  const composedRef = useComposedRefs(ref, popupRef);
-
-  useOnClickOutside(
-    popupRef,
-    (event) => {
-      // Nested popups (Select, Menu…) portal outside the viewport; only a
-      // click on the backdrop area dismisses.
-      if (viewportRef.current?.contains(event.target as Node)) {
-        dismiss?.();
-      }
-    },
-    dismiss !== null,
-  );
-
   return (
     <AlertDialogPrimitive.Portal>
       <AlertDialogPrimitive.Backdrop
         className={dialogBackdropClassName}
         data-slot="alert-dialog-backdrop"
       />
-      <AlertDialogPrimitive.Viewport
-        className={dialogViewportClassName}
-        ref={viewportRef}
-      >
+      <AlertDialogPrimitive.Viewport className={dialogViewportClassName}>
         <AlertDialogPrimitive.Popup
           className={cn(dialogPopupVariants({ size }), className)}
           data-size={size}
           data-slot="alert-dialog-content"
-          ref={composedRef}
+          // The Dialog root used for pointer dismissal would render `dialog`.
+          role="alertdialog"
           {...props}
         />
       </AlertDialogPrimitive.Viewport>
@@ -139,24 +111,17 @@ function AlertDialogHeader({ className, ...props }: AlertDialogHeaderProps) {
 }
 
 function AlertDialogRoot({
-  actionsRef: actionsRefProp,
   disablePointerDismissal = true,
   ...props
 }: AlertDialogProps) {
-  const internalActionsRef =
-    React.useRef<AlertDialogPrimitive.Root.Actions>(null);
-  const actionsRef = actionsRefProp ?? internalActionsRef;
-  const dismiss = React.useCallback(
-    () => actionsRef.current?.close(),
-    [actionsRef],
-  );
+  if (disablePointerDismissal) {
+    return <AlertDialogPrimitive.Root {...props} />;
+  }
 
+  // Base UI's alert dialog always ignores outside presses. A modal Dialog root
+  // shares every part and closes on them with the `outside-press` reason.
   return (
-    <AlertDialogDismissContext.Provider
-      value={disablePointerDismissal ? null : dismiss}
-    >
-      <AlertDialogPrimitive.Root actionsRef={actionsRef} {...props} />
-    </AlertDialogDismissContext.Provider>
+    <DialogPrimitive.Root {...props} disablePointerDismissal={false} modal />
   );
 }
 

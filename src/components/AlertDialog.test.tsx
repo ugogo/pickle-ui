@@ -1,15 +1,41 @@
 import {
+  act,
   fireEvent,
   render,
   screen,
   waitFor,
   within,
 } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { AlertDialog } from './AlertDialog';
+import { AlertDialog, type AlertDialogProps } from './AlertDialog';
 
-function renderAlertDialog(props: { disablePointerDismissal?: boolean } = {}) {
+type RenderProps = Pick<AlertDialogProps, 'disablePointerDismissal'>;
+
+async function openAlertDialog(props: RenderProps = {}) {
+  const onOpenChange = vi.fn();
+  renderAlertDialog({ ...props, onOpenChange });
+  fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+
+  const dialog = await screen.findByRole('alertdialog');
+  // The viewport covers the backdrop, so it receives clicks around the popup.
+  const viewport = dialog.closest('[role=presentation]')!;
+  onOpenChange.mockClear();
+
+  return { dialog, onOpenChange, viewport };
+}
+
+/** Presses on `down` and releases on `up`, like a real mouse click or drag. */
+function press(down: Element, up: Element = down) {
+  fireEvent.pointerDown(down, { button: 0, pointerType: 'mouse' });
+  fireEvent.mouseDown(down, { button: 0 });
+  fireEvent.pointerUp(up, { button: 0, pointerType: 'mouse' });
+  fireEvent.mouseUp(up, { button: 0 });
+  // A drag fires `click` on the closest element containing both ends.
+  fireEvent.click(down.contains(up) ? down : up, { button: 0 });
+}
+
+function renderAlertDialog(props: AlertDialogProps = {}) {
   return render(
     <AlertDialog {...props}>
       <AlertDialog.Trigger>Delete project</AlertDialog.Trigger>
@@ -70,39 +96,49 @@ describe('AlertDialog', () => {
   });
 
   it('stays open on backdrop click by default', async () => {
-    renderAlertDialog();
-    fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+    const { onOpenChange, viewport } = await openAlertDialog();
 
-    const dialog = await screen.findByRole('alertdialog');
-    const viewport = dialog.parentElement!;
-    fireEvent.pointerDown(viewport);
-    fireEvent.click(viewport);
+    await act(async () => press(viewport));
 
+    expect(onOpenChange).not.toHaveBeenCalled();
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
   });
 
   it('closes on backdrop click when disablePointerDismissal is false', async () => {
-    renderAlertDialog({ disablePointerDismissal: false });
-    fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+    const { dialog, onOpenChange, viewport } = await openAlertDialog({
+      disablePointerDismissal: false,
+    });
 
-    const dialog = await screen.findByRole('alertdialog');
-    const viewport = dialog.parentElement!;
-    fireEvent.pointerDown(viewport);
-    fireEvent.click(viewport);
+    expect(dialog).toHaveAttribute('role', 'alertdialog');
 
+    await act(async () => press(viewport));
+
+    expect(onOpenChange).toHaveBeenCalledExactlyOnceWith(
+      false,
+      expect.objectContaining({ reason: 'outside-press' }),
+    );
     await waitFor(() =>
       expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument(),
     );
   });
 
-  it('stays open when a press starts inside the popup', async () => {
-    renderAlertDialog({ disablePointerDismissal: false });
-    fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+  it('stays open when a press starts outside the popup and ends in it', async () => {
+    const { dialog, onOpenChange, viewport } = await openAlertDialog({
+      disablePointerDismissal: false,
+    });
 
-    const dialog = await screen.findByRole('alertdialog');
-    fireEvent.pointerDown(dialog);
-    fireEvent.click(dialog.parentElement!);
+    await act(async () => press(viewport, dialog));
 
-    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it('stays open when a press starts in the popup and ends outside it', async () => {
+    const { dialog, onOpenChange, viewport } = await openAlertDialog({
+      disablePointerDismissal: false,
+    });
+
+    await act(async () => press(dialog, viewport));
+
+    expect(onOpenChange).not.toHaveBeenCalled();
   });
 });
