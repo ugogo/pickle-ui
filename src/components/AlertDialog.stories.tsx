@@ -54,6 +54,53 @@ export const All: StoryDefinition = {
         </AlertDialog>
       </Story.Section>
 
+      <Story.Section title="Long title">
+        <AlertDialog>
+          <AlertDialog.Trigger render={<Button variant="outline" />}>
+            Archive workspace
+          </AlertDialog.Trigger>
+          <AlertDialog.Content size="sm">
+            <AlertDialog.Header>
+              <AlertDialog.Title>
+                Archive this workspace and remove access for every member?
+              </AlertDialog.Title>
+              <AlertDialog.Description>
+                Members keep their exported data. You can restore the workspace
+                within 30 days.
+              </AlertDialog.Description>
+            </AlertDialog.Header>
+            <AlertDialog.Footer>
+              <AlertDialog.Close render={<Button variant="outline" />}>
+                Cancel
+              </AlertDialog.Close>
+              <AlertDialog.Close render={<Button />}>Archive</AlertDialog.Close>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+      </Story.Section>
+
+      <Story.Section title="Backdrop dismissal">
+        <AlertDialog disablePointerDismissal={false}>
+          <AlertDialog.Trigger render={<Button variant="outline" />}>
+            Leave page
+          </AlertDialog.Trigger>
+          <AlertDialog.Content>
+            <AlertDialog.Header>
+              <AlertDialog.Title>Leave this page?</AlertDialog.Title>
+              <AlertDialog.Description>
+                Clicking outside closes this dialog and keeps you on the page.
+              </AlertDialog.Description>
+            </AlertDialog.Header>
+            <AlertDialog.Footer>
+              <AlertDialog.Close render={<Button variant="outline" />}>
+                Stay
+              </AlertDialog.Close>
+              <AlertDialog.Close render={<Button />}>Leave</AlertDialog.Close>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+      </Story.Section>
+
       <Story.Section title="Sizes">
         <div className="flex flex-wrap gap-3">
           {SIZES.map(({ label, size }) => (

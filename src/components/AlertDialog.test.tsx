@@ -9,9 +9,9 @@ import { describe, expect, it } from 'vitest';
 
 import { AlertDialog } from './AlertDialog';
 
-function renderAlertDialog() {
+function renderAlertDialog(props: { disablePointerDismissal?: boolean } = {}) {
   return render(
-    <AlertDialog>
+    <AlertDialog {...props}>
       <AlertDialog.Trigger>Delete project</AlertDialog.Trigger>
       <AlertDialog.Content>
         <AlertDialog.Header>
@@ -67,5 +67,42 @@ describe('AlertDialog', () => {
     await waitFor(() =>
       expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument(),
     );
+  });
+
+  it('stays open on backdrop click by default', async () => {
+    renderAlertDialog();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+
+    const dialog = await screen.findByRole('alertdialog');
+    const viewport = dialog.parentElement!;
+    fireEvent.pointerDown(viewport);
+    fireEvent.click(viewport);
+
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+  });
+
+  it('closes on backdrop click when disablePointerDismissal is false', async () => {
+    renderAlertDialog({ disablePointerDismissal: false });
+    fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+
+    const dialog = await screen.findByRole('alertdialog');
+    const viewport = dialog.parentElement!;
+    fireEvent.pointerDown(viewport);
+    fireEvent.click(viewport);
+
+    await waitFor(() =>
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument(),
+    );
+  });
+
+  it('stays open when a press starts inside the popup', async () => {
+    renderAlertDialog({ disablePointerDismissal: false });
+    fireEvent.click(screen.getByRole('button', { name: 'Delete project' }));
+
+    const dialog = await screen.findByRole('alertdialog');
+    fireEvent.pointerDown(dialog);
+    fireEvent.click(dialog.parentElement!);
+
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
   });
 });

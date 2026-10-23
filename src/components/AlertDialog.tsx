@@ -1,6 +1,10 @@
+'use client';
+
 import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog';
 import * as React from 'react';
 
+import { useOnClickOutside } from '@/hooks/use-on-click-outside';
+import { useComposedRefs } from '@/lib/compose-refs';
 import { cn } from '@/lib/utils';
 
 import {
@@ -28,13 +32,27 @@ type AlertDialogDescriptionProps = React.ComponentProps<
 >;
 type AlertDialogFooterProps = React.ComponentProps<'div'>;
 type AlertDialogHeaderProps = React.ComponentProps<'div'>;
-type AlertDialogProps = React.ComponentProps<typeof AlertDialogPrimitive.Root>;
+type AlertDialogProps = React.ComponentProps<
+  typeof AlertDialogPrimitive.Root
+> & {
+  /**
+   * Keeps the dialog open when the backdrop is clicked, so it only closes
+   * through `AlertDialog.Close` or Escape. Defaults to `true`; set it to
+   * `false` to close the dialog on a backdrop click.
+   */
+  disablePointerDismissal?: boolean;
+};
 type AlertDialogTitleProps = React.ComponentProps<
   typeof AlertDialogPrimitive.Title
 >;
 type AlertDialogTriggerProps = React.ComponentProps<
   typeof AlertDialogPrimitive.Trigger
 >;
+
+/** Closes the dialog on a backdrop click; `null` when pointer dismissal is off. */
+const AlertDialogDismissContext = React.createContext<(() => void) | null>(
+  null,
+);
 
 function AlertDialogClose({ ...props }: AlertDialogCloseProps) {
   return (
@@ -44,20 +62,42 @@ function AlertDialogClose({ ...props }: AlertDialogCloseProps) {
 
 function AlertDialogContent({
   className,
+  ref,
   size = 'md',
   ...props
 }: AlertDialogContentProps) {
+  const dismiss = React.useContext(AlertDialogDismissContext);
+  const popupRef = React.useRef<HTMLDivElement>(null);
+  const viewportRef = React.useRef<HTMLDivElement>(null);
+  const composedRef = useComposedRefs(ref, popupRef);
+
+  useOnClickOutside(
+    popupRef,
+    (event) => {
+      // Nested popups (Select, Menu…) portal outside the viewport; only a
+      // click on the backdrop area dismisses.
+      if (viewportRef.current?.contains(event.target as Node)) {
+        dismiss?.();
+      }
+    },
+    dismiss !== null,
+  );
+
   return (
     <AlertDialogPrimitive.Portal>
       <AlertDialogPrimitive.Backdrop
         className={dialogBackdropClassName}
         data-slot="alert-dialog-backdrop"
       />
-      <AlertDialogPrimitive.Viewport className={dialogViewportClassName}>
+      <AlertDialogPrimitive.Viewport
+        className={dialogViewportClassName}
+        ref={viewportRef}
+      >
         <AlertDialogPrimitive.Popup
           className={cn(dialogPopupVariants({ size }), className)}
           data-size={size}
           data-slot="alert-dialog-content"
+          ref={composedRef}
           {...props}
         />
       </AlertDialogPrimitive.Viewport>
@@ -98,8 +138,26 @@ function AlertDialogHeader({ className, ...props }: AlertDialogHeaderProps) {
   );
 }
 
-function AlertDialogRoot({ ...props }: AlertDialogProps) {
-  return <AlertDialogPrimitive.Root {...props} />;
+function AlertDialogRoot({
+  actionsRef: actionsRefProp,
+  disablePointerDismissal = true,
+  ...props
+}: AlertDialogProps) {
+  const internalActionsRef =
+    React.useRef<AlertDialogPrimitive.Root.Actions>(null);
+  const actionsRef = actionsRefProp ?? internalActionsRef;
+  const dismiss = React.useCallback(
+    () => actionsRef.current?.close(),
+    [actionsRef],
+  );
+
+  return (
+    <AlertDialogDismissContext.Provider
+      value={disablePointerDismissal ? null : dismiss}
+    >
+      <AlertDialogPrimitive.Root actionsRef={actionsRef} {...props} />
+    </AlertDialogDismissContext.Provider>
+  );
 }
 
 function AlertDialogTitle({ className, ...props }: AlertDialogTitleProps) {
