@@ -74,14 +74,14 @@ const DISMISSAL_COLUMNS: {
   label: string;
 }[] = [
   {
-    description: 'disablePointerDismissal (default)',
-    key: 'true',
-    label: 'Backdrop click ignored',
-  },
-  {
-    description: 'disablePointerDismissal={false}',
+    description: 'Default',
     key: 'false',
     label: 'Backdrop click closes',
+  },
+  {
+    description: 'disablePointerDismissal',
+    key: 'true',
+    label: 'Backdrop click ignored',
   },
 ];
 

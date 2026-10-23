@@ -34,8 +34,8 @@ type AlertDialogProps = React.ComponentProps<
 > & {
   /**
    * Keeps the dialog open when the backdrop is clicked, so it only closes
-   * through `AlertDialog.Close` or Escape. Defaults to `true`; set it to
-   * `false` to close the dialog on a backdrop click.
+   * through `AlertDialog.Close` or Escape. Defaults to `false`: a backdrop
+   * click closes the dialog.
    */
   disablePointerDismissal?: boolean;
 };
@@ -111,7 +111,7 @@ function AlertDialogHeader({ className, ...props }: AlertDialogHeaderProps) {
 }
 
 function AlertDialogRoot({
-  disablePointerDismissal = true,
+  disablePointerDismissal = false,
   ...props
 }: AlertDialogProps) {
   if (disablePointerDismissal) {

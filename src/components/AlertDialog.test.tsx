@@ -95,19 +95,8 @@ describe('AlertDialog', () => {
     );
   });
 
-  it('stays open on backdrop click by default', async () => {
-    const { onOpenChange, viewport } = await openAlertDialog();
-
-    await act(async () => press(viewport));
-
-    expect(onOpenChange).not.toHaveBeenCalled();
-    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
-  });
-
-  it('closes on backdrop click when disablePointerDismissal is false', async () => {
-    const { dialog, onOpenChange, viewport } = await openAlertDialog({
-      disablePointerDismissal: false,
-    });
+  it('closes on backdrop click by default', async () => {
+    const { dialog, onOpenChange, viewport } = await openAlertDialog();
 
     expect(dialog).toHaveAttribute('role', 'alertdialog');
 
@@ -122,10 +111,21 @@ describe('AlertDialog', () => {
     );
   });
 
-  it('stays open when a press starts outside the popup and ends in it', async () => {
+  it('stays open on backdrop click with disablePointerDismissal', async () => {
     const { dialog, onOpenChange, viewport } = await openAlertDialog({
-      disablePointerDismissal: false,
+      disablePointerDismissal: true,
     });
+
+    expect(dialog).toHaveAttribute('role', 'alertdialog');
+
+    await act(async () => press(viewport));
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+  });
+
+  it('stays open when a press starts outside the popup and ends in it', async () => {
+    const { dialog, onOpenChange, viewport } = await openAlertDialog();
 
     await act(async () => press(viewport, dialog));
 
@@ -133,9 +133,7 @@ describe('AlertDialog', () => {
   });
 
   it('stays open when a press starts in the popup and ends outside it', async () => {
-    const { dialog, onOpenChange, viewport } = await openAlertDialog({
-      disablePointerDismissal: false,
-    });
+    const { dialog, onOpenChange, viewport } = await openAlertDialog();
 
     await act(async () => press(dialog, viewport));
 
