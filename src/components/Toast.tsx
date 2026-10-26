@@ -128,7 +128,7 @@ function ToastClose({
 function ToastDescription({ className, ...props }: ToastDescriptionProps) {
   return (
     <ToastPrimitive.Description
-      className={cn('leading-5', className)}
+      className={cn('text-sm leading-5', className)}
       data-slot="toast-description"
       render={<Text tone="muted" variant="body" />}
       {...props}
@@ -240,7 +240,7 @@ function ToastRoot({
 function ToastTitle({ className, ...props }: ToastTitleProps) {
   return (
     <ToastPrimitive.Title
-      className={cn('leading-5 font-medium', className)}
+      className={cn('text-sm leading-5 font-medium', className)}
       data-slot="toast-title"
       render={<Text as="h2" variant="body" />}
       {...props}

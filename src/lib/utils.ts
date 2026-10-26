@@ -1,5 +1,18 @@
 import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { extendTailwindMerge } from 'tailwind-merge';
+
+/**
+ * Teaches tailwind-merge Pickle's theme scales: `text-body`, `text-h1`, … are
+ * font sizes, so they must not be mistaken for text colors and dropped next
+ * to one.
+ */
+const twMerge = extendTailwindMerge({
+  extend: {
+    theme: {
+      text: ['body', 'code', 'h1', 'h2', 'h3', 'h4', 'lead', 'small'],
+    },
+  },
+});
 
 /**
  * Per-slot class overrides for components that render several parts from a

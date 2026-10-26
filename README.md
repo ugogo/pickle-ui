@@ -230,8 +230,8 @@ own:
   the light and dark values. Import it to share Pickle's palette in a project
   that does not use the components.
 - `pickle-ui/base.css` holds everything else: animation and variant plugins,
-  the `.dark` variant, shared utilities, and element resets. Import it with a
-  token set of your own instead of `theme.css`.
+  the `.dark` variant, the `Text` type scale, shared utilities, and element
+  resets. Import it with a token set of your own instead of `theme.css`.
 
 Tokens follow one naming rule: `--x` is a fill and `--x-foreground` is the text
 placed on that fill. Status colors (`destructive`, `info`, `success`,
@@ -254,10 +254,17 @@ text on it, which also works as colored text on a neutral surface.
 | `--sidebar-*`                                       | The `Sidebar` surface, text, borders, and accents.                                         |
 | `--chart-1` … `--chart-5`                           | Categorical chart colors.                                                                  |
 | `--radius`                                          | Base radius. `rounded-sm` through `rounded-2xl` derive from it.                            |
+| `--text-h1` … `--text-code`                         | `Text` sizes (`h1`–`h4`, `lead`, `body`, `small`, `code`), each with a `--line-height`.    |
 | `--font-sans`, `--font-heading`, `--font-mono`      | Font stacks. Declare them in your `@theme` block.                                          |
 
 Pickle avoids raw Tailwind palette colors on themed surfaces, so changing
 a token updates every component that depends on it.
+
+The `--text-*` sizes are Tailwind theme variables, so you can set them from
+`:root` or from your own `@theme` block. Their line heights are ratios, so
+`--text-h1: 2.25rem` scales the line height with it. `--text-body` also sizes
+`Dialog` and `AlertDialog` descriptions; the compact copy in `Alert`, `Toast`
+and `Card.Description` keeps `text-sm`.
 
 ### 1b. Generate a theme from a brand color
 
@@ -363,6 +370,20 @@ import { cn } from 'pickle-ui/cn';
 >
   Info
 </button>;
+```
+
+Merge them with `pickle-ui/cn`. A stock `tailwind-merge` reads `text-h1` …
+`text-code` from `textVariants` as colors and drops them next to one, so a
+`cn` of your own must declare them as font sizes:
+
+```ts
+const twMerge = extendTailwindMerge({
+  extend: {
+    theme: {
+      text: ['body', 'code', 'h1', 'h2', 'h3', 'h4', 'lead', 'small'],
+    },
+  },
+});
 ```
 
 ### 4. Target `data-slot` in CSS

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type * as React from 'react';
 
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Text, type TextProps } from './Text';
@@ -92,6 +93,32 @@ export const All: StoryDefinition = {
           columns={[{ key: 'body', label: 'Body' }]}
           rows={WEIGHT_ROWS}
         />
+      </Story.Section>
+
+      <Story.Section title="Size tokens">
+        <div
+          className="flex flex-col gap-4"
+          style={
+            {
+              '--text-body': '1rem',
+              '--text-h1': '2.25rem',
+              '--text-small': '0.875rem',
+            } as React.CSSProperties
+          }
+        >
+          {VARIANT_ROWS.map(({ key, label }) => (
+            <div className="flex items-baseline gap-4" key={key}>
+              <span className="text-muted-foreground w-12 shrink-0 text-xs">
+                {label}
+              </span>
+              <Text variant={key}>
+                {key === 'code'
+                  ? 'npm install pickle-ui'
+                  : 'The quick brown fox jumps over the lazy dog.'}
+              </Text>
+            </div>
+          ))}
+        </div>
       </Story.Section>
 
       <Story.Section title="Truncation">

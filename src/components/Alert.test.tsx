@@ -37,6 +37,21 @@ describe('Alert', () => {
     );
   });
 
+  it('keeps the title and description at text-sm whatever the body size', () => {
+    render(
+      <Alert>
+        <Alert.Title>Compact title</Alert.Title>
+        <Alert.Description>Compact description</Alert.Description>
+      </Alert>,
+    );
+
+    for (const text of ['Compact title', 'Compact description']) {
+      const el = screen.getByText(text);
+      expect(el).toHaveClass('text-sm');
+      expect(el).not.toHaveClass('text-body');
+    }
+  });
+
   it('has no live role by default and accepts one', () => {
     const { rerender } = render(
       <Alert>

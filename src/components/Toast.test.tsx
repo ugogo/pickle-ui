@@ -48,7 +48,9 @@ describe('Toast', () => {
     const title = await screen.findByText('Saved');
 
     expect(title).toHaveAttribute('data-slot', 'toast-title');
-    expect(screen.getByText('Your changes are live.')).toBeInTheDocument();
+    expect(title).toHaveClass('text-sm');
+    expect(title).not.toHaveClass('text-body');
+    expect(screen.getByText('Your changes are live.')).toHaveClass('text-sm');
     expect(title.closest('[data-slot="toast"]')).toHaveAttribute(
       'data-type',
       'success',

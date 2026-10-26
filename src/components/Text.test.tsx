@@ -8,16 +8,29 @@ describe('Text', () => {
     render(<Text>Hello world</Text>);
     const el = screen.getByText('Hello world');
     expect(el.tagName.toLowerCase()).toBe('p');
-    expect(el).toHaveClass('text-sm');
-    expect(el).toHaveClass('leading-normal');
+    expect(el).toHaveClass('text-body');
     expect(el).toHaveAttribute('data-slot', 'text');
+  });
+
+  it('keeps the body size next to a tone color', () => {
+    render(<Text tone="muted">Muted body size</Text>);
+    const el = screen.getByText('Muted body size');
+    expect(el).toHaveClass('text-body');
+    expect(el).toHaveClass('text-muted-foreground');
+  });
+
+  it('lets a className font size replace the body size', () => {
+    render(<Text className="text-lg">Larger body</Text>);
+    const el = screen.getByText('Larger body');
+    expect(el).toHaveClass('text-lg');
+    expect(el).not.toHaveClass('text-body');
   });
 
   it('renders variant="h2" as an <h2>', () => {
     render(<Text variant="h2">Heading Two</Text>);
     const el = screen.getByText('Heading Two');
     expect(el.tagName.toLowerCase()).toBe('h2');
-    expect(el).toHaveClass('text-2xl');
+    expect(el).toHaveClass('text-h2');
     expect(el).toHaveClass('font-semibold');
   });
 
@@ -37,14 +50,14 @@ describe('Text', () => {
     const el = screen.getByText('Page title');
     expect(el.tagName.toLowerCase()).toBe('h1');
     expect(el).toHaveAttribute('data-slot', 'text');
-    expect(el).toHaveClass('text-2xl');
+    expect(el).toHaveClass('text-h2');
     expect(el).toHaveClass('font-semibold');
   });
 
   it('merges className without replacing variant classes', () => {
     render(<Text className="custom-class">Merged classes</Text>);
     const el = screen.getByText('Merged classes');
-    expect(el).toHaveClass('text-sm');
+    expect(el).toHaveClass('text-body');
     expect(el).toHaveClass('custom-class');
   });
 
@@ -64,7 +77,7 @@ describe('Text', () => {
     );
     const mutedHeading = screen.getByText('Muted heading');
     expect(mutedHeading).toHaveClass('text-muted-foreground');
-    expect(mutedHeading).toHaveClass('text-xl');
+    expect(mutedHeading).toHaveClass('text-h3');
     expect(mutedHeading.tagName.toLowerCase()).toBe('h3');
   });
 });
