@@ -11,6 +11,22 @@ describe('Button', () => {
     expect(button).toHaveAttribute('type', 'button');
   });
 
+  it.each([
+    ['xs', 'h-6'],
+    ['sm', 'h-7'],
+    ['md', 'h-8'],
+    ['lg', 'h-9'],
+    ['xl', 'h-10'],
+  ] as const)('keeps size %s at %s on every screen width', (size, height) => {
+    render(<Button size={size}>Save</Button>);
+    const classes = [...screen.getByRole('button').classList];
+
+    expect(classes).toContain(height);
+    expect(
+      classes.filter((name) => /^sm:(h|size|min-[hw])-/.test(name)),
+    ).toEqual([]);
+  });
+
   it('shows a loading indicator when loading', () => {
     render(<Button loading>Save</Button>);
 

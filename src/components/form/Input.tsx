@@ -5,8 +5,9 @@ import * as React from 'react';
 
 import { cn, type SlotClassNames } from '@/lib/utils';
 
+// Matches the `Button` height for the same size, so they line up side by side.
 const inputControlHeights = {
-  lg: 'h-10',
+  lg: 'h-9',
   md: 'h-8',
   sm: 'h-7',
 } as const;
@@ -35,9 +36,10 @@ function Input({
   const inputClassName = cn(
     unstyled
       ? cn(
-          'h-8 w-full min-w-0 rounded-[inherit] px-[calc(--spacing(3)-1px)] leading-none outline-none [transition:background-color_5000000s_ease-in-out_0s] placeholder:text-muted-foreground/72',
-          resolvedSize === 'sm' && 'h-7 px-[calc(--spacing(2.5)-1px)]',
-          resolvedSize === 'lg' && 'h-10 px-[calc(--spacing(3.5)-1px)]',
+          'w-full min-w-0 rounded-[inherit] px-[calc(--spacing(3)-1px)] leading-none outline-none [transition:background-color_5000000s_ease-in-out_0s] placeholder:text-muted-foreground/72',
+          inputControlHeights[resolvedSize],
+          resolvedSize === 'sm' && 'px-[calc(--spacing(2.5)-1px)]',
+          resolvedSize === 'lg' && 'px-[calc(--spacing(3.5)-1px)]',
         )
       : cn(
           'h-full min-h-0 w-full rounded-[inherit] px-[calc(--spacing(3)-1px)] leading-none outline-none [transition:background-color_5000000s_ease-in-out_0s] placeholder:text-muted-foreground/72',

@@ -9,7 +9,7 @@ import { Button, type ButtonProps } from '../Button';
 import { Input, type InputProps } from './Input';
 
 const inputGroupAddonVariants = cva(
-  "flex h-auto cursor-text select-none items-center justify-center gap-2 leading-none [&>kbd]:rounded-[calc(var(--radius)-5px)] in-[[data-slot=input-group]:has([data-slot=input-control],[data-slot=textarea-control])]:[&_svg:not([class*='size-'])]:size-4.5 sm:in-[[data-slot=input-group]:has([data-slot=input-control],[data-slot=textarea-control])]:[&_svg:not([class*='size-'])]:size-4 [&_svg]:-mx-0.5 not-has-[button]:**:[svg:not([class*='opacity-'])]:opacity-80",
+  "flex h-auto cursor-text select-none items-center justify-center gap-2 leading-none [&>kbd]:rounded-[calc(var(--radius)-5px)] in-[[data-slot=input-group]:has([data-slot=input-control],[data-slot=textarea-control])]:[&_svg:not([class*='size-'])]:size-4 [&_svg]:-mx-0.5 not-has-[button]:**:[svg:not([class*='opacity-'])]:opacity-80",
   {
     defaultVariants: {
       align: 'inline-start',
@@ -117,7 +117,7 @@ function InputGroupText({ className, ...props }: InputGroupTextProps) {
   return (
     <span
       className={cn(
-        "text-muted-foreground line-clamp-1 flex items-center gap-2 leading-none whitespace-nowrap [&_svg]:pointer-events-none [&_svg]:-mx-0.5 in-[[data-slot=input-group]:has([data-slot=input-control])]:[&_svg:not([class*='size-'])]:size-4.5 sm:in-[[data-slot=input-group]:has([data-slot=input-control])]:[&_svg:not([class*='size-'])]:size-4",
+        "text-muted-foreground line-clamp-1 flex items-center gap-2 leading-none whitespace-nowrap [&_svg]:pointer-events-none [&_svg]:-mx-0.5 in-[[data-slot=input-group]:has([data-slot=input-control])]:[&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
