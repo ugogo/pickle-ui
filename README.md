@@ -254,6 +254,7 @@ text on it, which also works as colored text on a neutral surface.
 | `--sidebar-*`                                       | The `Sidebar` surface, text, borders, and accents.                                         |
 | `--chart-1` … `--chart-5`                           | Categorical chart colors.                                                                  |
 | `--radius`                                          | Base radius. `rounded-sm` through `rounded-2xl` derive from it.                            |
+| `--text-h1` … `--text-code`                         | `Text` sizes (`h1`–`h4`, `lead`, `body`, `small`, `code`), each with a `--line-height`.    |
 | `--font-sans`, `--font-heading`, `--font-mono`      | Font stacks. Declare them in your `@theme` block.                                          |
 
 Pickle avoids raw Tailwind palette colors on themed surfaces, so changing

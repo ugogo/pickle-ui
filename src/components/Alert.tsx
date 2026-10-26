@@ -52,7 +52,7 @@ function AlertDescription({ className, ...props }: AlertDescriptionProps) {
     <Text
       as="div"
       className={cn(
-        'col-start-1 flex flex-col gap-2 [[data-slot=alert-icon]~&]:col-start-2',
+        'col-start-1 flex flex-col gap-2 text-sm [[data-slot=alert-icon]~&]:col-start-2',
         className,
       )}
       data-slot="alert-description"
@@ -106,7 +106,7 @@ function AlertTitle({ className, ...props }: AlertTitleProps) {
     <Text
       as="div"
       className={cn(
-        'col-start-1 leading-5 font-medium [[data-slot=alert-icon]~&]:col-start-2',
+        'col-start-1 text-sm leading-5 font-medium [[data-slot=alert-icon]~&]:col-start-2',
         className,
       )}
       data-slot="alert-title"
