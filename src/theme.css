@@ -67,29 +67,6 @@
   }
 }
 
-/**
- * Type scale behind `Text`'s variants and the `text-<variant>` utilities.
- * Not inlined, so each size stays a CSS variable an app can override.
- */
-@theme {
-  --text-h1: 1.875rem;
-  --text-h1--line-height: calc(2.25 / 1.875);
-  --text-h2: 1.5rem;
-  --text-h2--line-height: calc(2 / 1.5);
-  --text-h3: 1.25rem;
-  --text-h3--line-height: calc(1.75 / 1.25);
-  --text-h4: 1.125rem;
-  --text-h4--line-height: calc(1.75 / 1.125);
-  --text-lead: 1rem;
-  --text-lead--line-height: 1.5;
-  --text-body: 0.875rem;
-  --text-body--line-height: 1.5;
-  --text-small: 0.75rem;
-  --text-small--line-height: 1;
-  --text-code: 0.75rem;
-  --text-code--line-height: calc(1 / 0.75);
-}
-
 :root {
   --radius: 0.625rem;
   --background: var(--color-white);
