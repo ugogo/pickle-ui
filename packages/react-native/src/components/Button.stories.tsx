@@ -49,11 +49,11 @@ const SIZE_COLUMNS: {
   key: ButtonSize;
   label: string;
 }[] = [
-  { description: 'h-7', icon: 'icon-xs', key: 'xs', label: 'Extra small' },
-  { description: 'h-8', icon: 'icon-sm', key: 'sm', label: 'Small' },
-  { description: 'h-10', icon: 'icon', key: 'md', label: 'Medium' },
-  { description: 'h-11', icon: 'icon-lg', key: 'lg', label: 'Large' },
-  { description: 'h-12', icon: 'icon-xl', key: 'xl', label: 'Extra large' },
+  { description: 'h-6', icon: 'icon-xs', key: 'xs', label: 'Extra small' },
+  { description: 'h-7', icon: 'icon-sm', key: 'sm', label: 'Small' },
+  { description: 'h-8', icon: 'icon', key: 'md', label: 'Medium' },
+  { description: 'h-9', icon: 'icon-lg', key: 'lg', label: 'Large' },
+  { description: 'h-10', icon: 'icon-xl', key: 'xl', label: 'Extra large' },
 ];
 
 const ICON_SIZES = Object.fromEntries(

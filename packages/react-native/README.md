@@ -3,7 +3,7 @@
 Pickle UI components for React Native apps built with Expo, styled with
 Pickle's tokens through [Uniwind](https://uniwind.dev). They reuse the names
 of `@pickle-ui/react` (`variant`, `size`, `tone`, `Card.Header`, …) with
-native sizes and React Native primitives.
+the same dimensions, on React Native primitives.
 
 Browse them in the [Storybook](https://ugogo.github.io/pickle-ui/react-native/),
 rendered in the browser through react-native-web.
@@ -87,8 +87,8 @@ Every component takes the props of the React Native element it renders,
 `Button` and `Badge` wrap text children in their label and render other
 children, such as icons, as they are. Icons don't inherit the label's color on
 native, so pass it to the icon, for example with `useColorToken`. Give an
-icon-only button an `icon*` size and an `accessibilityLabel`. Sizes below
-`lg` get a `hitSlop` that reaches a 44pt touch target. Headings (`h1` … `h4`)
+icon-only button an `icon*` size and an `accessibilityLabel`. Buttons keep the web's dimensions, and a `hitSlop` stretches each size to a
+44pt touch target, as the web's `pointer-coarse` hit area does. Headings (`h1` … `h4`)
 are announced as headers.
 
 `Text` sizes come from the shared type scale (`--text-h1` … `--text-code` in

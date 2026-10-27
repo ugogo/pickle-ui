@@ -74,10 +74,13 @@ describe('Button', () => {
     expect(onPress).not.toHaveBeenCalled();
   });
 
-  it('stretches small sizes to a 44pt touch target', async () => {
+  it('stretches every size to a 44pt touch target', async () => {
     await render(
       <>
         <Button size="sm">Small</Button>
+        <Button accessibilityLabel="Add" size="icon">
+          +
+        </Button>
         <Button hitSlop={0} size="xs">
           Extra small
         </Button>
@@ -85,6 +88,10 @@ describe('Button', () => {
     );
 
     expect(screen.getByRole('button', { name: 'Small' })).toHaveProp(
+      'hitSlop',
+      { bottom: 8, top: 8 },
+    );
+    expect(screen.getByRole('button', { name: 'Add' })).toHaveProp(
       'hitSlop',
       6,
     );

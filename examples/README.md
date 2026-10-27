@@ -63,7 +63,7 @@ Two more patterns have no number:
 scale (`--text-h1` … `--text-code`), so `bg-primary`, `text-muted-foreground`,
 `border-border`, `rounded-xl` and `text-h1` mean the same on both platforms.
 `@pickle-ui/react-native` has `Badge`, `Button`, `Card` and `Text`, with the
-web's variants, sizes, tones and parts, and native heights. The rest is
+web's variants, sizes, tones, parts and dimensions. The rest is
 web-only for now:
 
 - the fonts, which live in `@pickle-ui/react`'s CSS;
