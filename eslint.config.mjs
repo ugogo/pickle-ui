@@ -44,6 +44,20 @@ export default defineConfig([
     },
   },
 
+  // Metro only loads a CommonJS config.
+  {
+    files: ['examples/mobile/metro.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      sourceType: 'commonjs',
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
   // Disable formatting-related rules that conflict with Prettier. Keep last.
   eslintConfigPrettier,
 ]);

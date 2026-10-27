@@ -1,0 +1,33 @@
+{
+  "name": "@pickle-ui/example-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mini web app showing how to use and customize @pickle-ui/react.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "5.2.9",
+    "@fontsource/jetbrains-mono": "5.2.8",
+    "@hookform/resolvers": "^5.4.0",
+    "@pickle-ui/react": "workspace:*",
+    "@tabler/icons-react": "^3.44.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-hook-form": "^7.79.0",
+    "zod": "^4.0.17"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5"
+  }
+}

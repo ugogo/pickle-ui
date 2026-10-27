@@ -104,15 +104,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Build first: the web example type-checks against @pickle-ui/react's built types.
+      - name: Build packages
+        run: pnpm run build
+
       - name: Check lint, formatting, types and tests
         run: |
           pnpm run lint
           pnpm run format:check
           pnpm run typecheck
           pnpm run test
-
-      - name: Build packages
-        run: pnpm run build
 
       - name: Pack packages
         id: pack

@@ -4,5 +4,9 @@
   "access": "public",
   "updateInternalDependencies": "patch",
   "changelog": "@changesets/cli/changelog",
-  "commit": false
+  "commit": false,
+  "privatePackages": {
+    "version": false,
+    "tag": false
+  }
 }
