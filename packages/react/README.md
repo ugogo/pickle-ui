@@ -483,9 +483,10 @@ pnpm run lint
 
 ## Releasing
 
-Run the manually dispatched `Release` GitHub Actions workflow and choose a
-patch, minor, or major bump. The workflow publishes the npm package, version
-commit, tag, and GitHub Release.
+Releases use [Changesets](https://changesets.dev). Add a changeset to every
+pull request that changes a package (`pnpm changeset`). On `main`, the
+`Release` workflow keeps a "Version Packages" pull request up to date; merging
+it publishes every `@pickle-ui/*` package at one shared version.
 
 ## License
 

@@ -25,11 +25,16 @@ In `@pickle-ui/react`, exported components live in `src/components`, internal bu
 
 ## Releases
 
-- When a user asks for a release, always trigger the manually dispatched `Release` GitHub Actions workflow with `gh`. Never run `pnpm release`, `npm run release`, or `release-it` locally.
-- Trigger a release with `gh workflow run release.yml -f bump=<patch|minor|major>`, then monitor it with `gh run watch --exit-status`.
-- The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release. It runs `release-it` from the repository root: every package shares one version, and `scripts/publish-packages.sh` publishes them dependencies first (`pnpm pack` rewrites `workspace:` ranges, `npm publish` uploads each tarball).
-- npm Trusted Publishing must be configured once per published package (`@pickle-ui/tokens`, `@pickle-ui/react`) for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. npm only accepts that configuration for a package that already exists, so a new package is published once by hand first. Do not add an npm token to repository secrets.
-- The workflow must retain `contents: write` for git/GitHub releases and `id-token: write` for npm Trusted Publishing.
+Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.github/workflows/release.yml`), which runs on every push to `main`.
+
+- **Every PR that changes a published package adds a changeset**: run `pnpm changeset`, pick the bump and write one changelog line, then commit the generated `.changeset/*.md`. Docs, CI or tooling-only PRs don't need one.
+- **All `@pickle-ui/*` packages share one version** (`fixed` in `.changeset/config.json`).
+- **The repo is in `beta` pre-release mode** (`.changeset/pre.json`), so every release is `x.y.z-beta.n` on the `beta` dist-tag. Leave it with `pnpm changeset pre exit` only when the user asks for a stable release.
+- **On `main`, the workflow opens or updates a "Version Packages" PR** while changesets are pending. When a user asks for a release, merge that PR (`gh pr merge <n>`) and monitor the run with `gh run watch --exit-status`. Merging it publishes the packages, pushes the tags (`@pickle-ui/react@<version>`) and creates the GitHub Releases.
+- **Never publish or version locally**: no `changeset publish`, `changeset version`, `npm publish` or `pnpm publish`.
+- **npm Trusted Publishing** must be configured once per published package (`@pickle-ui/tokens`, `@pickle-ui/react`) for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. npm only accepts that configuration for a package that already exists, so a new package is published once by hand first. Do not add an npm token to repository secrets.
+- **Permissions**: keep `id-token: write` on the `publish` job only. The `version` job needs `contents: write` and `pull-requests: write`, and the repository setting "Allow GitHub Actions to create and approve pull requests" must stay on.
+- **Pre-releases don't move `latest`**: after each beta, the user moves it by hand with `npm dist-tag add`, until the first stable release.
 
 ## Component layout
 
