@@ -166,6 +166,31 @@ importers:
         specifier: 4.0.17
         version: 4.0.17
 
+  packages/tokens:
+    dependencies:
+      culori:
+        specifier: ^4.0.2
+        version: 4.0.2
+    devDependencies:
+      '@types/culori':
+        specifier: ^4.0.1
+        version: 4.0.1
+      '@types/node':
+        specifier: ^25.9.3
+        version: 25.9.3
+      tailwindcss:
+        specifier: ^4.3.0
+        version: 4.3.0
+      tsc-alias:
+        specifier: ^1.8.17
+        version: 1.8.17
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.6
+        version: 3.2.6(@types/node@25.9.3)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(yaml@2.9.0)
+
 packages:
 
   '@adobe/css-tools@4.5.0':

@@ -2,6 +2,10 @@
  * Pickle design tokens: Tailwind theme mapping plus light and dark values.
  * Import this file alone to reuse the tokens without Pickle's base styles,
  * or override any variable after importing `@pickle-ui/react/styles.css`.
+ *
+ * Generated from `@pickle-ui/tokens`: do not edit it by hand. Change the
+ * tokens in `packages/tokens/src`, then run
+ * `pnpm --filter @pickle-ui/tokens generate`.
  */
 
 @theme inline {
