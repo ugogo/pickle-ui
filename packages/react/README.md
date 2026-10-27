@@ -228,7 +228,8 @@ own:
 
 - `@pickle-ui/react/theme.css` holds the tokens only: the Tailwind theme mapping and
   the light and dark values. Import it to share Pickle's palette in a project
-  that does not use the components.
+  that does not use the components. It re-exports `@pickle-ui/tokens/theme.css`,
+  which `@pickle-ui/react` installs as a dependency.
 - `@pickle-ui/react/base.css` holds everything else: animation and variant plugins,
   the `.dark` variant, the `Text` type scale, shared utilities, and element
   resets. Import it with a token set of your own instead of `theme.css`.

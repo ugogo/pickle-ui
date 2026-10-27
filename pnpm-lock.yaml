@@ -41,6 +41,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.8.0
         version: 0.8.0(prettier@3.8.4)
+      release-it:
+        specifier: ^20.2.0
+        version: 20.2.0(@types/node@25.9.3)(magicast@0.5.3)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -53,6 +56,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.5.0
         version: 1.5.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@pickle-ui/tokens':
+        specifier: workspace:*
+        version: link:../tokens
       '@tabler/icons-react':
         specifier: ^3.44.0
         version: 3.44.0(react@19.2.7)
@@ -138,9 +144,6 @@ importers:
       react-hook-form:
         specifier: ^7.79.0
         version: 7.79.0(react@19.2.7)
-      release-it:
-        specifier: ^20.2.0
-        version: 20.2.0(@types/node@25.9.3)(magicast@0.5.3)
       storybook:
         specifier: ^10.6.3
         version: 10.6.3(@types/react@19.2.17)(prettier@3.8.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -167,19 +170,10 @@ importers:
         version: 4.0.17
 
   packages/tokens:
-    devDependencies:
-      '@types/node':
-        specifier: ^25.9.3
-        version: 25.9.3
-      prettier:
-        specifier: ^3.8.4
-        version: 3.8.4
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
-      vitest:
-        specifier: ^3.2.6
-        version: 3.2.6(@types/node@25.9.3)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@1.8.0))(lightningcss@1.32.0)(yaml@2.9.0)
+    dependencies:
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.0
 
 packages:
 

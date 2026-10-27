@@ -9,11 +9,11 @@ Guidance for AI agents (and humans) working in this repository.
 | Folder            | npm package         | Contents                                                                                                                                                                                             |
 | ----------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/react`  | `@pickle-ui/react`  | React components for the web, built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). |
-| `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii) as data, and the generator for `@pickle-ui/react`'s `src/theme.css`. Private until another package consumes it.                                                        |
+| `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii) as Tailwind CSS v4 theme variables in a single `theme.css`. `@pickle-ui/react` imports it.                                                                             |
 
 In `@pickle-ui/react`, exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook. Paths in the sections below are relative to `packages/react`.
 
-`@pickle-ui/tokens` is the source of truth for color and radius values. `packages/react/src/theme.css` is generated from it: never edit that file by hand. Change the tokens in `packages/tokens/src`, then run `pnpm --filter @pickle-ui/tokens generate`, which rewrites the stylesheet and fails the tokens test while the two disagree.
+`@pickle-ui/tokens` is the source of truth for color and radius values: edit `packages/tokens/theme.css`. `packages/react/src/theme.css` only imports it, so `@pickle-ui/react/theme.css` keeps working for consumers.
 
 ## Tooling
 
@@ -27,8 +27,8 @@ In `@pickle-ui/react`, exported components live in `src/components`, internal bu
 
 - When a user asks for a release, always trigger the manually dispatched `Release` GitHub Actions workflow with `gh`. Never run `pnpm release`, `npm run release`, or `release-it` locally.
 - Trigger a release with `gh workflow run release.yml -f bump=<patch|minor|major>`, then monitor it with `gh run watch --exit-status`.
-- The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release. It runs `release-it` from `packages/react` and publishes `@pickle-ui/react`.
-- npm Trusted Publishing must be configured once per published package (`@pickle-ui/react`) for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. Do not add an npm token to repository secrets.
+- The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release. It runs `release-it` from the repository root: every package shares one version, and `scripts/publish-packages.sh` publishes them dependencies first (`pnpm pack` rewrites `workspace:` ranges, `npm publish` uploads each tarball).
+- npm Trusted Publishing must be configured once per published package (`@pickle-ui/tokens`, `@pickle-ui/react`) for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. npm only accepts that configuration for a package that already exists, so a new package is published once by hand first. Do not add an npm token to repository secrets.
 - The workflow must retain `contents: write` for git/GitHub releases and `id-token: write` for npm Trusted Publishing.
 
 ## Component layout

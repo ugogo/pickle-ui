@@ -34,6 +34,7 @@
     "lint-staged": "^17.0.7",
     "prettier": "^3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "release-it": "^20.2.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.0"
   },

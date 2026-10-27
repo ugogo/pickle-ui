@@ -61,9 +61,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git branch --set-upstream-to=origin/main main
 
-      # release-it versions, publishes and tags @pickle-ui/react from its own folder
+      # release-it bumps every package to one shared version, publishes them
+      # (scripts/publish-packages.sh), then commits, tags and creates the GitHub Release
       - name: Release
-        working-directory: packages/react
         run: |
           args=("$BUMP" --ci)
           if [ -n "$PREID" ]; then
@@ -72,7 +72,8 @@ jobs:
               exit 1
             fi
             # Pre-releases go to their own dist-tag and never become the latest GitHub release
-            args+=(--preRelease="$PREID" --npm.tag="$PREID" --github.makeLatest=false)
+            args+=(--preRelease="$PREID" --github.makeLatest=false)
+            export NPM_TAG="$PREID"
           elif [ "$BUMP" = prerelease ]; then
             echo "::error::bump=prerelease requires a preid"
             exit 1

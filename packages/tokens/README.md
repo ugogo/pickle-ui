@@ -1,16 +1,17 @@
 # @pickle-ui/tokens
 
-Pickle UI's design tokens as data: the light and dark color tokens and the
-radius scale. `@pickle-ui/react`'s `src/theme.css` is generated from them.
-The package is private until another package consumes it.
+Pickle UI's design tokens as Tailwind CSS v4 theme variables: the light and
+dark colors and the radius scale, in a single `theme.css`. `@pickle-ui/react`
+imports it, so apps using the components already have it.
 
-## Changing a token
+To use the tokens without the components, import them after Tailwind:
 
-1. Edit the value in `src/tokens.ts`.
-2. Run `pnpm --filter @pickle-ui/tokens generate` to rewrite
-   `packages/react/src/theme.css`.
-3. Commit both files. The tokens test fails while they disagree, so CI catches
-   a forgotten step.
+```css
+@import 'tailwindcss';
+@import '@pickle-ui/tokens/theme.css';
+```
 
-The stylesheet keeps the token references (`var(--color-neutral-800)`,
-`--alpha(…)`, `color-mix(…)`), so overriding a variable still cascades.
+Every token becomes a utility (`bg-primary`, `text-muted-foreground`,
+`rounded-lg`, …). Override a variable after the import to retheme; `.dark`
+overrides work the same way. See the `@pickle-ui/react` README for the token
+list and theming options.

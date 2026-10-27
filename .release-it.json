@@ -9,16 +9,17 @@
     "tagAnnotation": "Release v${version}",
     "pushArgs": ["--follow-tags"]
   },
-  "npm": {
-    "publish": true,
-    "skipChecks": true
-  },
+  "npm": false,
   "github": {
     "release": true,
     "releaseName": "Pickle UI v${version}",
     "makeLatest": true
   },
   "hooks": {
-    "before:init": ["pnpm run typecheck", "pnpm run test"]
+    "before:init": ["pnpm run typecheck", "pnpm run test"],
+    "after:bump": [
+      "pnpm -r exec npm pkg set version=${version}",
+      "sh scripts/publish-packages.sh"
+    ]
   }
 }
