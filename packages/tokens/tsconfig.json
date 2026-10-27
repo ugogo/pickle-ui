@@ -3,19 +3,13 @@
     "target": "ES2020",
     "lib": ["ES2020"],
     "module": "ESNext",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
     "moduleResolution": "bundler",
+    "skipLibCheck": true,
     "isolatedModules": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src"]
 }

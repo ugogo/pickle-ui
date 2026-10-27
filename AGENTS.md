@@ -6,14 +6,14 @@ Guidance for AI agents (and humans) working in this repository.
 
 **pickle-ui** — a design system published as a pnpm monorepo. Each package lives in `packages/<name>`; the workspace root only holds shared tooling (ESLint, Prettier, Husky, lint-staged) and CI.
 
-| Folder            | npm package         | Contents                                                                                                                                                                                                            |
-| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `packages/react`  | `@pickle-ui/react`  | React components for the web, built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui).                |
-| `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii, type scale) as data, the generator for `@pickle-ui/react`'s `src/theme.css`, and concrete hex values for platforms without CSS variables. Private until a second package consumes it. |
+| Folder            | npm package         | Contents                                                                                                                                                                                             |
+| ----------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/react`  | `@pickle-ui/react`  | React components for the web, built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). |
+| `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii) as data, and the generator for `@pickle-ui/react`'s `src/theme.css`. Private until another package consumes it.                                                        |
 
 In `@pickle-ui/react`, exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook. Paths in the sections below are relative to `packages/react`.
 
-`@pickle-ui/tokens` is the source of truth for color and radius values. `packages/react/src/theme.css` is generated from it: never edit that file by hand. Change the tokens in `packages/tokens/src`, then run `pnpm --filter @pickle-ui/tokens generate`, which rewrites the stylesheet and fails the tokens tests while the two disagree. The type scale is still written by hand in `packages/react/src/base.css`; the tokens tests check it matches.
+`@pickle-ui/tokens` is the source of truth for color and radius values. `packages/react/src/theme.css` is generated from it: never edit that file by hand. Change the tokens in `packages/tokens/src`, then run `pnpm --filter @pickle-ui/tokens generate`, which rewrites the stylesheet and fails the tokens test while the two disagree.
 
 ## Tooling
 

@@ -1,4 +1,18 @@
-import type { PaletteColor } from './palette';
+/** Base corner radius in px. The stylesheet writes it as `--radius` in rem. */
+export const radius = 10;
+
+/**
+ * Each radius step as an offset from `radius`, in px. The stylesheet keeps
+ * the steps relative (`calc(var(--radius) - 4px)`), so overriding `--radius`
+ * rescales them all.
+ */
+export const radiusOffsets = {
+  '2xl': 8,
+  lg: 0,
+  md: -2,
+  sm: -4,
+  xl: 4,
+} as const;
 
 /**
  * Pickle's semantic color tokens, in the order the stylesheet declares them.
@@ -54,17 +68,15 @@ export const colorTokenNames = [
   'sidebar-ring',
 ] as const;
 
-export type ColorScheme = 'dark' | 'light';
-
 export type ColorToken = (typeof colorTokenNames)[number];
 
 export type ColorTokens = Record<ColorToken, ColorValue>;
 
 /**
- * How a token derives its color. Each kind maps to one CSS form, so the web
+ * How a token derives its color. Each kind maps to one CSS form, so the
  * stylesheet keeps the references (overriding `--color-neutral-800` or
- * `--background` still cascades) while native platforms resolve them to
- * concrete values.
+ * `--background` still cascades), and a platform without CSS variables can
+ * still compute the color.
  */
 export type ColorValue =
   /** `--alpha(<color> / <percent>%)`: the color at `percent` opacity. */
@@ -75,6 +87,12 @@ export type ColorValue =
   | { name: ColorToken; type: 'token' }
   /** `var(--color-<name>)`: a Tailwind palette color. */
   | { name: PaletteColor; type: 'palette' };
+
+/** A Tailwind CSS v4 palette color, written as `var(--color-<name>)`. */
+type PaletteColor =
+  | 'black'
+  | 'white'
+  | `${'amber' | 'blue' | 'emerald' | 'neutral' | 'purple' | 'red' | 'rose'}-${50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950}`;
 
 function alpha(color: ColorValue, percent: number): ColorValue {
   return { color, percent, type: 'alpha' };
@@ -198,4 +216,4 @@ const dark: ColorTokens = {
 };
 
 /** Every color token's value for the light and dark schemes. */
-export const colorTokens: Record<ColorScheme, ColorTokens> = { dark, light };
+export const colorTokens = { dark, light };

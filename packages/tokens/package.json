@@ -3,43 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Pickle UI design tokens: colors, radii and type scale for web and native.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "sideEffects": false,
+  "description": "Pickle UI design tokens: colors and radii, the source of @pickle-ui/react's theme.css.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ugogo/pickle-ui.git",
     "directory": "packages/tokens"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
-    "clean": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\"",
-    "build": "pnpm run clean && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "generate": "vitest run --update"
   },
   "author": "Ugo Onali",
   "license": "MIT",
-  "dependencies": {
-    "culori": "^4.0.2"
-  },
   "devDependencies": {
-    "@types/culori": "^4.0.1",
     "@types/node": "^25.9.3",
-    "tailwindcss": "^4.3.0",
-    "tsc-alias": "^1.8.17",
+    "prettier": "^3.8.4",
     "typescript": "^6.0.3",
     "vitest": "^3.2.6"
   }

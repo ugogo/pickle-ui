@@ -3,10 +3,9 @@ import {
   type ColorTokens,
   colorTokens,
   type ColorValue,
-} from './colors';
-import { radius, radiusOffsets, type RadiusStep } from './scale';
-
-const RADIUS_STEPS: RadiusStep[] = ['sm', 'md', 'lg', 'xl', '2xl'];
+  radius,
+  radiusOffsets,
+} from './tokens';
 
 const HEADER = `/**
  * Pickle design tokens: Tailwind theme mapping plus light and dark values.
@@ -27,33 +26,23 @@ const SKELETON_ANIMATION = `  --animate-skeleton: skeleton 2s -1s infinite linea
     }
   }`;
 
-/** A token value as the CSS expression the web stylesheet declares. */
-export function colorValueToCss(value: ColorValue): string {
-  switch (value.type) {
-    case 'alpha':
-      return `--alpha(${colorValueToCss(value.color)} / ${value.percent}%)`;
-    case 'mix':
-      return `color-mix(in srgb, ${colorValueToCss(value.color)} ${value.percent}%, ${colorValueToCss(value.with)})`;
-    case 'palette':
-      return `var(--color-${value.name})`;
-    case 'token':
-      return `var(--${value.name})`;
-  }
-}
-
 /**
- * The Tailwind v4 stylesheet for the tokens: the `@theme inline` mapping that
- * turns each token into a utility (`bg-primary`, `rounded-lg`, …), the light
- * values on `:root` and the dark values on `.dark`. The output is not
- * formatted; run it through Prettier before writing it to disk.
+ * The Tailwind v4 stylesheet `@pickle-ui/react` ships as `theme.css`: the
+ * `@theme inline` mapping that turns each token into a utility (`bg-primary`,
+ * `rounded-lg`, …), the light values on `:root` and the dark values on
+ * `.dark`. The output is not formatted; run it through Prettier first.
  */
 export function themeCss(): string {
+  const radiusSteps = Object.entries(radiusOffsets)
+    .sort(([, a], [, b]) => a - b)
+    .map(([step, offset]) => `  --radius-${step}: ${radiusCss(offset)};`);
+
   const mapping = [
     '  --font-sans: var(--font-sans);',
     '  --font-heading: var(--font-sans);',
     '  --font-mono: var(--font-mono);',
     ...colorTokenNames.map((name) => `  --color-${name}: var(--${name});`),
-    ...RADIUS_STEPS.map((step) => `  --radius-${step}: ${radiusCss(step)};`),
+    ...radiusSteps,
     SKELETON_ANIMATION,
   ];
 
@@ -73,9 +62,20 @@ function block(selector: string, tokens: ColorTokens, extra: string[] = []) {
   return `${selector} {\n${[...extra, ...lines].join('\n')}\n}`;
 }
 
-function radiusCss(step: RadiusStep) {
-  const offset = radiusOffsets[step];
+function colorValueToCss(value: ColorValue): string {
+  switch (value.type) {
+    case 'alpha':
+      return `--alpha(${colorValueToCss(value.color)} / ${value.percent}%)`;
+    case 'mix':
+      return `color-mix(in srgb, ${colorValueToCss(value.color)} ${value.percent}%, ${colorValueToCss(value.with)})`;
+    case 'palette':
+      return `var(--color-${value.name})`;
+    case 'token':
+      return `var(--${value.name})`;
+  }
+}
 
+function radiusCss(offset: number) {
   if (offset === 0) return 'var(--radius)';
 
   return `calc(var(--radius) ${offset < 0 ? '-' : '+'} ${Math.abs(offset)}px)`;

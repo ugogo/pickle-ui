@@ -167,23 +167,13 @@ importers:
         version: 4.0.17
 
   packages/tokens:
-    dependencies:
-      culori:
-        specifier: ^4.0.2
-        version: 4.0.2
     devDependencies:
-      '@types/culori':
-        specifier: ^4.0.1
-        version: 4.0.1
       '@types/node':
         specifier: ^25.9.3
         version: 25.9.3
-      tailwindcss:
-        specifier: ^4.3.0
-        version: 4.3.0
-      tsc-alias:
-        specifier: ^1.8.17
-        version: 1.8.17
+      prettier:
+        specifier: ^3.8.4
+        version: 3.8.4
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
