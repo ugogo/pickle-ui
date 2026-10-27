@@ -1,6 +1,6 @@
 {
   "name": "@pickle-ui/tokens",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "type": "module",
   "description": "Pickle UI design tokens: colors and radii as Tailwind CSS v4 theme variables.",
   "style": "theme.css",
