@@ -20,7 +20,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "doctor": "pnpm --filter @pickle-ui/react doctor",
+    "doctor": "pnpm -r run doctor",
     "prepare": "husky",
     "changeset": "changeset"
   },

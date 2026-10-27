@@ -44,6 +44,7 @@
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
     "test": "jest",
+    "doctor": "react-doctor",
     "prepublishOnly": "pnpm run build"
   },
   "keywords": [
@@ -74,6 +75,7 @@
     "jest": "^30.5.2",
     "jest-expo": "~58.0.12",
     "react": "19.3.0",
+    "react-doctor": "^0.5.6",
     "react-dom": "19.3.0",
     "react-native": "0.88.0",
     "react-native-web": "^0.21.4",

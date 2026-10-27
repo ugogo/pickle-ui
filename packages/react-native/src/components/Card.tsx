@@ -43,10 +43,13 @@ function CardTitle({ className, ...props }: CardTitleProps) {
   );
 }
 
-// Same compound shape as `Card` in @pickle-ui/react.
-export const Card = Object.assign(CardRoot, {
+// Same compound shape as `Card` in @pickle-ui/react. The parts are exported
+// so Fast Refresh keeps their state; the public entry only exports `Card`.
+const Card = Object.assign(CardRoot, {
   Content: CardContent,
   Description: CardDescription,
   Header: CardHeader,
   Title: CardTitle,
 });
+
+export { Card, CardContent, CardDescription, CardHeader, CardTitle };

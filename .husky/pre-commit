@@ -2,10 +2,12 @@ set -e
 
 pnpm exec lint-staged
 
-doctor_output="$(NO_COLOR=1 pnpm --filter @pickle-ui/react exec react-doctor)"
-printf '%s\n' "$doctor_output"
+for package in @pickle-ui/react @pickle-ui/react-native; do
+  doctor_output="$(NO_COLOR=1 pnpm --filter "$package" exec react-doctor)"
+  printf '%s\n' "$doctor_output"
 
-if ! printf '%s\n' "$doctor_output" | grep -Eq '100[[:space:]]*/[[:space:]]*100'; then
-  printf '%s\n' "React Doctor score must be 100/100."
-  exit 1
-fi
+  if ! printf '%s\n' "$doctor_output" | grep -Eq '100[[:space:]]*/[[:space:]]*100'; then
+    printf '%s\n' "React Doctor score for $package must be 100/100."
+    exit 1
+  fi
+done
