@@ -50,7 +50,7 @@
   }
 }
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 /**
  * Type scale behind `Text`'s variants and the `text-<variant>` utilities.

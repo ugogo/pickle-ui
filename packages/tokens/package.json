@@ -16,9 +16,11 @@
     "access": "public"
   },
   "exports": {
+    "./native.css": "./native.css",
     "./theme.css": "./theme.css"
   },
   "files": [
+    "native.css",
     "theme.css"
   ],
   "keywords": [
