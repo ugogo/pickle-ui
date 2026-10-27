@@ -8,11 +8,21 @@ packages:
 # releases instead of silently accepting the downgrade.
 trustPolicy: no-downgrade
 
-# semver lacks provenance on a version pulled in transitively (via Babel).
-# It's a benign, ubiquitous package, so exempt it from the downgrade check
-# rather than weaken the policy globally.
+# semver lacks provenance on a version pulled in transitively (via Babel),
+# and so does fbjs 3.0.5 (Meta, 2023, its latest release), which
+# react-native-web requires for @pickle-ui/react-native's Storybook. Both are
+# benign, ubiquitous packages, so exempt them from the downgrade check rather
+# than weaken the policy globally.
 trustPolicyExclude:
+  - fbjs
   - semver
+
+# fbjs (via react-native-web) asks for ua-parser-js ^1.0.35. Every 1.x after
+# 1.0.35 was published after the 2.x prereleases that carry provenance, so the
+# downgrade check rejects them; pin the last one published before, rather than
+# exempt a package that was hijacked in 2021.
+overrides:
+  fbjs>ua-parser-js: 1.0.35
 
 # Block transitive deps resolved from non-registry sources (git/file/tarball).
 blockExoticSubdeps: true

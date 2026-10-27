@@ -37,9 +37,12 @@
     "src"
   ],
   "scripts": {
+    "dev": "storybook dev -p 6007",
     "clean": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\"",
     "build": "pnpm run clean && tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
     "test": "jest",
     "prepublishOnly": "pnpm run build"
   },
@@ -60,6 +63,9 @@
   },
   "devDependencies": {
     "@react-native/jest-preset": "^0.88.1",
+    "@storybook/addon-docs": "^10.6.3",
+    "@storybook/react-native-web-vite": "^10.6.5",
+    "@tailwindcss/vite": "^4.3.3",
     "@testing-library/react-native": "^14.1.0",
     "@types/jest": "^30.0.0",
     "@types/react": "^19.3.0",
@@ -68,11 +74,15 @@
     "jest": "^30.5.2",
     "jest-expo": "~58.0.12",
     "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-native": "0.88.0",
+    "react-native-web": "^0.21.4",
+    "storybook": "^10.6.3",
     "tailwindcss": "^4.3.3",
     "test-renderer": "^1.3.1",
     "typescript": "^6.0.3",
-    "uniwind": "^1.13.0"
+    "uniwind": "^1.13.0",
+    "vite": "^8.3.5"
   },
   "peerDependencies": {
     "react": "^19.0.0",

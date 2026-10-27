@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build Storybook
+    name: Build Storybooks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,8 +34,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Storybook
+      - name: Build Storybooks
         run: pnpm run build-storybook
+
+      # The web Storybook is the site root; the React Native one is served
+      # from /react-native/.
+      - name: Assemble Pages site
+        run: cp -r packages/react-native/storybook-static packages/react/storybook-static/react-native
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4

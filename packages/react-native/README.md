@@ -5,6 +5,9 @@ Pickle's tokens through [Uniwind](https://uniwind.dev). They reuse the names
 of `@pickle-ui/react` (`variant`, `size`, `tone`, `Card.Header`, …) with
 native sizes and React Native primitives.
 
+Browse them in the [Storybook](https://ugogo.github.io/pickle-ui/react-native/),
+rendered in the browser through react-native-web.
+
 ## Use Pickle UI
 
 In an Expo app, install the package with Uniwind and Tailwind:

@@ -3,7 +3,8 @@
 A design system for React apps, built with Base UI and Tailwind CSS v4, with
 React Native components for Expo.
 
-Browse every component in the [Storybook](https://ugogo.github.io/pickle-ui/).
+Browse every component in the Storybooks: [web](https://ugogo.github.io/pickle-ui/)
+and [React Native](https://ugogo.github.io/pickle-ui/react-native/).
 
 ## Packages
 
@@ -31,6 +32,7 @@ pnpm example:mobile   # Expo: press i for iOS, a for Android
 ```bash
 pnpm install
 pnpm run dev        # Storybook for @pickle-ui/react on http://localhost:6006
+pnpm run dev:native # Storybook for @pickle-ui/react-native on http://localhost:6007
 pnpm run build      # every package
 pnpm run typecheck
 pnpm run test
