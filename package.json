@@ -1,95 +1,29 @@
 {
-  "name": "pickle-ui",
-  "version": "1.0.0-beta.3",
+  "name": "pickle-ui-monorepo",
+  "private": true,
   "type": "module",
-  "description": "React component library built with Base UI, shadcn/ui, Tailwind CSS, and reui.",
-  "main": "dist/index.js",
-  "style": "src/styles.css",
-  "types": "dist/index.d.ts",
-  "sideEffects": [
-    "**/*.css"
-  ],
   "packageManager": "pnpm@10.28.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ugogo/pickle-ui.git"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    },
-    "./styles.css": "./src/styles.css",
-    "./theme.css": "./src/theme.css",
-    "./base.css": "./src/base.css",
-    "./*": {
-      "types": "./dist/entries/*.d.ts",
-      "import": "./dist/entries/*.js",
-      "default": "./dist/entries/*.js"
-    }
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
-    "dev": "storybook dev -p 6006",
-    "clean": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\"",
-    "build": "pnpm run clean && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths",
-    "typecheck": "tsc --noEmit",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "dev": "pnpm --filter @pickle-ui/react dev",
+    "build": "pnpm -r run build",
+    "build-storybook": "pnpm --filter @pickle-ui/react build-storybook",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run",
-    "doctor": "react-doctor",
-    "prepublishOnly": "pnpm run build",
-    "release": "release-it",
+    "doctor": "pnpm --filter @pickle-ui/react doctor",
     "prepare": "husky"
   },
-  "keywords": [
-    "react",
-    "components",
-    "ui",
-    "shadcn",
-    "tailwind",
-    "reui"
-  ],
   "author": "Ugo Onali",
   "license": "MIT",
-  "dependencies": {
-    "@base-ui/react": "^1.5.0",
-    "@tabler/icons-react": "^3.44.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "culori": "^4.0.2",
-    "tailwind-merge": "^3.6.0",
-    "tw-animate-css": "^1.4.0"
-  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@fontsource-variable/geist": "5.2.9",
-    "@fontsource/jetbrains-mono": "5.2.8",
-    "@hookform/resolvers": "^5.4.0",
-    "@storybook/addon-docs": "^10.6.3",
-    "@storybook/addon-links": "^10.6.3",
-    "@storybook/react": "^10.6.3",
-    "@storybook/react-vite": "^10.6.3",
-    "@tailwindcss/postcss": "^4.3.0",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/culori": "^4.0.1",
-    "@types/node": "^25.9.3",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^10.4.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-perfectionist": "^5.9.0",
@@ -97,31 +31,11 @@
     "eslint-plugin-storybook": "^10.6.3",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
-    "jsdom": "^29.1.1",
     "lint-staged": "^17.0.7",
-    "postcss": "^8.5.15",
     "prettier": "^3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "react": "^19.2.7",
-    "react-doctor": "^0.5.6",
-    "react-dom": "^19.2.7",
-    "react-hook-form": "^7.79.0",
-    "release-it": "^20.2.0",
-    "storybook": "^10.6.3",
-    "storybook-addon-pseudo-states": "^10.6.3",
-    "tailwindcss": "^4.3.0",
-    "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.0",
-    "vite": "^8.0.16",
-    "vitest": "^3.2.6",
-    "zod": "4.0.17"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
-    "react-hook-form": "^7.0.0",
-    "tailwindcss": "^4.0.0"
+    "typescript-eslint": "^8.61.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [

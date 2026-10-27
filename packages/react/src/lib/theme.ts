@@ -2,7 +2,7 @@
  * Theme generator: derives Pickle's brand-dependent tokens from a single
  * primary color so consumers can theme the library without hand-writing CSS
  * variables. Tokens that do not depend on the brand (neutrals, status colors)
- * keep the values from `pickle-ui/theme.css`.
+ * keep the values from `@pickle-ui/react/theme.css`.
  */
 
 import {

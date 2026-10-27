@@ -1,3 +1,6 @@
+packages:
+  - packages/*
+
 # Supply-chain hardening (see https://pnpm.io/settings)
 
 # Fail if a package's trust signals (provenance, signatures) weaken between

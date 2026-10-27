@@ -4,28 +4,35 @@ Guidance for AI agents (and humans) working in this repository.
 
 ## Project
 
-**pickle-ui** — a React component library built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). Exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook.
+**pickle-ui** — a design system published as a pnpm monorepo. Each package lives in `packages/<name>`; the workspace root only holds shared tooling (ESLint, Prettier, Husky, lint-staged) and CI.
+
+| Folder           | npm package        | Contents                                                                                                                                                                                             |
+| ---------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/react` | `@pickle-ui/react` | React components for the web, built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). |
+
+In `@pickle-ui/react`, exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook. Paths in the sections below are relative to `packages/react`.
 
 ## Tooling
 
-- **Package manager:** pnpm (use `pnpm`, not `npm`/`yarn`).
-- **Dev / Storybook:** `pnpm run dev` (Storybook on port 6006).
+- **Package manager:** pnpm workspaces (use `pnpm`, not `npm`/`yarn`). Run scripts from the repository root; they fan out to every package (`pnpm -r`). Target one package with `pnpm --filter @pickle-ui/react <script>`.
+- **Dependencies:** shared lint and format tooling goes in the root `package.json`; anything a package builds, tests or ships with goes in that package's `package.json`.
+- **Dev / Storybook:** `pnpm run dev` (Storybook for `@pickle-ui/react` on port 6006).
 - **Typecheck:** `pnpm run typecheck`.
-- **Build library:** `pnpm run build`.
+- **Build packages:** `pnpm run build`.
 
 ## Releases
 
 - When a user asks for a release, always trigger the manually dispatched `Release` GitHub Actions workflow with `gh`. Never run `pnpm release`, `npm run release`, or `release-it` locally.
 - Trigger a release with `gh workflow run release.yml -f bump=<patch|minor|major>`, then monitor it with `gh run watch --exit-status`.
-- The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release.
-- npm Trusted Publishing must be configured once for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. Do not add an npm token to repository secrets.
+- The workflow runs non-interactively and owns the version commit, npm publication, tag push, and GitHub Release. It runs `release-it` from `packages/react` and publishes `@pickle-ui/react`.
+- npm Trusted Publishing must be configured once per published package (`@pickle-ui/react`) for the `ugogo/pickle-ui` repository and `.github/workflows/release.yml`. Do not add an npm token to repository secrets.
 - The workflow must retain `contents: write` for git/GitHub releases and `id-token: write` for npm Trusted Publishing.
 
 ## Component layout
 
 - **Exported components** — one top-level file per component in `src/components` (e.g. `Button.tsx`, `Card.tsx`), each with a co-located `*.stories.tsx` for Storybook and a `*.test.tsx`.
 - **Form components** — form controls (e.g. `Input.tsx`, `Select.tsx`, `Checkbox.tsx`) and the React Hook Form bindings (`Form.tsx`, `FormInput.tsx`, …) live in `src/components/form`, with stories titled `components/form/<Name>`.
-- **Subpath entries** — each exported component gets a `src/entries/<kebab-name>.ts` exporting it and its types, so consumers can import `pickle-ui/<kebab-name>`. `src/index.ts` only re-exports every entry (`export * from './entries/<kebab-name>'`).
+- **Subpath entries** — each exported component gets a `src/entries/<kebab-name>.ts` exporting it and its types, so consumers can import `@pickle-ui/react/<kebab-name>`. `src/index.ts` only re-exports every entry (`export * from './entries/<kebab-name>'`).
 - **Internal components** — helpers and Storybook-only utilities that are not part of the public API belong in `src/components/_internal` (e.g. `Story.tsx`, `VisuallyHiddenInput.tsx`). Do not export these from `src/index.ts`.
 - **Implementation modules** — a large component may keep its implementation in a separate file next to its facade (e.g. `form/ColorPickerPrimitive.tsx` behind `form/ColorPicker.tsx`). Only the facade is public; the implementation module is never exported from `src/index.ts` or an entry.
 - Stories import internal utilities from `./_internal/…` (`../_internal/…` from `src/components/form`); exported components import internal modules the same way (e.g. `../_internal/VisuallyHiddenInput`).
