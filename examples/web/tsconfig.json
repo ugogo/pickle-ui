@@ -13,7 +13,7 @@
     "noUnusedParameters": true,
     "types": ["vite/client"],
     // Monorepo only, like `resolve.conditions` in vite.config.ts.
-    "customConditions": ["source"]
+    "customConditions": ["@pickle-ui/source"]
   },
   "include": ["src", "vite.config.ts"]
 }

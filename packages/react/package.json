@@ -19,7 +19,7 @@
   },
   "exports": {
     ".": {
-      "source": "./src/index.ts",
+      "@pickle-ui/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
@@ -28,7 +28,7 @@
     "./theme.css": "./src/theme.css",
     "./base.css": "./src/base.css",
     "./*": {
-      "source": "./src/entries/*.ts",
+      "@pickle-ui/source": "./src/entries/*.ts",
       "types": "./dist/entries/*.d.ts",
       "import": "./dist/entries/*.js",
       "default": "./dist/entries/*.js"

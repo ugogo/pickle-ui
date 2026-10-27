@@ -34,20 +34,27 @@ Native primitives. They reuse the web API's names (`variant`, `size`, `tone`,
 
 ## Setup in your own app
 
-Start from an Expo Router app and add Uniwind and the tokens:
+1. Create an Expo Router app and clear its demo screens. They don't
+   typecheck on their own, and copied screens would sit next to them.
 
-```bash
-npx create-expo-app@latest my-app
-cd my-app
-npx expo install uniwind tailwindcss @pickle-ui/tokens@beta
-npx expo install class-variance-authority tailwind-merge   # only for the copied components
-```
+   ```bash
+   npx create-expo-app@latest my-app
+   cd my-app
+   npm run reset-project   # answer n: don't keep the demo in /example
+   ```
 
-Then wire Uniwind in three steps:
+2. Add Uniwind and the tokens:
 
-1. Copy `metro.config.js`. It points Uniwind at `src/global.css` and writes
+   ```bash
+   npx expo install uniwind tailwindcss @pickle-ui/tokens@beta
+   npx expo install class-variance-authority tailwind-merge   # only for the copied components
+   ```
+
+3. Copy `metro.config.js`. It points Uniwind at `src/global.css` and writes
    `src/uniwind-types.d.ts`.
-2. Create `src/global.css` with these imports, in this order:
+
+4. Replace the contents of `src/global.css` (the template already has one)
+   with these imports, in this order:
 
    ```css
    @import 'tailwindcss';
@@ -55,12 +62,21 @@ Then wire Uniwind in three steps:
    @import '@pickle-ui/tokens/native.css';
    ```
 
-3. Import it once from the root layout: `import '../global.css';` in
-   `src/app/_layout.tsx`.
+5. Import it once from the root layout: `import '../global.css';` at the top
+   of `src/app/_layout.tsx`.
 
-Run `npx expo start` once: Metro generates `src/uniwind-types.d.ts`, which
-adds `className` to React Native's types. Until then, `tsc` reports every
-`className`. Commit the file so CI type-checks without starting Metro.
+6. In `tsconfig.json`, add `"types": ["expo/types"]` to `compilerOptions`.
+   It declares CSS imports for TypeScript. Without it, `tsc` only passes
+   after `expo start` has written the gitignored `expo-env.d.ts`, so CI
+   fails on the `global.css` import.
+
+7. Run `npx expo start` once. Metro writes `src/uniwind-types.d.ts`, which
+   adds `className` to React Native's types. Commit it as Metro writes it,
+   and add it to `.prettierignore`: Uniwind rewrites the file whenever its
+   content differs, so a formatter would dirty it on every start.
+
+8. Copy `src/brands.ts`, `src/projects.ts`, `src/lib`, `src/components` and
+   `src/app` for the full screen.
 
 ## Things that differ from the web
 

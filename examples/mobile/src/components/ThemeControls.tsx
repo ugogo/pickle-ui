@@ -34,11 +34,15 @@ export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
         </Card.Description>
       </Card.Header>
       <Card.Content>
-        <View className="bg-muted flex-row rounded-lg p-1">
+        <View
+          accessibilityLabel="Color scheme"
+          accessibilityRole="radiogroup"
+          className="bg-muted flex-row rounded-lg p-1"
+        >
           {SCHEMES.map((value) => (
             <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ selected: scheme === value }}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: scheme === value }}
               className={cn(
                 'h-8 flex-1 items-center justify-center rounded-md',
                 scheme === value && 'bg-background',

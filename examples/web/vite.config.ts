@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     // Monorepo only: read @pickle-ui/react from its TypeScript sources, so
     // library edits hot-reload without a build. Drop this in your own app.
-    conditions: ['source', ...defaultClientConditions],
+    conditions: ['@pickle-ui/source', ...defaultClientConditions],
+    // Pickle's sources would otherwise import these from packages/react.
+    dedupe: ['react', 'react-dom', 'react-hook-form'],
   },
 });

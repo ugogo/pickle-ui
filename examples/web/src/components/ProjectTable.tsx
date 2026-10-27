@@ -6,6 +6,7 @@ import { Table } from '@pickle-ui/react/table';
 import { Text } from '@pickle-ui/react/text';
 import { Toast } from '@pickle-ui/react/toast';
 import { IconTrash } from '@tabler/icons-react';
+import { useRef, useState } from 'react';
 
 import { type Project, STATUS_LABELS } from '../projects';
 
@@ -16,11 +17,18 @@ type ProjectTableProps = {
 
 export function ProjectTable({ onRemove, projects }: ProjectTableProps) {
   const toast = Toast.useToast();
+  // One dialog for every row, so it outlives the row it deletes.
+  const [open, setOpen] = useState(false);
+  const [target, setTarget] = useState<null | Project>(null);
+  const deleted = useRef(false);
+  const titleRef = useRef<HTMLDivElement>(null);
 
   return (
     <Card>
       <Card.Header>
-        <Card.Title>Projects</Card.Title>
+        <Card.Title className="outline-none" ref={titleRef} tabIndex={-1}>
+          Projects
+        </Card.Title>
         <Card.Description>{projects.length} in the pipeline</Card.Description>
       </Card.Header>
       <Card.Content>
@@ -49,48 +57,17 @@ export function ProjectTable({ onRemove, projects }: ProjectTableProps) {
                     </Badge>
                   </Table.Cell>
                   <Table.Cell>
-                    <AlertDialog>
-                      <AlertDialog.Trigger
-                        render={
-                          <Button
-                            aria-label={`Delete ${project.name}`}
-                            size="icon-sm"
-                            variant="ghost"
-                          />
-                        }
-                      >
-                        <IconTrash />
-                      </AlertDialog.Trigger>
-                      <AlertDialog.Content>
-                        <AlertDialog.Header>
-                          <AlertDialog.Title>
-                            Delete {project.name}?
-                          </AlertDialog.Title>
-                          <AlertDialog.Description>
-                            This removes the project from the list.
-                          </AlertDialog.Description>
-                        </AlertDialog.Header>
-                        <AlertDialog.Footer>
-                          <AlertDialog.Close
-                            render={<Button variant="outline" />}
-                          >
-                            Cancel
-                          </AlertDialog.Close>
-                          <AlertDialog.Close
-                            onClick={() => {
-                              onRemove(project.id);
-                              toast.add({
-                                title: `${project.name} deleted`,
-                                type: 'success',
-                              });
-                            }}
-                            render={<Button variant="destructive" />}
-                          >
-                            Delete
-                          </AlertDialog.Close>
-                        </AlertDialog.Footer>
-                      </AlertDialog.Content>
-                    </AlertDialog>
+                    <Button
+                      aria-label={`Delete ${project.name}`}
+                      onClick={() => {
+                        setTarget(project);
+                        setOpen(true);
+                      }}
+                      size="icon-sm"
+                      variant="ghost"
+                    >
+                      <IconTrash />
+                    </Button>
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -98,6 +75,41 @@ export function ProjectTable({ onRemove, projects }: ProjectTableProps) {
           </Table>
         )}
       </Card.Content>
+
+      <AlertDialog onOpenChange={setOpen} open={open}>
+        <AlertDialog.Content
+          // Cancel returns focus to the row's button; after a delete that
+          // button is gone, so focus the table title instead.
+          finalFocus={() => {
+            if (!deleted.current) return true;
+            deleted.current = false;
+            return titleRef.current;
+          }}
+        >
+          <AlertDialog.Header>
+            <AlertDialog.Title>Delete {target?.name}?</AlertDialog.Title>
+            <AlertDialog.Description>
+              This removes the project from the list.
+            </AlertDialog.Description>
+          </AlertDialog.Header>
+          <AlertDialog.Footer>
+            <AlertDialog.Close render={<Button variant="outline" />}>
+              Cancel
+            </AlertDialog.Close>
+            <AlertDialog.Close
+              onClick={() => {
+                if (!target) return;
+                deleted.current = true;
+                onRemove(target.id);
+                toast.add({ title: `${target.name} deleted`, type: 'success' });
+              }}
+              render={<Button variant="destructive" />}
+            >
+              Delete
+            </AlertDialog.Close>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
     </Card>
   );
 }

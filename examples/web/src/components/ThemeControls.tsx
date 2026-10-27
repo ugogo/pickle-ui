@@ -9,7 +9,7 @@ import {
   IconRefresh,
   IconSun,
 } from '@tabler/icons-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type Scheme = 'dark' | 'light' | 'system';
 
@@ -25,7 +25,8 @@ const SCHEME_ICONS = {
 export function ThemeControls() {
   const [scheme, setScheme] = useState<Scheme>(readScheme);
   const [brand, setBrand] = useState<null | string>(null);
-  const [pickerValue, setPickerValue] = useState(readPrimary);
+  const [pickerValue, setPickerValue] = useState(readLightPrimary);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   // Pickle's dark values apply below any element with the `dark` class. In
   // `system` mode, mirror the media query and follow its changes.
@@ -43,6 +44,7 @@ export function ThemeControls() {
   }, [scheme]);
 
   // Customization 1b: derive the brand tokens for both schemes from one color.
+  // The picked color is the light brand; `createTheme` derives the dark one.
   // `themeToCss` writes `:root` and `.dark` rules, so portals (dialogs, toasts)
   // pick them up too. Until a color is picked, app.css's overrides apply.
   const css = useMemo(
@@ -58,8 +60,8 @@ export function ThemeControls() {
 
       <ColorPicker
         onOpenChange={(open) => {
-          // Without a picked brand, start from the color on screen (app.css).
-          if (open && !brand) setPickerValue(readPrimary());
+          // Without a picked brand, start from app.css's light primary.
+          if (open && !brand) setPickerValue(readLightPrimary());
         }}
         onValueChange={(value) => {
           setPickerValue(value);
@@ -67,7 +69,11 @@ export function ThemeControls() {
         }}
         value={pickerValue}
       >
-        <ColorPicker.Trigger className="gap-2" variant="outline">
+        <ColorPicker.Trigger
+          className="gap-2"
+          ref={triggerRef}
+          variant="outline"
+        >
           <span className="bg-primary size-4 rounded-full" />
           Brand
         </ColorPicker.Trigger>
@@ -84,7 +90,11 @@ export function ThemeControls() {
             render={
               <Button
                 aria-label="Reset brand color"
-                onClick={() => setBrand(null)}
+                onClick={() => {
+                  setBrand(null);
+                  // This button unmounts, so hand focus back to the picker.
+                  triggerRef.current?.focus();
+                }}
                 size="icon"
                 variant="ghost"
               />
@@ -122,11 +132,17 @@ export function ThemeControls() {
   );
 }
 
-/** The `--primary` currently applied to the page, as any CSS color string. */
-function readPrimary() {
-  return getComputedStyle(document.documentElement)
-    .getPropertyValue('--primary')
-    .trim();
+/**
+ * The light scheme's `--primary`, as any CSS color string. In dark mode the
+ * `dark` class is lifted for one synchronous read, so nothing repaints.
+ */
+function readLightPrimary() {
+  const root = document.documentElement;
+  const dark = root.classList.contains('dark');
+  root.classList.remove('dark');
+  const value = getComputedStyle(root).getPropertyValue('--primary').trim();
+  root.classList.toggle('dark', dark);
+  return value;
 }
 
 function readScheme(): Scheme {

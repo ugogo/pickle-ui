@@ -14,7 +14,8 @@ export function App() {
   const addProject = (project: Omit<Project, 'id'>) =>
     setProjects((current) => [
       ...current,
-      { ...project, id: crypto.randomUUID() },
+      // Not `crypto.randomUUID()`: it only exists on https and localhost.
+      { ...project, id: String(Date.now()) },
     ]);
 
   const removeProject = (id: string) =>

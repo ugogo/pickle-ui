@@ -26,6 +26,7 @@ export function NewProjectForm({ onCreate }: NewProjectFormProps) {
       status: shipped ? 'success' : 'inProgress',
     });
     setName('');
+    setShipped(false);
   };
 
   return (
@@ -35,6 +36,7 @@ export function NewProjectForm({ onCreate }: NewProjectFormProps) {
       </Card.Header>
       <Card.Content>
         <TextInput
+          accessibilityLabel="Project name"
           className="border-input bg-background text-foreground h-10 rounded-lg border px-3 text-sm"
           onChangeText={setName}
           onSubmitEditing={submit}
@@ -47,6 +49,7 @@ export function NewProjectForm({ onCreate }: NewProjectFormProps) {
           <Text>Already shipped</Text>
           {/* Native controls take colors, not classes: pass them the tokens. */}
           <Switch
+            accessibilityLabel="Already shipped"
             onValueChange={setShipped}
             trackColor={{ false: muted, true: primary }}
             value={shipped}

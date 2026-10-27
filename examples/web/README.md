@@ -23,29 +23,45 @@ pnpm example:web   # from the repository root, then open http://localhost:5173
 
 ## Setup in your own app
 
-Start from a Vite React app and add Pickle with its peers:
+1. Create a Vite React app and add Pickle with its peers:
 
-```bash
-pnpm create vite my-app --template react-ts
-cd my-app
-pnpm add @pickle-ui/react@beta react-hook-form
-pnpm add -D tailwindcss @tailwindcss/vite
-```
+   ```bash
+   pnpm create vite my-app --template react-ts --no-immediate
+   cd my-app
+   pnpm add @pickle-ui/react@beta react-hook-form
+   pnpm add -D tailwindcss @tailwindcss/vite
+   ```
 
-Then add what the copied files import:
+2. Add what the example's files import. The fonts are optional; any icon
+   library works.
 
-```bash
-pnpm add @fontsource-variable/geist @fontsource/jetbrains-mono   # fonts, optional
-pnpm add @tabler/icons-react                                     # icons, any library works
-pnpm add zod @hookform/resolvers                                 # form validation
-```
+   ```bash
+   pnpm add @fontsource-variable/geist @fontsource/jetbrains-mono
+   pnpm add @tabler/icons-react zod @hookform/resolvers
+   ```
 
-Copy `src/app.css`, the top of `src/main.tsx` and the `plugins` line of
-`vite.config.ts`. Leave out the `resolve.conditions` block in
-`vite.config.ts` and `customConditions` in `tsconfig.json`: they only make
-this monorepo read Pickle's sources instead of its build. Without the font
-packages, also drop the font imports from `main.tsx` and the `@theme` block
-from `app.css`.
+3. Remove the template's styles: delete `src/index.css` and `src/App.css`.
+   They set unlayered `:root` variables (`--accent`, `--border`) and heading
+   sizes that override Pickle's tokens and `Text` sizes without any error.
 
-The full theming guide is in
+4. Copy from this folder:
+   - `src/app.css`.
+   - `src/main.tsx`, replacing the template's file. The example exports a
+     named `App`, not a default one.
+   - In `vite.config.ts`, the `@tailwindcss/vite` import and `tailwindcss()`
+     in `plugins`. Leave out the `resolve` block and `customConditions` in
+     `tsconfig.json`: they only make this monorepo read Pickle's sources.
+   - The `<script>` in `index.html`, if you offer dark mode. It sets the
+     `dark` class before the first paint. Pickle only reacts to that class;
+     see [dark mode](../../packages/react/README.md#use-pickle-ui) for the
+     rules.
+   - `src/App.tsx`, `src/projects.ts` and `src/components` for the full
+     screen.
+
+5. Check it: `pnpm run build`. In a Vite template, `tsc --noEmit` checks
+   nothing because the root `tsconfig.json` only holds references; the build
+   runs `tsc -b`.
+
+Without the font packages, drop the font imports from `main.tsx` and the
+`@theme` block from `app.css`. The full theming guide is in
 [`packages/react/README.md`](../../packages/react/README.md#theming).

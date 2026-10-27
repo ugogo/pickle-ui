@@ -22,8 +22,9 @@ pnpm example:mobile   # Expo: press i for iOS, a for Android
 ```
 
 Or run `pnpm dev` in `web`, or `pnpm start` in `mobile`. No build step is
-needed: the web example reads `@pickle-ui/react` from its TypeScript sources,
-so library edits hot-reload.
+needed: the web example reads `@pickle-ui/react` from its TypeScript sources
+through the `@pickle-ui/source` export condition, so library edits
+hot-reload.
 
 The mobile example opens in [Expo Go](https://expo.dev/go), which needs the
 iOS Simulator (Xcode) or an Android emulator, or a phone that scans the QR
