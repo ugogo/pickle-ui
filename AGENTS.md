@@ -9,11 +9,11 @@ Guidance for AI agents (and humans) working in this repository.
 | Folder            | npm package         | Contents                                                                                                                                                                                             |
 | ----------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/react`  | `@pickle-ui/react`  | React components for the web, built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). |
-| `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii) as Tailwind CSS v4 theme variables in a single `theme.css`. `@pickle-ui/react` imports it.                                                                             |
+| `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii) as Tailwind CSS v4 theme variables: `native.css` for Uniwind, `theme.css` for the web. `@pickle-ui/react` imports `theme.css`.                                         |
 
 In `@pickle-ui/react`, exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook. Paths in the sections below are relative to `packages/react`.
 
-`@pickle-ui/tokens` is the source of truth for color and radius values: edit `packages/tokens/theme.css`. `packages/react/src/theme.css` only imports it, so `@pickle-ui/react/theme.css` keeps working for consumers.
+`@pickle-ui/tokens` is the source of truth for color and radius values: edit `packages/tokens/native.css`. Its values are Uniwind themes (`@variant light` / `@variant dark`), and every theme must declare the same variables. `packages/tokens/theme.css` imports it and defines the `light` and `dark` variants for the web; never define those variants in `native.css`, since Uniwind owns them. `packages/react/src/theme.css` only imports `@pickle-ui/tokens/theme.css`, so `@pickle-ui/react/theme.css` keeps working for consumers.
 
 ## Tooling
 
