@@ -1,14 +1,9 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Children, isValidElement } from 'react';
-import {
-  ActivityIndicator,
-  type Insets,
-  Pressable,
-  Text,
-  View,
-} from 'react-native';
+import { type Insets, Pressable, Text, View } from 'react-native';
 
 import { cn } from '../lib/cn';
+import { Spinner } from './_internal/Spinner';
 
 // Same variants, sizes and dimensions as `Button` in @pickle-ui/react on a
 // phone. Like the web's `pointer-coarse` hit area, `hitSlop` stretches every
@@ -78,15 +73,19 @@ const labelVariants = cva('font-medium', {
   },
 });
 
-const spinnerColor = {
-  default: 'accent-primary-foreground',
-  destructive: 'accent-destructive-foreground',
-  'destructive-outline': 'accent-foreground',
-  ghost: 'accent-foreground',
-  link: 'accent-foreground',
-  outline: 'accent-foreground',
-  secondary: 'accent-secondary-foreground',
-} as const;
+const spinnerVariants = cva('', {
+  variants: {
+    variant: {
+      default: 'border-primary-foreground',
+      destructive: 'border-destructive-foreground',
+      'destructive-outline': 'border-foreground',
+      ghost: 'border-foreground',
+      link: 'border-foreground',
+      outline: 'border-foreground',
+      secondary: 'border-secondary-foreground',
+    },
+  },
+});
 
 // The web's 1px inner highlight on solid buttons. Uniwind draws
 // `inset-shadow` outside the view, so a top border on an overlay stands in.
@@ -198,11 +197,9 @@ export function Button({
             ) : null,
           )}
           {loading ? (
-            <ActivityIndicator
-              className="absolute"
-              colorClassName={variant ? spinnerColor[variant] : undefined}
-              size="small"
-            />
+            <View className="absolute">
+              <Spinner className={spinnerVariants({ variant })} />
+            </View>
           ) : null}
         </>
       )}

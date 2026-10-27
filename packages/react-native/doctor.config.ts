@@ -5,6 +5,18 @@ export default defineConfig({
   // (`GIT_DIR` set), where a leftover Storybook build fails the pre-commit.
   ignore: {
     files: ['dist/**', 'storybook-static/**'],
+    overrides: [
+      {
+        // Waiver approved by the maintainer (2026-10-28), scoped to this
+        // file: the spinner is a decorative, transform-only loop that runs
+        // on the native driver, so React Native's Animated has no measured
+        // limitation here, and Reanimated would become a peer dependency of
+        // every app for one spinner. Revisit if the package adopts
+        // Reanimated or Uniwind gains CSS animations.
+        files: ['src/components/_internal/Spinner.tsx'],
+        rules: ['react-doctor/rn-prefer-reanimated'],
+      },
+    ],
   },
   rules: {
     'react-doctor/no-multi-comp': 'off',
