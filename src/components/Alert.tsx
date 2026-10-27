@@ -90,12 +90,12 @@ function AlertIcon({ className, ...props }: AlertIconProps) {
  * pass `role="alert"` for urgent messages (failures) or `role="status"` for
  * polite ones (confirmations, info).
  */
-function AlertRoot({ className, variant, ...props }: AlertProps) {
+function AlertRoot({ className, variant = 'default', ...props }: AlertProps) {
   return (
     <div
       className={cn(alertVariants({ variant }), className)}
       data-slot="alert"
-      data-variant={variant ?? 'default'}
+      data-variant={variant}
       {...props}
     />
   );

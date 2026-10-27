@@ -27,6 +27,38 @@ describe('Button', () => {
     ).toEqual([]);
   });
 
+  it('exposes its variant and size as data attributes, defaults included', () => {
+    render(
+      <>
+        <Button>Default</Button>
+        <Button size="lg" variant="outline">
+          Outline
+        </Button>
+      </>,
+    );
+
+    const defaultButton = screen.getByRole('button', { name: 'Default' });
+    expect(defaultButton).toHaveAttribute('data-variant', 'default');
+    expect(defaultButton).toHaveAttribute('data-size', 'md');
+
+    const outlineButton = screen.getByRole('button', { name: 'Outline' });
+    expect(outlineButton).toHaveAttribute('data-variant', 'outline');
+    expect(outlineButton).toHaveAttribute('data-size', 'lg');
+  });
+
+  it('omits the data attributes when variant and size are null', () => {
+    render(
+      <Button size={null} variant={null}>
+        Unstyled
+      </Button>,
+    );
+
+    const button = screen.getByRole('button', { name: 'Unstyled' });
+    expect(button).not.toHaveAttribute('data-variant');
+    expect(button).not.toHaveAttribute('data-size');
+    expect(button).not.toHaveClass('h-8');
+  });
+
   it('shows a loading indicator when loading', () => {
     render(<Button loading>Save</Button>);
 

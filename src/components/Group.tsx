@@ -33,7 +33,11 @@ type GroupSeparatorProps = SeparatorProps;
 
 type GroupTextProps = useRender.ComponentProps<'div'>;
 
-function GroupRoot({ className, orientation, ...props }: GroupProps) {
+function GroupRoot({
+  className,
+  orientation = 'horizontal',
+  ...props
+}: GroupProps) {
   return (
     <div
       className={cn(groupVariants({ orientation }), className)}

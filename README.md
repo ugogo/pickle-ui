@@ -390,12 +390,41 @@ const twMerge = extendTailwindMerge({
 
 Every rendered part carries a stable `data-slot` attribute (`button`, `card`,
 `card-title`, `select-item`, `checkbox-indicator`, …). Use it for global rules
-or to reach parts that do not take their own `className`:
+or to reach parts that do not take their own `className`.
+
+Parts with visual variants also expose the resolved value as a data
+attribute, defaults included, so a rule can target one variant or size. The
+attribute sits on the slot listed here:
+
+| Component                               | `data-slot`                                    | Attributes                                                                   |
+| --------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| `Button`, `Badge`                       | `button`, `badge`                              | `data-variant`, `data-size`                                                  |
+| `Alert`, `Menu.Item`                    | `alert`, `menu-item`                           | `data-variant`                                                               |
+| `Text`                                  | `text`                                         | `data-variant`, plus `data-tone`, `data-weight` and `data-truncate` when set |
+| `Dialog.Content`, `AlertDialog.Content` | `dialog-content`, `alert-dialog-content`       | `data-size`                                                                  |
+| `Input`, `Textarea`                     | `input-control`, `textarea-control` (wrappers) | `data-size`                                                                  |
+| `Checkbox`                              | `checkbox`                                     | `data-size`                                                                  |
+| `RadioGroup.Item`                       | `radio`                                        | `data-size`                                                                  |
+| `Group`                                 | `group`                                        | `data-orientation`                                                           |
+| `InputGroup.Addon`                      | `input-group-addon`                            | `data-align`                                                                 |
+| `Toast.Provider`                        | `toast-viewport`                               | `data-position`                                                              |
+
+Write these rules in `@layer utilities`. Pickle styles parts with utility
+classes, and Tailwind orders its layers `theme, base, components, utilities`,
+so a rule in `@layer components` loses to them:
 
 ```css
-@layer components {
+@layer utilities {
   [data-slot='card'] {
     @apply shadow-lg;
+  }
+
+  [data-slot='button'][data-size='md'] {
+    @apply h-9;
+  }
+
+  [data-slot='button'][data-variant='default'] {
+    @apply border-indigo-600 bg-indigo-600 hover:bg-indigo-600/90;
   }
 
   [data-slot='checkbox-indicator'] svg {
@@ -404,8 +433,12 @@ or to reach parts that do not take their own `className`:
 }
 ```
 
-`data-slot` names are part of the public API and follow the component name in
-kebab-case, so a renaming is a breaking change.
+A global rule like these wins over a `className` on a single instance too; mark
+the one-off utility important (`className="shadow-none!"`) to beat it.
+
+`data-slot` names and these data attribute values are part of the public API
+and follow the component and prop names in kebab-case, so renaming one is a
+breaking change.
 
 ## Upgrading from 0.x
 

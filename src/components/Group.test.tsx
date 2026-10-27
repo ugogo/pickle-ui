@@ -19,6 +19,19 @@ describe('Group', () => {
     expect(screen.getByRole('button', { name: 'Two' })).toBeInTheDocument();
   });
 
+  it('defaults to horizontal orientation', () => {
+    render(
+      <Group aria-label="Actions">
+        <Button>One</Button>
+      </Group>,
+    );
+
+    expect(screen.getByRole('group', { name: 'Actions' })).toHaveAttribute(
+      'data-orientation',
+      'horizontal',
+    );
+  });
+
   it('supports vertical orientation', () => {
     render(
       <Group

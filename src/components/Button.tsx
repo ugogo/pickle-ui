@@ -69,9 +69,9 @@ function Button({
   loading = false,
   ref,
   render,
-  size,
+  size = 'md',
   type,
-  variant,
+  variant = 'default',
   ...props
 }: ButtonProps) {
   // A rendered element such as a link has no `disabled` or `type`: it only
@@ -96,7 +96,9 @@ function Button({
     ),
     className: cn(buttonVariants({ className, size, variant })),
     'data-loading': loading ? '' : undefined,
+    'data-size': size,
     'data-slot': 'button',
+    'data-variant': variant,
     disabled: isNativeButton ? isDisabled : undefined,
     type: isNativeButton ? (type ?? 'button') : type,
   };

@@ -72,6 +72,10 @@ function Text({
         className,
       )}
       data-slot="text"
+      data-tone={tone}
+      data-truncate={truncate ? '' : undefined}
+      data-variant={variant}
+      data-weight={weight}
       ref={ref}
       {...props}
     />
