@@ -1,5 +1,11 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.7
+
+### Patch Changes
+
+- 220989a: Add a `@pickle-ui/source` export condition that points at the TypeScript sources, and use relative imports inside `src`.
+
 ## 1.0.0-beta.6
 
 ### Patch Changes
