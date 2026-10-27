@@ -1,28 +1,34 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Children, isValidElement } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  type Insets,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
 
 import { cn } from '../lib/cn';
 
-// Same variants and sizes as `Button` in @pickle-ui/react, with native
-// heights: `md` and up meet the 40pt minimum, and `hitSlop` stretches the
-// smaller ones to a 44pt touch target.
+// Same variants, sizes and dimensions as `Button` in @pickle-ui/react on a
+// phone. Like the web's `pointer-coarse` hit area, `hitSlop` stretches every
+// size to a 44pt touch target. Paddings leave room for the 1pt border.
 const buttonVariants = cva(
   'flex-row items-center justify-center gap-2 rounded-lg border disabled:opacity-64',
   {
     defaultVariants: { size: 'md', variant: 'default' },
     variants: {
       size: {
-        icon: 'size-10',
-        'icon-lg': 'size-11',
-        'icon-sm': 'size-8',
-        'icon-xl': 'size-12',
-        'icon-xs': 'size-7 rounded-md',
-        lg: 'h-11 px-5',
-        md: 'h-10 px-4',
-        sm: 'h-8 gap-1.5 px-3',
-        xl: 'h-12 px-6',
-        xs: 'h-7 gap-1 rounded-md px-2.5',
+        icon: 'size-8',
+        'icon-lg': 'size-9',
+        'icon-sm': 'size-7',
+        'icon-xl': 'size-10',
+        'icon-xs': 'size-6 rounded-md',
+        lg: 'h-9 px-[13px]',
+        md: 'h-8 px-[11px]',
+        sm: 'h-7 gap-1.5 px-[9px]',
+        xl: 'h-10 px-[15px]',
+        xs: 'h-6 gap-1 rounded-md px-[7px]',
       },
       variant: {
         default:
@@ -52,11 +58,11 @@ const labelVariants = cva('font-medium', {
       icon: 'text-base',
       'icon-lg': 'text-base',
       'icon-sm': 'text-base',
-      'icon-xl': 'text-lg',
-      'icon-xs': 'text-sm',
+      'icon-xl': 'text-base',
+      'icon-xs': 'text-base',
       lg: 'text-base',
       md: 'text-base',
-      sm: 'text-sm',
+      sm: 'text-base',
       xl: 'text-lg',
       xs: 'text-sm',
     },
@@ -82,20 +88,41 @@ const spinnerColor = {
   secondary: 'accent-secondary-foreground',
 } as const;
 
+// The web's 1px inner highlight on solid buttons. Uniwind draws
+// `inset-shadow` outside the view, so a top border on an overlay stands in.
+const highlightVariants = cva('absolute inset-0 rounded-lg border-t', {
+  variants: {
+    pressed: { false: 'border-white/16', true: 'border-black/8' },
+    size: {
+      icon: '',
+      'icon-lg': '',
+      'icon-sm': '',
+      'icon-xl': '',
+      'icon-xs': 'rounded-md',
+      lg: '',
+      md: '',
+      sm: '',
+      xl: '',
+      xs: 'rounded-md',
+    },
+  },
+});
+
 type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>['size']>;
 
-// Half the gap between each size and a 44pt touch target.
-const HIT_SLOP: Record<ButtonSize, number> = {
-  icon: 2,
-  'icon-lg': 0,
-  'icon-sm': 6,
-  'icon-xl': 0,
-  'icon-xs': 8,
-  lg: 0,
-  md: 2,
-  sm: 6,
-  xl: 0,
-  xs: 8,
+// Half the gap between each size and a 44pt touch target, vertical only for
+// buttons with a label, whose width already reaches it.
+const HIT_SLOP: Record<ButtonSize, Insets | number> = {
+  icon: 6,
+  'icon-lg': 4,
+  'icon-sm': 8,
+  'icon-xl': 2,
+  'icon-xs': 10,
+  lg: { bottom: 4, top: 4 },
+  md: { bottom: 6, top: 6 },
+  sm: { bottom: 8, top: 8 },
+  xl: { bottom: 2, top: 2 },
+  xs: { bottom: 10, top: 10 },
 };
 
 export type ButtonProps = Omit<
@@ -126,6 +153,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const isDisabled = Boolean(disabled || loading);
+  const isSolid = variant === 'default' || variant === 'destructive';
 
   return (
     <Pressable
@@ -142,6 +170,12 @@ export function Button({
     >
       {({ pressed }) => (
         <>
+          {isSolid && !isDisabled ? (
+            <View
+              className={highlightVariants({ pressed, size })}
+              pointerEvents="none"
+            />
+          ) : null}
           {/* While loading, the content stays in place, invisible, so the
               button keeps its width under the spinner. */}
           {Children.map(children, (child) =>

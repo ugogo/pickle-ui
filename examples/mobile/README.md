@@ -15,7 +15,7 @@ holds port 8081, Expo offers the next port.
 
 `Button`, `Badge`, `Card`, `Text`, `cn` and `useColorToken` come from
 `@pickle-ui/react-native`. They reuse the web API's names (`variant`, `size`,
-`tone`, `Card.Header`, …) with native sizes. `src/components` only holds the
+`tone`, `Card.Header`, …) and the web's dimensions. `src/components` only holds the
 screen's own pieces, styled with token utilities (`bg-primary`,
 `text-muted-foreground`, `border-border`, `rounded-xl`). See
 [What carries over to native](../README.md#what-carries-over-to-native).
