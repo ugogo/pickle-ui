@@ -45,8 +45,7 @@
     "build-storybook": "storybook build",
     "test": "vitest run",
     "doctor": "react-doctor",
-    "prepublishOnly": "pnpm run build",
-    "release": "release-it"
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [
     "react",
@@ -60,6 +59,7 @@
   "license": "MIT",
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@pickle-ui/tokens": "workspace:*",
     "@tabler/icons-react": "^3.44.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -90,7 +90,6 @@
     "react-doctor": "^0.5.6",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.79.0",
-    "release-it": "^20.2.0",
     "storybook": "^10.6.3",
     "storybook-addon-pseudo-states": "^10.6.3",
     "tailwindcss": "^4.3.0",

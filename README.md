@@ -6,9 +6,10 @@ Browse every component in the [Storybook](https://ugogo.github.io/pickle-ui/).
 
 ## Packages
 
-| Package                                | Description                                     |
-| -------------------------------------- | ----------------------------------------------- |
-| [`@pickle-ui/react`](./packages/react) | React components for the web, built on Base UI. |
+| Package                                  | Description                                       |
+| ---------------------------------------- | ------------------------------------------------- |
+| [`@pickle-ui/react`](./packages/react)   | React components for the web, built on Base UI.   |
+| [`@pickle-ui/tokens`](./packages/tokens) | Design tokens as Tailwind CSS v4 theme variables. |
 
 See each package's README for installation and usage.
 

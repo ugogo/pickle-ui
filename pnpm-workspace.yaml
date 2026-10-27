@@ -7,9 +7,9 @@ packages:
 # releases instead of silently accepting the downgrade.
 trustPolicy: no-downgrade
 
-# semver lacks provenance on the version release-it pulls transitively (via
-# Babel). It's a benign, ubiquitous package, so exempt it from the downgrade
-# check rather than weaken the policy globally.
+# semver lacks provenance on a version pulled in transitively (via Babel).
+# It's a benign, ubiquitous package, so exempt it from the downgrade check
+# rather than weaken the policy globally.
 trustPolicyExclude:
   - semver
 

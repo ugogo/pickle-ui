@@ -1,0 +1,34 @@
+{
+  "name": "@pickle-ui/tokens",
+  "version": "1.0.0-beta.4",
+  "type": "module",
+  "description": "Pickle UI design tokens: colors and radii as Tailwind CSS v4 theme variables.",
+  "style": "theme.css",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugogo/pickle-ui.git",
+    "directory": "packages/tokens"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    "./theme.css": "./theme.css"
+  },
+  "files": [
+    "theme.css"
+  ],
+  "keywords": [
+    "design-tokens",
+    "tailwind",
+    "pickle-ui"
+  ],
+  "author": "Ugo Onali",
+  "license": "MIT",
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  }
+}
