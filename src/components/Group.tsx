@@ -66,7 +66,7 @@ function GroupSeparator({
 function GroupText({ className, render, ...props }: GroupTextProps) {
   const defaultProps = {
     className: cn(
-      'border-input bg-muted text-muted-foreground relative inline-flex h-8 items-center gap-2 rounded-lg border px-[calc(--spacing(3)-1px)] text-base whitespace-nowrap shadow-xs/5 outline-none transition-shadow not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/6%)] sm:text-sm dark:bg-input/64 dark:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg:not([class*="size-"])]:size-4.5 sm:[&_svg:not([class*="size-"])]:size-4 [&_svg]:-mx-0.5 [&_svg]:shrink-0',
+      'border-input bg-muted text-muted-foreground relative inline-flex h-8 items-center gap-2 rounded-lg border px-[calc(--spacing(3)-1px)] text-base whitespace-nowrap shadow-xs/5 outline-none transition-shadow not-dark:bg-clip-padding before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-[0_1px_--theme(--color-black/6%)] sm:text-sm dark:bg-input/64 dark:before:shadow-[0_-1px_--theme(--color-white/6%)] [&_svg:not([class*="size-"])]:size-4 [&_svg]:-mx-0.5 [&_svg]:shrink-0',
       className,
     ),
     'data-slot': 'group-text',
