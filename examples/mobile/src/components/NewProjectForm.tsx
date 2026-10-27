@@ -1,11 +1,8 @@
+import { Button, Card, Text, useColorToken } from '@pickle-ui/react-native';
 import { useState } from 'react';
 import { Switch, TextInput, View } from 'react-native';
 
-import { useColorToken } from '../lib/useColorToken';
 import { type Project } from '../projects';
-import { Button } from './Button';
-import { Card } from './Card';
-import { Text } from './Text';
 
 type NewProjectFormProps = {
   onCreate: (project: Omit<Project, 'id'>) => void;

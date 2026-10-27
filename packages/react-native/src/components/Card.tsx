@@ -3,22 +3,25 @@ import { View } from 'react-native';
 import { cn } from '../lib/cn';
 import { Text } from './Text';
 
-type TextProps = React.ComponentProps<typeof Text>;
-type ViewProps = React.ComponentProps<typeof View>;
+export type CardContentProps = React.ComponentProps<typeof View>;
+export type CardDescriptionProps = React.ComponentProps<typeof Text>;
+export type CardHeaderProps = React.ComponentProps<typeof View>;
+export type CardProps = React.ComponentProps<typeof View>;
+export type CardTitleProps = React.ComponentProps<typeof Text>;
 
-function CardContent({ className, ...props }: ViewProps) {
+function CardContent({ className, ...props }: CardContentProps) {
   return <View className={cn('gap-3 px-5', className)} {...props} />;
 }
 
-function CardDescription({ className, ...props }: TextProps) {
+function CardDescription({ className, ...props }: CardDescriptionProps) {
   return <Text className={className} tone="muted" {...props} />;
 }
 
-function CardHeader({ className, ...props }: ViewProps) {
+function CardHeader({ className, ...props }: CardHeaderProps) {
   return <View className={cn('gap-1 px-5', className)} {...props} />;
 }
 
-function CardRoot({ className, ...props }: ViewProps) {
+function CardRoot({ className, ...props }: CardProps) {
   return (
     <View
       className={cn(
@@ -30,7 +33,7 @@ function CardRoot({ className, ...props }: ViewProps) {
   );
 }
 
-function CardTitle({ className, ...props }: TextProps) {
+function CardTitle({ className, ...props }: CardTitleProps) {
   return (
     <Text
       className={cn('text-card-foreground', className)}

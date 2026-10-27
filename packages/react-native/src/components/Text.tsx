@@ -24,7 +24,7 @@ const textVariants = cva('text-foreground', {
   },
 });
 
-type TextProps = React.ComponentProps<typeof NativeText> &
+export type TextProps = React.ComponentProps<typeof NativeText> &
   VariantProps<typeof textVariants>;
 
 export function Text({ className, tone, variant, ...props }: TextProps) {

@@ -1,3 +1,4 @@
+import { Text } from '@pickle-ui/react-native';
 import { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { ScopedVariables, useUniwind } from 'uniwind';
@@ -5,7 +6,6 @@ import { ScopedVariables, useUniwind } from 'uniwind';
 import { type Brand } from '../brands';
 import { NewProjectForm } from '../components/NewProjectForm';
 import { ProjectList } from '../components/ProjectList';
-import { Text } from '../components/Text';
 import { ThemeControls } from '../components/ThemeControls';
 import { INITIAL_PROJECTS, type Project } from '../projects';
 

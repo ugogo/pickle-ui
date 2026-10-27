@@ -1,0 +1,12 @@
+/**
+ * Pickle for React Native: Tailwind, Uniwind, the tokens as Uniwind themes
+ * and the components' classes. Apps import this file alone.
+ *
+ * Tailwind and Uniwind come from here, not from the app: Uniwind compiles
+ * each imported stylesheet on its own to find themes, and the tokens'
+ * `@variant light` / `@variant dark` blocks only compile after both.
+ */
+@import 'tailwindcss';
+@import 'uniwind';
+@import '@pickle-ui/tokens/native.css';
+@import './base.css';

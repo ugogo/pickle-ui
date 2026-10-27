@@ -4,8 +4,6 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useUniwind } from 'uniwind';
 
-import { useColorToken } from '../lib/useColorToken';
-
 export default function Layout() {
   const { theme } = useUniwind();
   const background = useColorToken('background');
@@ -27,3 +25,4 @@ export default function Layout() {
     </>
   );
 }
+import { useColorToken } from '@pickle-ui/react-native';

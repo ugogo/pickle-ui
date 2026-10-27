@@ -1,15 +1,17 @@
 # Pickle UI
 
-A design system for React apps, built with Base UI and Tailwind CSS v4.
+A design system for React apps, built with Base UI and Tailwind CSS v4, with
+React Native components for Expo.
 
 Browse every component in the [Storybook](https://ugogo.github.io/pickle-ui/).
 
 ## Packages
 
-| Package                                  | Description                                       |
-| ---------------------------------------- | ------------------------------------------------- |
-| [`@pickle-ui/react`](./packages/react)   | React components for the web, built on Base UI.   |
-| [`@pickle-ui/tokens`](./packages/tokens) | Design tokens as Tailwind CSS v4 theme variables. |
+| Package                                              | Description                                        |
+| ---------------------------------------------------- | -------------------------------------------------- |
+| [`@pickle-ui/react`](./packages/react)               | React components for the web, built on Base UI.    |
+| [`@pickle-ui/react-native`](./packages/react-native) | React Native components for Expo, through Uniwind. |
+| [`@pickle-ui/tokens`](./packages/tokens)             | Design tokens as Tailwind CSS v4 theme variables.  |
 
 See each package's README for installation and usage.
 
@@ -17,7 +19,7 @@ See each package's README for installation and usage.
 
 [`examples`](./examples) holds two mini apps that show how to use and customize
 Pickle UI: [`web`](./examples/web) (Vite + `@pickle-ui/react`) and
-[`mobile`](./examples/mobile) (Expo + Uniwind + `@pickle-ui/tokens`).
+[`mobile`](./examples/mobile) (Expo + Uniwind + `@pickle-ui/react-native`).
 
 ```bash
 pnpm example:web      # http://localhost:5173

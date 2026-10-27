@@ -1,7 +1,5 @@
-/* Setup: Tailwind, then Uniwind, then Pickle's tokens as Uniwind themes. */
-@import 'tailwindcss';
-@import 'uniwind';
-@import '@pickle-ui/tokens/native.css';
+/* Setup: Pickle brings Tailwind, Uniwind, its tokens and its components. */
+@import '@pickle-ui/react-native/styles.css';
 
 /*
  * Customization 1: override design tokens.
