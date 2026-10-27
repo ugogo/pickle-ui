@@ -16,7 +16,20 @@ const config: StorybookConfig = {
   viteFinal: (viteConfig) => ({
     ...viteConfig,
     plugins: [
-      ...(viteConfig.plugins ?? []),
+      // The framework adds vite-tsconfig-paths, which Vite now replaces with
+      // `resolve.tsconfigPaths` and warns about. The package has no `paths`
+      // to resolve, so drop it.
+      ...(viteConfig.plugins ?? [])
+        .flat()
+        .filter(
+          (plugin) =>
+            !(
+              plugin &&
+              typeof plugin === 'object' &&
+              'name' in plugin &&
+              plugin.name === 'vite-tsconfig-paths'
+            ),
+        ),
       tailwindcss(),
       // Uniwind writes src/uniwind-types.d.ts, which adds `className` to
       // React Native's types for the package's own typecheck.
