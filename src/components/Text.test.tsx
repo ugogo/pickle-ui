@@ -12,11 +12,11 @@ describe('Text', () => {
     expect(el).toHaveAttribute('data-slot', 'text');
   });
 
-  it('exposes its variant, tone and weight as data attributes', () => {
+  it('exposes its variant, tone, weight and truncate as data attributes', () => {
     render(
       <>
         <Text>Plain</Text>
-        <Text tone="muted" variant="small" weight="bold">
+        <Text tone="muted" truncate variant="small" weight="bold">
           Styled
         </Text>
       </>,
@@ -26,11 +26,13 @@ describe('Text', () => {
     expect(plain).toHaveAttribute('data-variant', 'body');
     expect(plain).not.toHaveAttribute('data-tone');
     expect(plain).not.toHaveAttribute('data-weight');
+    expect(plain).not.toHaveAttribute('data-truncate');
 
     const styled = screen.getByText('Styled');
     expect(styled).toHaveAttribute('data-variant', 'small');
     expect(styled).toHaveAttribute('data-tone', 'muted');
     expect(styled).toHaveAttribute('data-weight', 'bold');
+    expect(styled).toHaveAttribute('data-truncate', '');
   });
 
   it('keeps the body size next to a tone color', () => {

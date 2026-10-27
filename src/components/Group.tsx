@@ -33,11 +33,15 @@ type GroupSeparatorProps = SeparatorProps;
 
 type GroupTextProps = useRender.ComponentProps<'div'>;
 
-function GroupRoot({ className, orientation, ...props }: GroupProps) {
+function GroupRoot({
+  className,
+  orientation = 'horizontal',
+  ...props
+}: GroupProps) {
   return (
     <div
       className={cn(groupVariants({ orientation }), className)}
-      data-orientation={orientation ?? 'horizontal'}
+      data-orientation={orientation}
       data-slot="group"
       // react-doctor-disable-next-line react-doctor/prefer-tag-over-role -- role="group" is the correct ARIA pattern for grouped controls
       role="group"

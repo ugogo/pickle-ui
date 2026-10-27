@@ -123,12 +123,12 @@ function MenuGroupLabel({ className, ...props }: MenuGroupLabelProps) {
   );
 }
 
-function MenuItem({ className, variant, ...props }: MenuItemProps) {
+function MenuItem({ className, variant = 'default', ...props }: MenuItemProps) {
   return (
     <MenuPrimitive.Item
       className={cn(menuItemVariants({ variant }), className)}
       data-slot="menu-item"
-      data-variant={variant ?? 'default'}
+      data-variant={variant}
       {...props}
     />
   );
