@@ -28,7 +28,7 @@ In `@pickle-ui/react`, exported components live in `src/components`, internal bu
 Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.github/workflows/release.yml`), which runs on every push to `main`.
 
 - **Every PR that changes a published package adds a changeset**: run `pnpm changeset`, pick the bump and write one changelog line, then commit the generated `.changeset/*.md`. Docs, CI or tooling-only PRs don't need one.
-- **All `@pickle-ui/*` packages share one version** (`fixed` in `.changeset/config.json`).
+- **Each package has its own version.** A change to `@pickle-ui/tokens` also releases `@pickle-ui/react` with a patch bump, because react pins the exact tokens version it was published with (`updateInternalDependencies` in `.changeset/config.json`). A change to `@pickle-ui/react` alone leaves `@pickle-ui/tokens` untouched. Add the changeset to the package you changed; Changesets bumps the dependents.
 - **The repo is in `beta` pre-release mode** (`.changeset/pre.json`), so every release is `x.y.z-beta.n` on the `beta` dist-tag. Leave it with `pnpm changeset pre exit` only when the user asks for a stable release.
 - **On `main`, the workflow opens or updates a "Version Packages" PR** while changesets are pending. When a user asks for a release, merge that PR (`gh pr merge <n>`) and monitor the run with `gh run watch --exit-status`. Merging it publishes the packages, pushes the tags (`@pickle-ui/react@<version>`) and creates the GitHub Releases.
 - **Never publish or version locally**: no `changeset publish`, `changeset version`, `npm publish` or `pnpm publish`.

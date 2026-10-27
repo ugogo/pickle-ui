@@ -486,7 +486,8 @@ pnpm run lint
 Releases use [Changesets](https://changesets.dev). Add a changeset to every
 pull request that changes a package (`pnpm changeset`). On `main`, the
 `Release` workflow keeps a "Version Packages" pull request up to date; merging
-it publishes every `@pickle-ui/*` package at one shared version.
+it publishes each package that changed. Packages version independently, and a
+new `@pickle-ui/tokens` release always comes with a new `@pickle-ui/react`.
 
 ## License
 
