@@ -1,7 +1,7 @@
 # @pickle-ui/tokens
 
 Pickle UI's design tokens as Tailwind CSS v4 theme variables: the light and
-dark colors and the radius scale. `@pickle-ui/react` imports them, so web
+dark colors, the radius scale and the type scale. `@pickle-ui/react` imports them, so web
 apps using the components already have them. So do React Native apps
 importing `@pickle-ui/react-native/styles.css`.
 
@@ -35,3 +35,15 @@ color scheme or `Uniwind.setTheme()`.
 
 `native.css` holds the values; `theme.css` imports it and maps the `dark`
 theme to the `.dark` class for the web.
+
+## Type scale
+
+`typography.css` holds the sizes behind `Text`'s variants, `--text-h1` …
+`--text-code`, each with a line height written as a ratio. Both component
+packages import it from their `base.css`, so it comes with the components
+whatever color tokens you use. Import it after Tailwind to get the
+`text-h1` … `text-code` utilities without the components:
+
+```css
+@import '@pickle-ui/tokens/typography.css';
+```

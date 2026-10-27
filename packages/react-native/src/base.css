@@ -1,6 +1,11 @@
 /**
  * Pickle's components as a content source, so Uniwind generates the classes
- * they use. `styles.css` imports it; import it alone, after `uniwind`, to
- * bring your own token set instead of `@pickle-ui/tokens/native.css`.
+ * they use, and the type scale behind `Text`'s variants, shared with
+ * `@pickle-ui/react`. `styles.css` imports this file; import it alone, after
+ * `uniwind`, to bring your own token set instead of
+ * `@pickle-ui/tokens/native.css`. The type scale only declares theme
+ * variables, so it compiles in any order.
  */
+@import '@pickle-ui/tokens/typography.css';
+
 @source './components/**/*.{ts,tsx}';

@@ -6,4 +6,10 @@ describe('cn', () => {
       'text-sm px-4',
     );
   });
+
+  it('keeps a type scale size next to a text color', () => {
+    expect(cn('text-h1 text-foreground', 'text-muted-foreground')).toBe(
+      'text-h1 text-muted-foreground',
+    );
+  });
 });
