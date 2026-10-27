@@ -273,6 +273,8 @@ and `Card.Description` keeps `text-sm`.
 `--primary-foreground`, `--ring`, and their sidebar counterparts) for both
 schemes from one color, picking a readable foreground automatically. Radius
 and fonts pass through. Everything else keeps the defaults from `theme.css`.
+It comes from `@pickle-ui/tokens/theme`, so React Native apps derive the same
+theme from the same color.
 
 ```ts
 import { createTheme, themeToCss } from '@pickle-ui/react/theme';

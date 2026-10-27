@@ -2,6 +2,7 @@ import type { StorybookConfig } from '@storybook/react-native-web-vite';
 
 import tailwindcss from '@tailwindcss/vite';
 import { uniwind } from 'uniwind/vite';
+import { defaultClientConditions } from 'vite';
 
 // Renders the components in the browser through react-native-web, with
 // Uniwind's Vite plugin turning their `className`s into styles.
@@ -24,6 +25,15 @@ const config: StorybookConfig = {
         dtsFile: './src/uniwind-types.d.ts',
       }),
     ],
+    // Read @pickle-ui/tokens from its sources, so Storybook runs without
+    // building it first.
+    resolve: {
+      ...viteConfig.resolve,
+      conditions: [
+        '@pickle-ui/source',
+        ...(viteConfig.resolve?.conditions ?? defaultClientConditions),
+      ],
+    },
   }),
 };
 

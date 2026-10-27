@@ -1,8 +1,8 @@
-export { createTheme, themeToCss } from '../lib/theme';
+export { createTheme, themeToCss } from '@pickle-ui/tokens/theme';
 export type {
   Theme,
   ThemeCssOptions,
   ThemeFonts,
   ThemeOptions,
   ThemeVariables,
-} from '../lib/theme';
+} from '@pickle-ui/tokens/theme';

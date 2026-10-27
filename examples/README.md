@@ -39,13 +39,13 @@ section with the commands for a standalone app.
 Each technique is marked with a `Customization N` comment in the code. The
 numbers follow the [theming guide](../packages/react/README.md#theming).
 
-| N   | Technique                   | Web                                                    | Mobile                                                  |
-| --- | --------------------------- | ------------------------------------------------------ | ------------------------------------------------------- |
-| 1   | Override tokens in CSS      | `web/src/app.css`                                      | `mobile/src/global.css`                                 |
-| 1b  | Change the brand at runtime | `web/src/components/ThemeControls.tsx` (`createTheme`) | `mobile/src/app/index.tsx` (`ScopedVariables`)          |
-| 2   | Pass `className`            | `web/src/components/NewProjectForm.tsx`                | `mobile/src/components/NewProjectForm.tsx`              |
-| 3   | Reuse a variant function    | `web/src/App.tsx` (`buttonVariants` on a link)         | none: `@pickle-ui/react-native` exports no variants yet |
-| 4   | Target `data-slot` in CSS   | `web/src/app.css`                                      | none: React Native has no CSS selectors                 |
+| N   | Technique                   | Web                                                    | Mobile                                                    |
+| --- | --------------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| 1   | Override tokens in CSS      | `web/src/app.css`                                      | `mobile/src/global.css`                                   |
+| 1b  | Change the brand at runtime | `web/src/components/ThemeControls.tsx` (`createTheme`) | `mobile/src/brands.ts` (`createTheme`, `ScopedVariables`) |
+| 2   | Pass `className`            | `web/src/components/NewProjectForm.tsx`                | `mobile/src/components/NewProjectForm.tsx`                |
+| 3   | Reuse a variant function    | `web/src/App.tsx` (`buttonVariants` on a link)         | none: `@pickle-ui/react-native` exports no variants yet   |
+| 4   | Target `data-slot` in CSS   | `web/src/app.css`                                      | none: React Native has no CSS selectors                   |
 
 Two more patterns have no number:
 
@@ -63,9 +63,9 @@ Two more patterns have no number:
 scale (`--text-h1` … `--text-code`), so `bg-primary`, `text-muted-foreground`,
 `border-border`, `rounded-xl` and `text-h1` mean the same on both platforms.
 `@pickle-ui/react-native` has `Badge`, `Button`, `Card` and `Text`, with the
-web's variants, sizes, tones and parts, and native heights. The rest is
+web's variants, sizes, tones and parts, and native heights, and `createTheme`
+derives the same runtime brand on both. The rest is
 web-only for now:
 
 - the fonts, which live in `@pickle-ui/react`'s CSS;
-- `createTheme`, which ships in `@pickle-ui/react/theme`;
 - every other component.

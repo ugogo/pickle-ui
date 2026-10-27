@@ -39,7 +39,7 @@ export default function Projects() {
        * root layout to rebrand the whole app. Without a brand, the values
        * from global.css apply.
        */}
-      <ScopedVariables variables={brand ? brand[theme] : {}}>
+      <ScopedVariables variables={brand ? brand.theme[theme] : {}}>
         <ProjectList projects={projects} />
         <NewProjectForm onCreate={addProject} />
       </ScopedVariables>

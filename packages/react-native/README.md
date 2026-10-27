@@ -78,6 +78,7 @@ Each export is also available from its own subpath.
 | `Button`        | `@pickle-ui/react-native/button`          | `variant`: `default`, `secondary`, `destructive`, `destructive-outline`, `outline`, `ghost`, `link`; `size`: `xs` … `xl`, `icon-xs` … `icon-xl`; `loading`                                                          |
 | `Card`          | `@pickle-ui/react-native/card`            | Parts: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Action`, `Card.Content`, `Card.Footer`                                                                                                                |
 | `Text`          | `@pickle-ui/react-native/text`            | `variant`: `h1` … `h4`, `lead`, `body`, `small`, `code`; `tone`: `muted`, `primary`, `destructive`; `weight`: `normal`, `bold`; `truncate`                                                                          |
+| `createTheme`   | `@pickle-ui/react-native/theme`           | Derives a theme from a brand color, the same as on the web; apply it with `ScopedVariables`                                                                                                                         |
 | `cn`            | `@pickle-ui/react-native/cn`              | Joins class names; later classes win, and `text-h1` … `text-code` count as font sizes                                                                                                                               |
 | `useColorToken` | `@pickle-ui/react-native/use-color-token` | Reads a token as a color string, for props that don't take a `className`                                                                                                                                            |
 
@@ -103,3 +104,23 @@ The tokens are Uniwind themes. Override them in `global.css` inside
 themes, or at runtime with Uniwind's `ScopedVariables` and
 `Uniwind.updateCSSVariables`. See the
 [`@pickle-ui/tokens` README](../tokens/README.md#react-native).
+
+To brand an app at runtime, derive the tokens from one color with
+`createTheme` and apply the set for the active theme:
+
+```tsx
+import { createTheme } from '@pickle-ui/react-native/theme';
+import { ScopedVariables, useUniwind } from 'uniwind';
+
+const brand = createTheme({ primary: '#2563eb' });
+
+export function Branded({ children }: { children: React.ReactNode }) {
+  const { theme } = useUniwind();
+  return <ScopedVariables variables={brand[theme]}>{children}</ScopedVariables>;
+}
+```
+
+The values are `oklch()` colors: Uniwind resolves them in `className`
+utilities (`bg-primary`), but React Native can't read them from a `style`
+prop, so draw with the tokens rather than the raw values. Fonts from
+`createTheme` don't apply on native.

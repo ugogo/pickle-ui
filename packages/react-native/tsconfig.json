@@ -9,6 +9,7 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "customConditions": ["@pickle-ui/source"],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "declaration": true,

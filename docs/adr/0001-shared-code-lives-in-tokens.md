@@ -1,0 +1,5 @@
+# Platform-free code lives in `@pickle-ui/tokens`
+
+Both platforms need the same design knowledge as code: the theme derived from a brand color (`createTheme`) today, the variant spec next. We put it in `@pickle-ui/tokens`, which both component packages already depend on with an exact version, rather than in a new shared package or in `@pickle-ui/react`. A new package would need a manual first publish and its own Trusted Publishing setup for no other gain, and `@pickle-ui/react` pulls in Base UI and the DOM, which React Native can't load. So `@pickle-ui/tokens` is no longer CSS-only: it ships TypeScript built to `dist`, and the component packages re-export what their users need (`@pickle-ui/react/theme`, `@pickle-ui/react-native/theme`), because with pnpm an app can't import a dependency it doesn't declare.
+
+What crosses into tokens is names, values and pure functions. Class strings stay in each platform's package: the web and React Native style the same variant with different utilities (`hover:` and `data-*` against `active:` and separate label classes), so sharing them would split one component's styling across two packages.
