@@ -13,6 +13,17 @@ Browse every component in the [Storybook](https://ugogo.github.io/pickle-ui/).
 
 See each package's README for installation and usage.
 
+## Examples
+
+[`examples`](./examples) holds two mini apps that show how to use and customize
+Pickle UI: [`web`](./examples/web) (Vite + `@pickle-ui/react`) and
+[`mobile`](./examples/mobile) (Expo + Uniwind + `@pickle-ui/tokens`).
+
+```bash
+pnpm example:web      # http://localhost:5173
+pnpm example:mobile   # Expo: press i for iOS, a for Android
+```
+
 ## Development
 
 ```bash

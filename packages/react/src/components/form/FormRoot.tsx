@@ -8,7 +8,7 @@ import {
   type UseFormReturn,
 } from 'react-hook-form';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 type FormProps<FormValues extends FieldValues = FieldValues> = Omit<
   React.ComponentProps<'form'>,

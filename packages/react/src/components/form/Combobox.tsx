@@ -4,8 +4,7 @@ import { Combobox as ComboboxPrimitive } from '@base-ui/react/combobox';
 import { IconCheck, IconPlus, IconSelector, IconX } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
-
+import { cn, type SlotClassNames } from '../../lib/utils';
 import { Input, type InputProps } from './Input';
 
 type ComboboxChipProps = React.ComponentProps<typeof ComboboxPrimitive.Chip> & {

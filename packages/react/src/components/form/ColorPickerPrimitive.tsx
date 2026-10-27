@@ -5,21 +5,9 @@ import { useRender } from '@base-ui/react/use-render';
 import { IconColorPicker } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { Button } from '@/components/Button';
-import { Input } from '@/components/form/Input';
-import { InputGroup, InputGroupInput } from '@/components/form/InputGroup';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/form/Select';
-import { Slider } from '@/components/form/Slider';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover';
-import { useAsRef } from '@/hooks/use-as-ref';
-import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
-import { useLazyRef } from '@/hooks/use-lazy-ref';
+import { useAsRef } from '../../hooks/use-as-ref';
+import { useIsomorphicLayoutEffect } from '../../hooks/use-isomorphic-layout-effect';
+import { useLazyRef } from '../../hooks/use-lazy-ref';
 import {
   type ColorFormat,
   colorFormats,
@@ -35,11 +23,22 @@ import {
   rgbToHex,
   rgbToHsl,
   rgbToHsv,
-} from '@/lib/color';
-import { useComposedRefs } from '@/lib/compose-refs';
-import { cn } from '@/lib/utils';
-
+} from '../../lib/color';
+import { useComposedRefs } from '../../lib/compose-refs';
+import { cn } from '../../lib/utils';
 import { VisuallyHiddenInput } from '../_internal/VisuallyHiddenInput';
+import { Button } from '../Button';
+import { Popover, PopoverContent, PopoverTrigger } from '../Popover';
+import { Input } from './Input';
+import { InputGroup, InputGroupInput } from './InputGroup';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './Select';
+import { Slider } from './Slider';
 
 const ROOT_NAME = 'ColorPicker';
 const ROOT_IMPL_NAME = 'ColorPickerImpl';

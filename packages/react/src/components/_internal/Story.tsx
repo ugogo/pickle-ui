@@ -1,7 +1,6 @@
 import { type ComponentType, Fragment, type ReactNode } from 'react';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../../lib/utils';
 import { Text } from '../Text';
 
 type ComponentMatrixCellProps = {

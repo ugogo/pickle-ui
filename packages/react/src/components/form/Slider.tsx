@@ -2,7 +2,7 @@ import type { CSSProperties, Ref } from 'react';
 
 import { Slider as SliderPrimitive } from '@base-ui/react/slider';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
+import { cn, type SlotClassNames } from '../../lib/utils';
 
 type SliderLabelProps = SliderPrimitive.Label.Props & {
   ref?: Ref<HTMLDivElement>;

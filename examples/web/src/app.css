@@ -1,0 +1,56 @@
+/* Setup: Tailwind first, then Pickle's tokens, base styles and component sources. */
+@import 'tailwindcss';
+@import '@pickle-ui/react/styles.css';
+
+/* Fonts loaded in main.tsx. Drop this block to use Tailwind's system fonts. */
+@theme {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/*
+ * Customization 1: override design tokens.
+ * Redefine any token after the import; every component reading it follows.
+ * `.dark` holds the dark-scheme values. See the token list in
+ * packages/react/README.md.
+ */
+:root {
+  --primary: oklch(0.58 0.15 140);
+  --primary-foreground: oklch(0.99 0 0);
+  --ring: oklch(0.58 0.15 140);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --primary: oklch(0.78 0.17 135);
+  --primary-foreground: oklch(0.2 0.04 140);
+  --ring: oklch(0.78 0.17 135);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply font-sans antialiased;
+  }
+}
+
+/*
+ * Customization 4: target `data-slot` and variant attributes.
+ * Write these rules in `@layer utilities` so they win over Pickle's utilities.
+ * They also win over a `className` you pass for the same property (a
+ * `<Card className="shadow-none">` keeps this shadow), so use them for
+ * app-wide defaults and avoid overriding the same property per instance.
+ */
+@layer utilities {
+  [data-slot='card'] {
+    @apply shadow-sm;
+  }
+
+  [data-slot='badge'][data-variant='success'] {
+    @apply tracking-wide uppercase;
+  }
+}

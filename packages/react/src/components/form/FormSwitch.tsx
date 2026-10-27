@@ -2,14 +2,13 @@
 
 import { useController } from 'react-hook-form';
 
-import { Switch, type SwitchProps } from '@/components/form/Switch';
-
 import {
   useFormControlProps,
   useFormMethods,
   useRequiredFieldName,
   type WithoutAriaInvalid,
 } from './Form.context';
+import { Switch, type SwitchProps } from './Switch';
 
 type FormSwitchProps = WithoutAriaInvalid<SwitchProps>;
 

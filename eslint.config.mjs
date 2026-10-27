@@ -44,6 +44,40 @@ export default defineConfig([
     },
   },
 
+  // Imports inside @pickle-ui/react's src stay relative: the examples read src
+  // through the `@pickle-ui/source` condition, where `@/` doesn't resolve.
+  {
+    files: ['packages/react/src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/*'],
+              message:
+                'Use a relative import: `@/` does not resolve for consumers reading src.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // Metro only loads a CommonJS config.
+  {
+    files: ['examples/mobile/metro.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      sourceType: 'commonjs',
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
   // Disable formatting-related rules that conflict with Prettier. Keep last.
   eslintConfigPrettier,
 ]);

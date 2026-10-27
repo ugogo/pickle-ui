@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Pickle UI",
+    "slug": "pickle-ui-example",
+    "scheme": "pickle-ui-example",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": ["expo-router", "expo-status-bar"]
+  }
+}

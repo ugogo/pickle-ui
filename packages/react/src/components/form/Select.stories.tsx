@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../../lib/utils';
 import { type ComponentMatrixCellProps, Story } from '../_internal/Story';
 import { Select } from './Select';
 

@@ -1,5 +1,4 @@
-import { cn } from '@/lib/utils';
-
+import { cn } from '../lib/utils';
 import { Flex, type FlexProps } from './Flex';
 
 type YStackProps = Omit<FlexProps, 'direction'>;

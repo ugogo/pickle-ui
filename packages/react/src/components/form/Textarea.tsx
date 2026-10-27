@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
+import { cn, type SlotClassNames } from '../../lib/utils';
 
 type TextareaProps = React.ComponentProps<'textarea'> & {
   /** Class overrides for the inner `textarea`; `className` styles the control wrapper. */

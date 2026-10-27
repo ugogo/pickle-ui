@@ -2,14 +2,13 @@
 
 import * as React from 'react';
 
-import { Textarea } from '@/components/form/Textarea';
-
 import {
   useFormControlProps,
   useFormMethods,
   useRequiredFieldName,
   type WithoutAriaInvalid,
 } from './Form.context';
+import { Textarea } from './Textarea';
 
 type FormTextareaProps = WithoutAriaInvalid<
   React.ComponentProps<typeof Textarea>
