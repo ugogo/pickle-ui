@@ -12,6 +12,27 @@ describe('Text', () => {
     expect(el).toHaveAttribute('data-slot', 'text');
   });
 
+  it('exposes its variant, tone and weight as data attributes', () => {
+    render(
+      <>
+        <Text>Plain</Text>
+        <Text tone="muted" variant="small" weight="bold">
+          Styled
+        </Text>
+      </>,
+    );
+
+    const plain = screen.getByText('Plain');
+    expect(plain).toHaveAttribute('data-variant', 'body');
+    expect(plain).not.toHaveAttribute('data-tone');
+    expect(plain).not.toHaveAttribute('data-weight');
+
+    const styled = screen.getByText('Styled');
+    expect(styled).toHaveAttribute('data-variant', 'small');
+    expect(styled).toHaveAttribute('data-tone', 'muted');
+    expect(styled).toHaveAttribute('data-weight', 'bold');
+  });
+
   it('keeps the body size next to a tone color', () => {
     render(<Text tone="muted">Muted body size</Text>);
     const el = screen.getByText('Muted body size');

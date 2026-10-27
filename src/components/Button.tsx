@@ -96,7 +96,9 @@ function Button({
     ),
     className: cn(buttonVariants({ className, size, variant })),
     'data-loading': loading ? '' : undefined,
+    'data-size': size ?? 'md',
     'data-slot': 'button',
+    'data-variant': variant ?? 'default',
     disabled: isNativeButton ? isDisabled : undefined,
     type: isNativeButton ? (type ?? 'button') : type,
   };

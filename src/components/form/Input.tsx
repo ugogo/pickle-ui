@@ -65,7 +65,7 @@ function Input({
           className,
         ) || undefined
       }
-      data-size={size}
+      data-size={resolvedSize}
       data-slot="input-control"
     >
       {nativeInput ? (

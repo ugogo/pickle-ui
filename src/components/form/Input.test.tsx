@@ -43,4 +43,20 @@ describe('Input', () => {
       'input-x',
     );
   });
+
+  it('exposes the resolved size on the control wrapper', () => {
+    const { container } = render(
+      <>
+        <Input aria-label="Default" />
+        <Input aria-label="Small" size="sm" />
+        <Input aria-label="Numeric" size={20} />
+      </>,
+    );
+
+    expect(
+      [...container.querySelectorAll('[data-slot="input-control"]')].map(
+        (control) => control.getAttribute('data-size'),
+      ),
+    ).toEqual(['md', 'sm', 'md']);
+  });
 });
