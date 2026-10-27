@@ -57,7 +57,7 @@ describe('component entry points', () => {
     }
 
     for (const name of distEntries) {
-      const module = await import(`pickle-ui/${name}`);
+      const module = await import(`@pickle-ui/react/${name}`);
 
       expect(Object.keys(module).length).toBeGreaterThan(0);
     }

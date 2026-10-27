@@ -1,7 +1,7 @@
 /**
  * Pickle base styles: animation and variant plugins, the content source for
  * Tailwind, the `.dark` variant, shared utilities and element resets.
- * Import this with your own token set instead of `pickle-ui/theme.css`.
+ * Import this with your own token set instead of `@pickle-ui/react/theme.css`.
  */
 
 @import 'tw-animate-css';

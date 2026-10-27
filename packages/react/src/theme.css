@@ -1,7 +1,7 @@
 /**
  * Pickle design tokens: Tailwind theme mapping plus light and dark values.
  * Import this file alone to reuse the tokens without Pickle's base styles,
- * or override any variable after importing `pickle-ui/styles.css`.
+ * or override any variable after importing `@pickle-ui/react/styles.css`.
  */
 
 @theme inline {
