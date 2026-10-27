@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, View } from 'react-native';
+import { Animated, Easing, Platform, View } from 'react-native';
 
 import { cn } from '../../lib/cn';
 
@@ -17,7 +17,8 @@ export function Spinner({ className }: { className?: string }) {
         duration: 1000,
         easing: Easing.linear,
         toValue: 1,
-        useNativeDriver: true,
+        // react-native-web has no native driver and warns when asked for it.
+        useNativeDriver: Platform.OS !== 'web',
       }),
     );
     loop.start();
