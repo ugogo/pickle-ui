@@ -11,8 +11,7 @@ import {
 import { cva } from 'class-variance-authority';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../lib/utils';
 import { buttonVariants } from './Button';
 import { Spinner } from './Spinner';
 import { Text } from './Text';

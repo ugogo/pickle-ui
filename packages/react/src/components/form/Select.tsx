@@ -9,7 +9,7 @@ import {
 } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
+import { cn, type SlotClassNames } from '../../lib/utils';
 
 type SelectContentProps = Pick<
   React.ComponentProps<typeof SelectPrimitive.Positioner>,

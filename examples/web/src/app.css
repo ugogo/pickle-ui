@@ -41,6 +41,9 @@
 /*
  * Customization 4: target `data-slot` and variant attributes.
  * Write these rules in `@layer utilities` so they win over Pickle's utilities.
+ * They also win over a `className` you pass for the same property (a
+ * `<Card className="shadow-none">` keeps this shadow), so use them for
+ * app-wide defaults and avoid overriding the same property per instance.
  */
 @layer utilities {
   [data-slot='card'] {

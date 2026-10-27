@@ -11,7 +11,7 @@
     "dev": "pnpm --filter @pickle-ui/react dev",
     "build": "pnpm -r run build",
     "build-storybook": "pnpm --filter @pickle-ui/react build-storybook",
-    "example:web": "pnpm --filter @pickle-ui/react build && pnpm --filter @pickle-ui/example-web dev",
+    "example:web": "pnpm --filter @pickle-ui/example-web dev",
     "example:mobile": "pnpm --filter @pickle-ui/example-mobile start",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm -r run test",

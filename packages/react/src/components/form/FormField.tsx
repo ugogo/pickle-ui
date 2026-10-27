@@ -4,8 +4,7 @@ import { Field } from '@base-ui/react/field';
 import * as React from 'react';
 import { useFormState } from 'react-hook-form';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../../lib/utils';
 import {
   FormFieldContext,
   getErrorMessage,

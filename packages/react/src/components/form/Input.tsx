@@ -3,7 +3,7 @@
 import { Input as InputPrimitive } from '@base-ui/react/input';
 import * as React from 'react';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
+import { cn, type SlotClassNames } from '../../lib/utils';
 
 // Matches the `Button` height for the same size, so they line up side by side.
 const inputControlHeights = {

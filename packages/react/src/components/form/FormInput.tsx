@@ -2,9 +2,6 @@
 
 import * as React from 'react';
 
-import { Input } from '@/components/form/Input';
-import { InputGroupInput } from '@/components/form/InputGroup';
-
 import {
   FormInputGroupContext,
   useFormControlProps,
@@ -12,6 +9,8 @@ import {
   useRequiredFieldName,
   type WithoutAriaInvalid,
 } from './Form.context';
+import { Input } from './Input';
+import { InputGroupInput } from './InputGroup';
 
 type FormInputProps = WithoutAriaInvalid<React.ComponentProps<typeof Input>>;
 

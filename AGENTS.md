@@ -11,7 +11,7 @@ Guidance for AI agents (and humans) working in this repository.
 | `packages/react`  | `@pickle-ui/react`  | React components for the web, built with [Base UI](https://base-ui.com), [shadcn/ui](https://ui.shadcn.com), [Tailwind CSS](https://tailwindcss.com) (v4), and [reui](https://github.com/reui/reui). |
 | `packages/tokens` | `@pickle-ui/tokens` | Design tokens (colors, radii) as Tailwind CSS v4 theme variables: `native.css` for Uniwind, `theme.css` for the web. `@pickle-ui/react` imports `theme.css`.                                         |
 
-`examples/` holds private workspace apps that consume the packages like a user would: `examples/web` (Vite, `@pickle-ui/react`) and `examples/mobile` (Expo, Uniwind, `@pickle-ui/tokens`). They depend on `workspace:*`, never ship, and need no changeset. Start them with `pnpm example:web` and `pnpm example:mobile`. The web example type-checks against `@pickle-ui/react`'s built `dist`, so build before `pnpm run typecheck`. When a change renames or removes something the examples use, update them in the same PR; when it adds a customization technique worth copying, show it there with a `Customization N` comment.
+`examples/` holds private workspace apps that consume the packages like a user would: `examples/web` (Vite, `@pickle-ui/react`) and `examples/mobile` (Expo, Uniwind, `@pickle-ui/tokens`). They depend on `workspace:*`, never ship, and need no changeset. Start them with `pnpm example:web` and `pnpm example:mobile`. The web example reads `@pickle-ui/react` through its `source` export condition (`resolve.conditions` in Vite, `customConditions` in its tsconfig), so it runs and type-checks against `src` with no build. When a change renames or removes something the examples use, update them in the same PR; when it adds a customization technique worth copying, show it there with a `Customization N` comment.
 
 In `@pickle-ui/react`, exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook. Paths in the sections below are relative to `packages/react`.
 
@@ -46,6 +46,7 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 - **Internal components** — helpers and Storybook-only utilities that are not part of the public API belong in `src/components/_internal` (e.g. `Story.tsx`, `VisuallyHiddenInput.tsx`). Do not export these from `src/index.ts`.
 - **Implementation modules** — a large component may keep its implementation in a separate file next to its facade (e.g. `form/ColorPickerPrimitive.tsx` behind `form/ColorPicker.tsx`). Only the facade is public; the implementation module is never exported from `src/index.ts` or an entry.
 - Stories import internal utilities from `./_internal/…` (`../_internal/…` from `src/components/form`); exported components import internal modules the same way (e.g. `../_internal/VisuallyHiddenInput`).
+- Imports inside `src` are relative, never the `@/` alias: the examples compile `src` directly, where the alias doesn't resolve.
 
 ## Public API
 

@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../lib/utils';
 import { getLayoutClasses, type LayoutStyleProps } from './_internal/layout';
 
 const directionClasses = {

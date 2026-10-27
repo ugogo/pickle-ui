@@ -1,7 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../../lib/utils';
 import { textVariants } from '../Text';
 
 /** Shared look for `Dialog` and `AlertDialog`; not part of the public API. */

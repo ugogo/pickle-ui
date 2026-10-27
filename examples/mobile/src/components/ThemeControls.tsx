@@ -1,47 +1,36 @@
 import { Pressable, View } from 'react-native';
 import { Uniwind, useUniwind } from 'uniwind';
 
+import { type Brand, BRANDS } from '../brands';
 import { cn } from '../lib/cn';
 import { Card } from './Card';
 import { Text } from './Text';
 
 const SCHEMES = ['light', 'dark', 'system'] as const;
 
-// `null` keeps the values from global.css.
-const BRANDS = [
-  { dark: null, label: 'Pickle', light: null },
-  { dark: '#60a5fa', label: 'Blue', light: '#2563eb' },
-  { dark: '#f472b6', label: 'Pink', light: '#db2777' },
-  { dark: '#fb923c', label: 'Orange', light: '#ea580c' },
-] as const;
-
-const DEFAULT_PRIMARY = {
-  dark: 'oklch(0.78 0.17 135)',
-  light: 'oklch(0.58 0.15 140)',
+type SwatchProps = {
+  className?: string;
+  color?: string;
+  label: string;
+  onPress: () => void;
+  selected: boolean;
 };
 
-export function ThemeControls() {
+type ThemeControlsProps = {
+  brand: Brand | null;
+  onBrandChange: (brand: Brand | null) => void;
+};
+
+export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
   const { hasAdaptiveThemes, theme } = useUniwind();
   const scheme = hasAdaptiveThemes ? 'system' : theme;
-
-  // Customization 1b: change tokens at runtime, per theme.
-  const applyBrand = (brand: (typeof BRANDS)[number]) => {
-    Uniwind.updateCSSVariables('light', {
-      '--primary': brand.light ?? DEFAULT_PRIMARY.light,
-      '--ring': brand.light ?? DEFAULT_PRIMARY.light,
-    });
-    Uniwind.updateCSSVariables('dark', {
-      '--primary': brand.dark ?? DEFAULT_PRIMARY.dark,
-      '--ring': brand.dark ?? DEFAULT_PRIMARY.dark,
-    });
-  };
 
   return (
     <Card>
       <Card.Header>
         <Card.Title>Appearance</Card.Title>
         <Card.Description>
-          Uniwind themes: follow the system or force one.
+          Follow the system color scheme or force one, and pick a brand.
         </Card.Description>
       </Card.Header>
       <Card.Content>
@@ -68,35 +57,48 @@ export function ThemeControls() {
         </View>
 
         <View className="flex-row gap-3">
-          {BRANDS.map((brand) => (
-            <Pressable
-              accessibilityLabel={`${brand.label} brand color`}
-              accessibilityRole="button"
-              className="items-center gap-1"
-              key={brand.label}
-              onPress={() => applyBrand(brand)}
-            >
-              <View
-                className={cn(
-                  'border-border size-9 rounded-full border',
-                  !brand.light && 'bg-primary',
-                )}
-                style={
-                  brand.light
-                    ? {
-                        backgroundColor:
-                          theme === 'dark' ? brand.dark : brand.light,
-                      }
-                    : undefined
-                }
-              />
-              <Text tone="muted" variant="small">
-                {brand.label}
-              </Text>
-            </Pressable>
+          {/* This card sits outside the brand scope, so `bg-primary` is global.css's green. */}
+          <Swatch
+            className="bg-primary"
+            label="Pickle"
+            onPress={() => onBrandChange(null)}
+            selected={brand === null}
+          />
+          {BRANDS.map((item) => (
+            <Swatch
+              color={theme === 'dark' ? item.swatch.dark : item.swatch.light}
+              key={item.label}
+              label={item.label}
+              onPress={() => onBrandChange(item)}
+              selected={brand === item}
+            />
           ))}
         </View>
       </Card.Content>
     </Card>
+  );
+}
+
+function Swatch({ className, color, label, onPress, selected }: SwatchProps) {
+  return (
+    <Pressable
+      accessibilityLabel={`${label} brand color`}
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      className="items-center gap-1"
+      onPress={onPress}
+    >
+      <View
+        className={cn(
+          'size-9 rounded-full border-2',
+          selected ? 'border-foreground' : 'border-transparent',
+          className,
+        )}
+        style={color ? { backgroundColor: color } : undefined}
+      />
+      <Text tone={selected ? undefined : 'muted'} variant="small">
+        {label}
+      </Text>
+    </Pressable>
   );
 }

@@ -1,7 +1,7 @@
 import { Avatar as AvatarPrimitive } from '@base-ui/react/avatar';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 type AvatarFallbackProps = React.ComponentProps<
   typeof AvatarPrimitive.Fallback

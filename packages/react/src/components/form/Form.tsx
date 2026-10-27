@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from '@/components/Button';
-
+import { Button } from '../Button';
 import { FormCheckbox, type FormCheckboxProps } from './FormCheckbox';
 import { FormCombobox, type FormComboboxProps } from './FormCombobox';
 import { FormDescription, type FormDescriptionProps } from './FormDescription';

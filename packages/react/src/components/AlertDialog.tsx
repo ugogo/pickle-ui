@@ -2,8 +2,7 @@ import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-
+import { cn } from '../lib/utils';
 import {
   dialogBackdropClassName,
   dialogDescriptionClassName,

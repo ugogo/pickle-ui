@@ -11,7 +11,9 @@
     "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    // Monorepo only, like `resolve.conditions` in vite.config.ts.
+    "customConditions": ["source"]
   },
   "include": ["src", "vite.config.ts"]
 }

@@ -3,7 +3,7 @@
 import { Switch as SwitchPrimitive } from '@base-ui/react/switch';
 import * as React from 'react';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
+import { cn, type SlotClassNames } from '../../lib/utils';
 
 type SwitchControlProps = React.ComponentProps<typeof SwitchPrimitive.Root> & {
   classNames?: SlotClassNames<'thumb'>;

@@ -4,8 +4,7 @@ import { mergeProps } from '@base-ui/react/merge-props';
 import { useRender } from '@base-ui/react/use-render';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
-
+import { cn, type SlotClassNames } from '../lib/utils';
 import { Spinner } from './Spinner';
 
 const buttonVariants = cva(

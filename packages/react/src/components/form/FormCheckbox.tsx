@@ -2,8 +2,7 @@
 
 import { useController } from 'react-hook-form';
 
-import { Checkbox, type CheckboxProps } from '@/components/form/Checkbox';
-
+import { Checkbox, type CheckboxProps } from './Checkbox';
 import {
   useFormControlProps,
   useFormMethods,

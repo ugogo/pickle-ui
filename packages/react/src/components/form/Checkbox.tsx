@@ -4,7 +4,7 @@ import { Checkbox as CheckboxPrimitive } from '@base-ui/react/checkbox';
 import { IconCheck, IconMinus } from '@tabler/icons-react';
 import * as React from 'react';
 
-import { cn, type SlotClassNames } from '@/lib/utils';
+import { cn, type SlotClassNames } from '../../lib/utils';
 
 type CheckboxLabelProps = Omit<React.ComponentProps<'label'>, 'htmlFor'> & {
   htmlFor: string;

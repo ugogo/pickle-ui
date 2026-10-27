@@ -1,37 +1,24 @@
 import { useState } from 'react';
-import { ScrollView, Switch, TextInput, View } from 'react-native';
-import { useCSSVariable } from 'uniwind';
+import { ScrollView } from 'react-native';
+import { ScopedVariables, useUniwind } from 'uniwind';
 
-import { Badge } from '../components/Badge';
-import { Button } from '../components/Button';
-import { Card } from '../components/Card';
+import { type Brand } from '../brands';
+import { NewProjectForm } from '../components/NewProjectForm';
+import { ProjectList } from '../components/ProjectList';
 import { Text } from '../components/Text';
 import { ThemeControls } from '../components/ThemeControls';
-import { INITIAL_PROJECTS, STATUS_LABELS } from '../projects';
+import { INITIAL_PROJECTS, type Project } from '../projects';
 
 export default function Projects() {
+  const { theme } = useUniwind();
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
-  const [name, setName] = useState('');
-  const [shipped, setShipped] = useState(false);
-  const [primary, muted, placeholder] = useCSSVariable([
-    '--color-primary',
-    '--color-muted',
-    '--color-muted-foreground',
-  ]);
+  const [brand, setBrand] = useState<Brand | null>(null);
 
-  const addProject = () => {
-    if (!name.trim()) return;
+  const addProject = (project: Omit<Project, 'id'>) =>
     setProjects((current) => [
       ...current,
-      {
-        id: String(Date.now()),
-        name: name.trim(),
-        owner: 'You',
-        status: shipped ? 'success' : 'inProgress',
-      },
+      { ...project, id: String(Date.now()) },
     ]);
-    setName('');
-  };
 
   return (
     <ScrollView
@@ -45,66 +32,17 @@ export default function Projects() {
         Pickle UI tokens on React Native, through Uniwind.
       </Text>
 
-      <ThemeControls />
+      <ThemeControls brand={brand} onBrandChange={setBrand} />
 
-      <Card>
-        <Card.Header>
-          <Card.Title>Projects</Card.Title>
-          <Card.Description>{projects.length} in the pipeline</Card.Description>
-        </Card.Header>
-        <Card.Content className="gap-0">
-          {projects.map((project, index) => (
-            <View
-              className={
-                index > 0
-                  ? 'border-border flex-row items-center justify-between border-t py-3'
-                  : 'flex-row items-center justify-between py-3'
-              }
-              key={project.id}
-            >
-              <View className="gap-0.5">
-                <Text className="font-medium">{project.name}</Text>
-                <Text tone="muted" variant="small">
-                  {project.owner}
-                </Text>
-              </View>
-              <Badge variant={project.status}>
-                {STATUS_LABELS[project.status]}
-              </Badge>
-            </View>
-          ))}
-        </Card.Content>
-      </Card>
-
-      <Card>
-        <Card.Header>
-          <Card.Title>New project</Card.Title>
-        </Card.Header>
-        <Card.Content>
-          <TextInput
-            className="border-input bg-background text-foreground h-10 rounded-lg border px-3 text-sm"
-            onChangeText={setName}
-            onSubmitEditing={addProject}
-            placeholder="Pickle jar API"
-            placeholderTextColor={String(placeholder)}
-            returnKeyType="done"
-            value={name}
-          />
-          <View className="flex-row items-center justify-between">
-            <Text>Already shipped</Text>
-            {/* Native controls take colors, not classes: pass them the tokens. */}
-            <Switch
-              onValueChange={setShipped}
-              trackColor={{ false: String(muted), true: String(primary) }}
-              value={shipped}
-            />
-          </View>
-          {/* Customization 2: `className` is merged last, so it wins over the variant. */}
-          <Button className="rounded-full" onPress={addProject}>
-            Create project
-          </Button>
-        </Card.Content>
-      </Card>
+      {/*
+       * Customization 1b: override tokens at runtime for a subtree. Wrap the
+       * root layout to rebrand the whole app. Without a brand, the values
+       * from global.css apply.
+       */}
+      <ScopedVariables variables={brand ? brand[theme] : {}}>
+        <ProjectList projects={projects} />
+        <NewProjectForm onCreate={addProject} />
+      </ScopedVariables>
     </ScrollView>
   );
 }
