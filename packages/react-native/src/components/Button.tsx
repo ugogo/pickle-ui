@@ -8,7 +8,7 @@ import { cn } from '../lib/cn';
 // heights: `md` and up meet the 40pt minimum, and `hitSlop` stretches the
 // smaller ones to a 44pt touch target.
 const buttonVariants = cva(
-  'flex-row items-center justify-center rounded-lg border disabled:opacity-64',
+  'flex-row items-center justify-center gap-2 rounded-lg border disabled:opacity-64',
   {
     defaultVariants: { size: 'md', variant: 'default' },
     variants: {
@@ -20,9 +20,9 @@ const buttonVariants = cva(
         'icon-xs': 'size-7 rounded-md',
         lg: 'h-11 px-5',
         md: 'h-10 px-4',
-        sm: 'h-8 px-3',
+        sm: 'h-8 gap-1.5 px-3',
         xl: 'h-12 px-6',
-        xs: 'h-7 rounded-md px-2.5',
+        xs: 'h-7 gap-1 rounded-md px-2.5',
       },
       variant: {
         default:
@@ -40,25 +40,6 @@ const buttonVariants = cva(
     },
   },
 );
-
-// The gap between an icon and the label, also kept while `loading` hides them.
-const contentVariants = cva('', {
-  defaultVariants: { size: 'md' },
-  variants: {
-    size: {
-      icon: '',
-      'icon-lg': '',
-      'icon-sm': '',
-      'icon-xl': '',
-      'icon-xs': '',
-      lg: 'gap-2',
-      md: 'gap-2',
-      sm: 'gap-1.5',
-      xl: 'gap-2',
-      xs: 'gap-1',
-    },
-  },
-});
 
 const labelVariants = cva('font-medium', {
   compoundVariants: [
@@ -154,51 +135,43 @@ export function Button({
         busy: loading,
         disabled: isDisabled,
       }}
-      className={cn(
-        buttonVariants({ size, variant }),
-        contentVariants({ size }),
-        className,
-      )}
+      className={cn(buttonVariants({ size, variant }), className)}
       disabled={isDisabled}
       hitSlop={size ? HIT_SLOP[size] : undefined}
       {...props}
     >
-      {({ pressed }) => {
-        const content = Children.map(children, (child) =>
-          typeof child === 'string' || typeof child === 'number' ? (
-            <Text
-              className={cn(
-                labelVariants({ pressed, size, variant }),
-                labelClassName,
-              )}
-            >
-              {child}
-            </Text>
-          ) : isValidElement(child) ? (
-            child
-          ) : null,
-        );
-
-        if (!loading) return content;
-
-        return (
-          <>
-            <View
-              className={cn(
-                'flex-row items-center opacity-0',
-                contentVariants({ size }),
-              )}
-            >
-              {content}
-            </View>
+      {({ pressed }) => (
+        <>
+          {/* While loading, the content stays in place, invisible, so the
+              button keeps its width under the spinner. */}
+          {Children.map(children, (child) =>
+            typeof child === 'string' || typeof child === 'number' ? (
+              <Text
+                className={cn(
+                  labelVariants({ pressed, size, variant }),
+                  loading && 'opacity-0',
+                  labelClassName,
+                )}
+              >
+                {child}
+              </Text>
+            ) : isValidElement(child) ? (
+              loading ? (
+                <View className="opacity-0">{child}</View>
+              ) : (
+                child
+              )
+            ) : null,
+          )}
+          {loading ? (
             <ActivityIndicator
               className="absolute"
               colorClassName={variant ? spinnerColor[variant] : undefined}
               size="small"
             />
-          </>
-        );
-      }}
+          ) : null}
+        </>
+      )}
     </Pressable>
   );
 }
