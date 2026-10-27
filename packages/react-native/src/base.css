@@ -1,0 +1,6 @@
+/**
+ * Pickle's components as a content source, so Uniwind generates the classes
+ * they use. `styles.css` imports it; import it alone, after `uniwind`, to
+ * bring your own token set instead of `@pickle-ui/tokens/native.css`.
+ */
+@source './components/**/*.{ts,tsx}';

@@ -1,10 +1,8 @@
+import { Card, cn, Text } from '@pickle-ui/react-native';
 import { Pressable, View } from 'react-native';
 import { Uniwind, useUniwind } from 'uniwind';
 
 import { type Brand, BRANDS } from '../brands';
-import { cn } from '../lib/cn';
-import { Card } from './Card';
-import { Text } from './Text';
 
 const SCHEMES = ['light', 'dark', 'system'] as const;
 

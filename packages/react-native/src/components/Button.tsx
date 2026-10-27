@@ -39,7 +39,10 @@ const labelVariants = cva('font-medium', {
   },
 });
 
-type ButtonProps = Omit<React.ComponentProps<typeof Pressable>, 'children'> &
+export type ButtonProps = Omit<
+  React.ComponentProps<typeof Pressable>,
+  'children'
+> &
   VariantProps<typeof buttonVariants> & {
     children: string;
     labelClassName?: string;

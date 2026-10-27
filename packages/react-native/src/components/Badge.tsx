@@ -30,7 +30,7 @@ const labelVariants = cva('text-xs font-medium', {
   },
 });
 
-type BadgeProps = React.ComponentProps<typeof View> &
+export type BadgeProps = React.ComponentProps<typeof View> &
   VariantProps<typeof badgeVariants> & { children: string };
 
 export function Badge({ children, className, variant, ...props }: BadgeProps) {

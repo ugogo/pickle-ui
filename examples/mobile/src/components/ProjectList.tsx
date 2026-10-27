@@ -1,9 +1,7 @@
+import { Badge, Card, Text } from '@pickle-ui/react-native';
 import { View } from 'react-native';
 
 import { type Project, STATUS_LABELS } from '../projects';
-import { Badge } from './Badge';
-import { Card } from './Card';
-import { Text } from './Text';
 
 export function ProjectList({ projects }: { projects: Project[] }) {
   return (

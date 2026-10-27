@@ -18,8 +18,12 @@ concurrency:
 
 jobs:
   react-doctor:
-    name: React Doctor
+    name: React Doctor (${{ matrix.package }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [react, react-native]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -46,7 +50,7 @@ jobs:
       - name: Run React Doctor
         uses: millionco/react-doctor@v2
         with:
-          # Match the react-doctor version pinned in packages/react/package.json so CI and the
-          # pre-commit hook evaluate the exact same ruleset.
+          # Match the react-doctor version pinned in each package's package.json so CI and
+          # the pre-commit hook evaluate the exact same ruleset.
           version: 0.5.6
-          directory: packages/react
+          directory: packages/${{ matrix.package }}

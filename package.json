@@ -9,8 +9,9 @@
   },
   "scripts": {
     "dev": "pnpm --filter @pickle-ui/react dev",
+    "dev:native": "pnpm --filter @pickle-ui/react-native dev",
     "build": "pnpm -r run build",
-    "build-storybook": "pnpm --filter @pickle-ui/react build-storybook",
+    "build-storybook": "pnpm -r run build-storybook",
     "example:web": "pnpm --filter @pickle-ui/example-web dev",
     "example:mobile": "pnpm --filter @pickle-ui/example-mobile start",
     "typecheck": "pnpm -r run typecheck",
@@ -19,7 +20,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "doctor": "pnpm --filter @pickle-ui/react doctor",
+    "doctor": "pnpm -r run doctor",
     "prepare": "husky",
     "changeset": "changeset"
   },

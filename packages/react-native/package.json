@@ -1,0 +1,95 @@
+{
+  "name": "@pickle-ui/react-native",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "React Native components for Expo, styled with Pickle UI's tokens through Uniwind.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugogo/pickle-ui.git",
+    "directory": "packages/react-native"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "@pickle-ui/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./src/styles.css",
+    "./base.css": "./src/base.css",
+    "./*": {
+      "@pickle-ui/source": "./src/entries/*.ts",
+      "types": "./dist/entries/*.d.ts",
+      "import": "./dist/entries/*.js",
+      "default": "./dist/entries/*.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "dev": "storybook dev -p 6007",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\"",
+    "build": "pnpm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "test": "jest",
+    "doctor": "react-doctor",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "components",
+    "ui",
+    "tailwind",
+    "uniwind"
+  ],
+  "author": "Ugo Onali",
+  "license": "MIT",
+  "dependencies": {
+    "@pickle-ui/tokens": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@react-native/jest-preset": "^0.88.1",
+    "@storybook/addon-docs": "^10.6.3",
+    "@storybook/react-native-web-vite": "^10.6.5",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/react-native": "^14.1.0",
+    "@types/jest": "^30.0.0",
+    "@types/react": "^19.3.0",
+    "babel-preset-expo": "^58.0.21",
+    "expo": "^58.0.20",
+    "jest": "^30.5.2",
+    "jest-expo": "~58.0.12",
+    "react": "19.3.0",
+    "react-doctor": "^0.5.6",
+    "react-dom": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-web": "^0.21.4",
+    "storybook": "^10.6.3",
+    "tailwindcss": "^4.3.3",
+    "test-renderer": "^1.3.1",
+    "typescript": "^6.0.3",
+    "uniwind": "^1.13.0",
+    "vite": "^8.3.5"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-native": "*",
+    "tailwindcss": "^4.0.0",
+    "uniwind": "^1.13.0"
+  }
+}

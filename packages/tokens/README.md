@@ -1,8 +1,9 @@
 # @pickle-ui/tokens
 
 Pickle UI's design tokens as Tailwind CSS v4 theme variables: the light and
-dark colors and the radius scale. `@pickle-ui/react` imports them, so apps
-using the components already have them.
+dark colors and the radius scale. `@pickle-ui/react` imports them, so web
+apps using the components already have them. So do React Native apps
+importing `@pickle-ui/react-native/styles.css`.
 
 ## Web
 
