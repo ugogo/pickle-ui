@@ -7,6 +7,11 @@
  * The values live in `native.css`; this file maps its `light` and `dark`
  * themes to the `.dark` class. React Native apps import `native.css` instead,
  * since Uniwind defines those two variants itself.
+ *
+ * The result matches shadcn/ui's `:root { … }` and `.dark { … }` blocks: the
+ * light values apply to `:root` and the dark values to any element with the
+ * `.dark` class, `<html>` included. They are written as `@variant` blocks
+ * only so React Native can share the same file.
  */
 
 @import './native.css';

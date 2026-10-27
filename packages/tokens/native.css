@@ -4,6 +4,16 @@
  * React Native apps using Uniwind import this file after `uniwind`. Web apps
  * import `theme.css`, which adds the `light` and `dark` variants on top.
  * Every theme declares the same variables, as Uniwind requires.
+ *
+ * Unlike shadcn/ui and the Tailwind docs, the dark values are not a `.dark { … }`
+ * block next to `:root { … }`: Uniwind ignores selectors like `.dark` and only
+ * reads themes from `@variant` blocks. Do not define the `light` or `dark`
+ * variants here either: Uniwind owns them, and redefining them makes every
+ * theme color resolve to nothing on native. On their own, these blocks do not
+ * compile for the web ("unknown variant: light"); `theme.css` supplies the
+ * variants there. The rule targets `.dark` as well as `:root` so that on the
+ * web a `.dark` element below `<html>` gets the dark values too; Uniwind
+ * ignores that selector.
  */
 
 @theme inline {
@@ -70,7 +80,8 @@
 }
 
 @layer theme {
-  :root {
+  :root,
+  .dark {
     --radius: 0.625rem;
 
     @variant light {
