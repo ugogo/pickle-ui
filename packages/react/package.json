@@ -1,6 +1,6 @@
 {
   "name": "@pickle-ui/react",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "type": "module",
   "description": "React component library built with Base UI, shadcn/ui, Tailwind CSS, and reui.",
   "main": "dist/index.js",
