@@ -7,9 +7,9 @@ export type SeparatorProps = React.ComponentProps<typeof View> & {
 };
 
 /**
- * A 1px rule in the border color, like `Separator` in @pickle-ui/react.
- * React Native has no separator role, so it is hidden from screen readers as
- * a decorative line.
+ * A 1px rule in the border color, like `Separator` in @pickle-ui/react. Its
+ * `separator` role reaches screen readers on the web; iOS and Android have no
+ * separator trait, so they skip it like any non-focusable view.
  */
 export function Separator({
   className,
@@ -18,13 +18,12 @@ export function Separator({
 }: SeparatorProps) {
   return (
     <View
-      accessibilityElementsHidden
       className={cn(
         'bg-border shrink-0',
         orientation === 'horizontal' ? 'h-px w-full' : 'w-px self-stretch',
         className,
       )}
-      importantForAccessibility="no-hide-descendants"
+      role="separator"
       {...props}
     />
   );

@@ -49,6 +49,69 @@ describe('Grid', () => {
     ]);
   });
 
+  it('keeps the rows it is given, even empty ones', async () => {
+    await renderGrid({ flow: 'column', rows: 3 });
+
+    expect(gridRows()).toEqual([
+      ['A', 'D'],
+      ['B', 'E'],
+      ['C', ''],
+    ]);
+
+    await renderGrid({ columns: 2, rows: 4 });
+
+    expect(gridRows()).toEqual([
+      ['A', 'B'],
+      ['C', 'D'],
+      ['E', ''],
+      ['', ''],
+    ]);
+  });
+
+  it('places the dense flows like row and column', async () => {
+    await renderGrid({ flow: 'column-dense', rows: 2 });
+
+    expect(gridRows()).toEqual([
+      ['A', 'C', 'E'],
+      ['B', 'D', ''],
+    ]);
+  });
+
+  it('gives each child of a fragment its own cell', async () => {
+    await render(
+      <Grid columns={2} testID="grid">
+        <>
+          <Text>A</Text>
+          <Text>B</Text>
+        </>
+        <Text>C</Text>
+      </Grid>,
+    );
+
+    expect(gridRows()).toEqual([
+      ['A', 'B'],
+      ['C', ''],
+    ]);
+  });
+
+  it('distributes rows and cells with placeContent', async () => {
+    await renderGrid({ columns: 2, justify: 'end', placeContent: 'stretch' });
+
+    const grid = screen.getByTestId('grid');
+    expect(grid).toHaveProp('className', 'justify-start');
+    expect(grid.children[0]).toHaveProp(
+      'className',
+      'flex-row justify-start grow',
+    );
+
+    await renderGrid({ columns: 2, justify: 'end' });
+
+    expect(screen.getByTestId('grid').children[0]).toHaveProp(
+      'className',
+      'flex-row justify-end',
+    );
+  });
+
   it('stacks its children in one column by default', async () => {
     await renderGrid({});
 

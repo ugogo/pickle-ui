@@ -76,6 +76,8 @@ const justifyClasses = {
 
 export type LayoutAlign = keyof typeof alignClasses;
 export type LayoutGap = keyof typeof gapClasses;
+export type LayoutJustify = keyof typeof justifyClasses;
+
 export type LayoutStyleProps = {
   align?: LayoutAlign;
   gap?: LayoutGap;
@@ -83,8 +85,6 @@ export type LayoutStyleProps = {
   gapY?: LayoutGap;
   justify?: LayoutJustify;
 };
-
-type LayoutJustify = keyof typeof justifyClasses;
 
 export function getLayoutClasses({
   align,
