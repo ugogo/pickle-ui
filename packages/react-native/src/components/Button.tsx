@@ -6,7 +6,7 @@ import { cn } from '../lib/cn';
 import { Spinner } from './_internal/Spinner';
 
 // Same variants, sizes and dimensions as `Button` in @pickle-ui/react on a
-// phone. Like the web's `pointer-coarse` hit area, `hitSlop` stretches every
+// phone, with its text sizes from `sm` up. Like the web's `pointer-coarse` hit area, `hitSlop` stretches every
 // size to a 44pt touch target. Paddings leave room for the 1pt border.
 const buttonVariants = cva(
   'flex-row items-center justify-center gap-2 rounded-lg border disabled:opacity-64',
@@ -49,17 +49,19 @@ const labelVariants = cva('font-medium', {
   defaultVariants: { size: 'md', variant: 'default' },
   variants: {
     pressed: { false: '', true: '' },
+    // The web's sizes from `sm` up, not its larger phone sizes, which only
+    // stop iOS Safari zooming into focused fields.
     size: {
-      icon: 'text-base',
-      'icon-lg': 'text-base',
-      'icon-sm': 'text-base',
-      'icon-xl': 'text-base',
-      'icon-xs': 'text-base',
-      lg: 'text-base',
-      md: 'text-base',
-      sm: 'text-base',
-      xl: 'text-lg',
-      xs: 'text-sm',
+      icon: 'text-sm',
+      'icon-lg': 'text-sm',
+      'icon-sm': 'text-sm',
+      'icon-xl': 'text-sm',
+      'icon-xs': 'text-sm',
+      lg: 'text-sm',
+      md: 'text-sm',
+      sm: 'text-sm',
+      xl: 'text-base',
+      xs: 'text-xs',
     },
     variant: {
       default: 'text-primary-foreground',
