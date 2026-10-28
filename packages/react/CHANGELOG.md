@@ -1,5 +1,14 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.8
+
+### Patch Changes
+
+- 0dab42a: Move `createTheme` and `themeToCss` to `@pickle-ui/tokens/theme`, so both platforms derive a theme from the same brand color. `@pickle-ui/react/theme` still exports both, and `@pickle-ui/react-native/theme` now exports `createTheme`. Fix `createTheme`'s `fonts.heading`, which the `font-heading` utility ignored: it now reads `--font-heading` and falls back to `--font-sans`.
+- Updated dependencies [8fddb92]
+- Updated dependencies [0dab42a]
+  - @pickle-ui/tokens@1.0.0-beta.7
+
 ## 1.0.0-beta.7
 
 ### Patch Changes
