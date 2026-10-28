@@ -51,7 +51,7 @@ export function Textarea({
       <TextInput
         accessibilityState={{ disabled }}
         className={cn(
-          'text-foreground web:field-sizing-content web:resize-none flex-1 py-2 text-base outline-none',
+          'text-foreground web:field-sizing-content web:resize-none flex-1 py-2 text-sm outline-none',
           sizeClasses[size],
           classNames?.textarea,
         )}

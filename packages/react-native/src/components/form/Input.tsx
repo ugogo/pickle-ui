@@ -39,13 +39,15 @@ export function Input({
   ...props
 }: InputProps) {
   const [focused, setFocused] = useState(false);
-  // `text-[16px]` sets the font size without `text-base`'s line height, which
+  // The web's 14px from `sm` up: the 16px it uses on phones only stops iOS
+  // Safari zooming into a focused field, which native apps don't do.
+  // `text-[14px]` sets the size without `text-sm`'s line height, which
   // pushes a single-line field's text off center on iOS.
   const input = (
     <TextInput
       accessibilityState={{ disabled }}
       className={cn(
-        'text-foreground flex-1 text-[16px] outline-none',
+        'text-foreground flex-1 text-[14px] outline-none',
         paddingClasses[size],
         unstyled ? cn(heightClasses[size], disabled && 'opacity-64') : 'h-full',
         unstyled ? className : classNames?.input,
