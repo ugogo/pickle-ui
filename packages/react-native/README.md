@@ -77,10 +77,16 @@ Each export is also available from its own subpath.
 | `Badge`         | `@pickle-ui/react-native/badge`           | `variant`: `default`, `secondary`, `outline`, `destructive`, `info`, `success`, `warning`, `error` and the statuses `pending`, `submitted`, `inProgress`, `inReview`, `failed`, `expired`; `size`: `sm`, `md`, `lg`                |
 | `Button`        | `@pickle-ui/react-native/button`          | `variant`: `default`, `secondary`, `destructive`, `destructive-outline`, `outline`, `ghost`, `link`; `size`: `xs` … `xl`, `icon-xs` … `icon-xl`; `loading`                                                                         |
 | `Card`          | `@pickle-ui/react-native/card`            | Parts: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Action`, `Card.Content`, `Card.Footer`                                                                                                                               |
+| `Checkbox`      | `@pickle-ui/react-native/checkbox`        | `checked` / `defaultChecked` / `onCheckedChange`, `indeterminate`, `invalid`, `disabled`, `label`; `size`: `md`, `sm`; `classNames`: `field`, `indicator`, `label`                                                                 |
 | `Flex`          | `@pickle-ui/react-native/flex`            | A row by default, like the web; `direction`, `wrap`, `align`, `justify`, `gap`, `gapX`, `gapY`                                                                                                                                     |
 | `Grid`          | `@pickle-ui/react-native/grid`            | Equal columns built from rows of cells (no CSS grid on native): `columns`, `rows`, `flow`, `gap`, `gapX`, `gapY`, `align`, `justify`, `placeContent`, `placeItems`; items can't stretch to their cell's height, give them `flex-1` |
+| `Input`         | `@pickle-ui/react-native/input`           | `size`: `sm`, `md`, `lg`, the `Button` heights; `invalid`, `disabled`, `unstyled`; `classNames.input`                                                                                                                              |
+| `InputGroup`    | `@pickle-ui/react-native/input-group`     | Parts: `InputGroup.Input`, `InputGroup.Addon` (`align`: `inline-start`, `inline-end`, `block-start`, `block-end`), `InputGroup.Button`, `InputGroup.Text`                                                                          |
+| `RadioGroup`    | `@pickle-ui/react-native/radio-group`     | `value` / `defaultValue` / `onValueChange`, `disabled`; parts: `RadioGroup.Item` (`value`, `label`, `invalid`, `disabled`, `size`: `md`, `sm`; `classNames`: `field`, `indicator`, `label`)                                        |
 | `Separator`     | `@pickle-ui/react-native/separator`       | `orientation`: `horizontal`, `vertical`; `role="separator"`, announced on the web only                                                                                                                                             |
+| `Spinner`       | `@pickle-ui/react-native/spinner`         | Announced as "Loading": `accessibilityLabel` renames it, `aria-hidden` makes it decorative; size it with `size-*` and color it with `text-*`                                                                                       |
 | `Text`          | `@pickle-ui/react-native/text`            | `variant`: `h1` … `h4`, `lead`, `body`, `small`, `code`; `tone`: `muted`, `primary`, `destructive`; `weight`: `normal`, `bold`; `truncate`                                                                                         |
+| `Textarea`      | `@pickle-ui/react-native/textarea`        | Grows with its content from three lines; `size`, `invalid`, `disabled`; `classNames.textarea`                                                                                                                                      |
 | `XStack`        | `@pickle-ui/react-native/x-stack`         | `Flex` as a row                                                                                                                                                                                                                    |
 | `YStack`        | `@pickle-ui/react-native/y-stack`         | `Flex` as a column                                                                                                                                                                                                                 |
 | `createTheme`   | `@pickle-ui/react-native/theme`           | Derives a theme from a brand color, the same as on the web; apply it with `ScopedVariables`                                                                                                                                        |
@@ -89,6 +95,13 @@ Each export is also available from its own subpath.
 
 Every component takes the props of the React Native element it renders,
 `className` included, and merges your `className` last.
+
+Form fields take `invalid` and `disabled` props where the web reads the
+`aria-invalid` and `disabled` attributes, and draw the web's focus ring while
+they have focus. Text styles don't cascade on native, so `Checkbox` and
+`RadioGroup.Item` style the row around the control with `classNames.field`
+and the label text with `classNames.label`; pass `label` rather than a
+separate label element, which couldn't toggle the control.
 
 `Button` and `Badge` wrap text children in their label and render other
 children, such as icons, as they are. Icons don't inherit the label's color on

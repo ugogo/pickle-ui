@@ -13,7 +13,7 @@ export default defineConfig({
         // limitation here, and Reanimated would become a peer dependency of
         // every app for one spinner. Revisit if the package adopts
         // Reanimated or Uniwind gains CSS animations.
-        files: ['src/components/_internal/Spinner.tsx'],
+        files: ['src/components/Spinner.tsx'],
         rules: ['react-doctor/rn-prefer-reanimated'],
       },
     ],
