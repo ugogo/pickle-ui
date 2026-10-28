@@ -59,13 +59,13 @@ Two more patterns have no number:
 
 ## What carries over to native
 
-`@pickle-ui/tokens/native.css` carries the colors and the radius scale, so
-`bg-primary`, `text-muted-foreground`, `border-border` and `rounded-xl` mean
-the same on both platforms. `@pickle-ui/react-native` has `Badge`, `Button`,
-`Card` and `Text`, with the web names (`variant`, `size`, `tone`,
-`Card.Header`) and native sizes. The rest is web-only for now:
+`@pickle-ui/tokens` carries the colors, the radius scale and the `Text` type
+scale (`--text-h1` … `--text-code`), so `bg-primary`, `text-muted-foreground`,
+`border-border`, `rounded-xl` and `text-h1` mean the same on both platforms.
+`@pickle-ui/react-native` has `Badge`, `Button`, `Card` and `Text`, with the
+web's variants, sizes, tones, parts and dimensions. The rest is
+web-only for now:
 
-- the `Text` type scale (`--text-h1` … `--text-code`) and the fonts, which
-  live in `@pickle-ui/react`'s CSS;
+- the fonts, which live in `@pickle-ui/react`'s CSS;
 - `createTheme`, which ships in `@pickle-ui/react/theme`;
 - every other component.

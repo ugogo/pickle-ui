@@ -3,7 +3,7 @@
 Pickle UI components for React Native apps built with Expo, styled with
 Pickle's tokens through [Uniwind](https://uniwind.dev). They reuse the names
 of `@pickle-ui/react` (`variant`, `size`, `tone`, `Card.Header`, …) with
-native sizes and React Native primitives.
+the same dimensions, on React Native primitives.
 
 Browse them in the [Storybook](https://ugogo.github.io/pickle-ui/react-native/),
 rendered in the browser through react-native-web.
@@ -42,8 +42,8 @@ after Tailwind and Uniwind, which is why they come from the same file.
 
 To bring your own token set, import its pieces instead: `tailwindcss`,
 `uniwind`, your tokens as Uniwind themes, then
-`@pickle-ui/react-native/base.css`, which only adds the components to
-Uniwind's content sources.
+`@pickle-ui/react-native/base.css`, which adds the components to Uniwind's
+content sources and the `Text` type scale.
 
 Then use the components:
 
@@ -72,17 +72,29 @@ steps, token overrides and runtime brand colors.
 
 Each export is also available from its own subpath.
 
-| Export          | Subpath                                   | Notes                                                                                          |
-| --------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `Badge`         | `@pickle-ui/react-native/badge`           | `variant`: `default`, `secondary`, `success`, `inProgress`, `inReview`                         |
-| `Button`        | `@pickle-ui/react-native/button`          | `variant`: `default`, `secondary`, `outline`, `ghost`, `destructive`; `size`: `sm`, `md`, `lg` |
-| `Card`          | `@pickle-ui/react-native/card`            | Parts: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Content`                         |
-| `Text`          | `@pickle-ui/react-native/text`            | `variant`: `h1` … `h4`, `lead`, `body`, `small`; `tone`: `muted`, `primary`, `destructive`     |
-| `cn`            | `@pickle-ui/react-native/cn`              | Joins class names; later classes win                                                           |
-| `useColorToken` | `@pickle-ui/react-native/use-color-token` | Reads a token as a color string, for props that don't take a `className`                       |
+| Export          | Subpath                                   | Notes                                                                                                                                                                                                               |
+| --------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Badge`         | `@pickle-ui/react-native/badge`           | `variant`: `default`, `secondary`, `outline`, `destructive`, `info`, `success`, `warning`, `error` and the statuses `pending`, `submitted`, `inProgress`, `inReview`, `failed`, `expired`; `size`: `sm`, `md`, `lg` |
+| `Button`        | `@pickle-ui/react-native/button`          | `variant`: `default`, `secondary`, `destructive`, `destructive-outline`, `outline`, `ghost`, `link`; `size`: `xs` … `xl`, `icon-xs` … `icon-xl`; `loading`                                                          |
+| `Card`          | `@pickle-ui/react-native/card`            | Parts: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Action`, `Card.Content`, `Card.Footer`                                                                                                                |
+| `Text`          | `@pickle-ui/react-native/text`            | `variant`: `h1` … `h4`, `lead`, `body`, `small`, `code`; `tone`: `muted`, `primary`, `destructive`; `weight`: `normal`, `bold`; `truncate`                                                                          |
+| `cn`            | `@pickle-ui/react-native/cn`              | Joins class names; later classes win, and `text-h1` … `text-code` count as font sizes                                                                                                                               |
+| `useColorToken` | `@pickle-ui/react-native/use-color-token` | Reads a token as a color string, for props that don't take a `className`                                                                                                                                            |
 
 Every component takes the props of the React Native element it renders,
 `className` included, and merges your `className` last.
+
+`Button` and `Badge` wrap text children in their label and render other
+children, such as icons, as they are. Icons don't inherit the label's color on
+native, so pass it to the icon, for example with `useColorToken`. Give an
+icon-only button an `icon*` size and an `accessibilityLabel`. Buttons keep the web's dimensions, and a `hitSlop` stretches each size to a
+44pt touch target, as the web's `pointer-coarse` hit area does. Headings (`h1` … `h4`)
+are announced as headers.
+
+`Text` sizes come from the shared type scale (`--text-h1` … `--text-code` in
+`@pickle-ui/tokens/typography.css`); override them like any token. Fonts are
+not set yet: text uses the platform's system font, and `code` its monospace
+font.
 
 ## Theming
 

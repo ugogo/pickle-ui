@@ -2,7 +2,7 @@
   "name": "@pickle-ui/tokens",
   "version": "1.0.0-beta.6",
   "type": "module",
-  "description": "Pickle UI design tokens: colors and radii as Tailwind CSS v4 theme variables.",
+  "description": "Pickle UI design tokens: colors, radii and the type scale as Tailwind CSS v4 theme variables.",
   "style": "theme.css",
   "sideEffects": [
     "**/*.css"
@@ -17,11 +17,13 @@
   },
   "exports": {
     "./native.css": "./native.css",
-    "./theme.css": "./theme.css"
+    "./theme.css": "./theme.css",
+    "./typography.css": "./typography.css"
   },
   "files": [
     "native.css",
-    "theme.css"
+    "theme.css",
+    "typography.css"
   ],
   "keywords": [
     "design-tokens",

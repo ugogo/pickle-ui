@@ -27,14 +27,25 @@ export const All: StoryDefinition = {
               <Card.Description>
                 Changes made in the last week.
               </Card.Description>
+              <Card.Action>
+                <Button
+                  accessibilityLabel="Add project"
+                  size="icon"
+                  variant="ghost"
+                >
+                  <Story.PlaceholderIcon />
+                </Button>
+              </Card.Action>
             </Card.Header>
             <Card.Content className="gap-2">
               <Text variant="h1">1,284</Text>
               <Text tone="muted">Events across 8 active projects</Text>
-              <Button className="self-end" size="sm" variant="ghost">
+            </Card.Content>
+            <Card.Footer>
+              <Button className="ml-auto" size="sm" variant="ghost">
                 View report
               </Button>
-            </Card.Content>
+            </Card.Footer>
           </Card>
 
           <Card>
@@ -44,9 +55,9 @@ export const All: StoryDefinition = {
                 Parts can be omitted when the content needs less structure.
               </Card.Description>
             </Card.Header>
-            <Card.Content>
+            <Card.Footer>
               <Button>Continue</Button>
-            </Card.Content>
+            </Card.Footer>
           </Card>
         </View>
       </Story.Section>

@@ -231,8 +231,8 @@ own:
   that does not use the components. It re-exports `@pickle-ui/tokens/theme.css`,
   which `@pickle-ui/react` installs as a dependency.
 - `@pickle-ui/react/base.css` holds everything else: animation and variant plugins,
-  the `.dark` variant, the `Text` type scale, shared utilities, and element
-  resets. Import it with a token set of your own instead of `theme.css`.
+  the `.dark` variant, the `Text` type scale (from
+  `@pickle-ui/tokens/typography.css`), shared utilities, and element resets. Import it with a token set of your own instead of `theme.css`.
 
 Tokens follow one naming rule: `--x` is a fill and `--x-foreground` is the text
 placed on that fill. Status colors (`destructive`, `info`, `success`,

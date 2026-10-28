@@ -123,6 +123,33 @@ function Matrix({
   );
 }
 
+/**
+ * A plus sign drawn with views, standing in for an icon library in stories.
+ * `className` sets the bars' color (`bg-primary-foreground`, …).
+ */
+function PlaceholderIcon({ className }: { className?: string }) {
+  return (
+    <View
+      accessibilityElementsHidden
+      className="size-4 items-center justify-center"
+      importantForAccessibility="no-hide-descendants"
+    >
+      <View
+        className={cn(
+          'bg-foreground absolute h-0.5 w-3 rounded-full',
+          className,
+        )}
+      />
+      <View
+        className={cn(
+          'bg-foreground absolute h-3 w-0.5 rounded-full',
+          className,
+        )}
+      />
+    </View>
+  );
+}
+
 function Section({ children, title }: { children: ReactNode; title: string }) {
   return (
     <View>
@@ -137,6 +164,7 @@ function Section({ children, title }: { children: ReactNode; title: string }) {
 const Story = Object.assign(Layout, {
   Layout,
   Matrix,
+  PlaceholderIcon,
   Section,
 });
 
