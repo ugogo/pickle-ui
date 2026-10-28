@@ -1,7 +1,8 @@
 # @pickle-ui/tokens
 
 Pickle UI's design tokens as Tailwind CSS v4 theme variables: the light and
-dark colors, the radius scale and the type scale. `@pickle-ui/react` imports them, so web
+dark colors, the radius scale and the type scale. It also ships
+`createTheme`, which derives a theme from a brand color for both platforms. `@pickle-ui/react` imports them, so web
 apps using the components already have them. So do React Native apps
 importing `@pickle-ui/react-native/styles.css`.
 
@@ -46,4 +47,20 @@ whatever color tokens you use. Import it after Tailwind to get the
 
 ```css
 @import '@pickle-ui/tokens/typography.css';
+```
+
+## Theme
+
+`@pickle-ui/tokens/theme` exports `createTheme`, which derives the
+brand-dependent tokens (`--primary`, `--primary-foreground`, `--ring` and
+their sidebar counterparts) for the light and dark themes from one color,
+and `themeToCss`, which writes the result as CSS rules for the web. The
+component packages re-export them as `@pickle-ui/react/theme` and
+`@pickle-ui/react-native/theme`; import from there in an app.
+
+```ts
+import { createTheme } from '@pickle-ui/tokens/theme';
+
+const theme = createTheme({ primary: '#16a34a', radius: '0.5rem' });
+// theme.light['--primary'] === 'oklch(…)', theme.dark['--primary'] === 'oklch(…)'
 ```

@@ -2,7 +2,9 @@
   "name": "@pickle-ui/tokens",
   "version": "1.0.0-beta.6",
   "type": "module",
-  "description": "Pickle UI design tokens: colors, radii and the type scale as Tailwind CSS v4 theme variables.",
+  "description": "Pickle UI design tokens: colors, radii and the type scale as Tailwind CSS v4 theme variables, and createTheme to derive a theme from a brand color.",
+  "main": "dist/theme.js",
+  "types": "dist/theme.d.ts",
   "style": "theme.css",
   "sideEffects": [
     "**/*.css"
@@ -17,21 +19,48 @@
   },
   "exports": {
     "./native.css": "./native.css",
+    "./theme": {
+      "@pickle-ui/source": "./src/theme.ts",
+      "types": "./dist/theme.d.ts",
+      "import": "./dist/theme.js",
+      "default": "./dist/theme.js"
+    },
     "./theme.css": "./theme.css",
     "./typography.css": "./typography.css"
   },
   "files": [
+    "dist",
     "native.css",
+    "src",
     "theme.css",
     "typography.css"
   ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\"",
+    "build": "pnpm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm run build"
+  },
   "keywords": [
     "design-tokens",
     "tailwind",
+    "theme",
     "pickle-ui"
   ],
   "author": "Ugo Onali",
   "license": "MIT",
+  "dependencies": {
+    "culori": "^4.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/node": "^4.3.3",
+    "@types/culori": "^4.0.1",
+    "@types/node": "^25.9.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.6"
+  },
   "peerDependencies": {
     "tailwindcss": "^4.0.0"
   }

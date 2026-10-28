@@ -1,14 +1,12 @@
 import { Card, cn, Text } from '@pickle-ui/react-native';
 import { Pressable, View } from 'react-native';
-import { Uniwind, useUniwind } from 'uniwind';
+import { ScopedVariables, Uniwind, useUniwind } from 'uniwind';
 
 import { type Brand, BRANDS } from '../brands';
 
 const SCHEMES = ['light', 'dark', 'system'] as const;
 
 type SwatchProps = {
-  className?: string;
-  color?: string;
   label: string;
   onPress: () => void;
   selected: boolean;
@@ -61,19 +59,21 @@ export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
         <View className="flex-row gap-3">
           {/* This card sits outside the brand scope, so `bg-primary` is global.css's green. */}
           <Swatch
-            className="bg-primary"
             label="Pickle"
             onPress={() => onBrandChange(null)}
             selected={brand === null}
           />
+          {/* Each swatch reads `bg-primary` through its brand's tokens:
+              `createTheme` writes oklch(), which Uniwind resolves but a raw
+              `style` color doesn't. */}
           {BRANDS.map((item) => (
-            <Swatch
-              color={theme === 'dark' ? item.swatch.dark : item.swatch.light}
-              key={item.label}
-              label={item.label}
-              onPress={() => onBrandChange(item)}
-              selected={brand === item}
-            />
+            <ScopedVariables key={item.label} variables={item.theme[theme]}>
+              <Swatch
+                label={item.label}
+                onPress={() => onBrandChange(item)}
+                selected={brand === item}
+              />
+            </ScopedVariables>
           ))}
         </View>
       </Card.Content>
@@ -81,7 +81,7 @@ export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
   );
 }
 
-function Swatch({ className, color, label, onPress, selected }: SwatchProps) {
+function Swatch({ label, onPress, selected }: SwatchProps) {
   return (
     <Pressable
       accessibilityLabel={`${label} brand color`}
@@ -92,11 +92,9 @@ function Swatch({ className, color, label, onPress, selected }: SwatchProps) {
     >
       <View
         className={cn(
-          'size-9 rounded-full border-2',
+          'bg-primary size-9 rounded-full border-2',
           selected ? 'border-foreground' : 'border-transparent',
-          className,
         )}
-        style={color ? { backgroundColor: color } : undefined}
       />
       <Text tone={selected ? undefined : 'muted'} variant="small">
         {label}

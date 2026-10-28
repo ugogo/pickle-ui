@@ -1,8 +1,10 @@
 /**
  * Theme generator: derives Pickle's brand-dependent tokens from a single
- * primary color so consumers can theme the library without hand-writing CSS
+ * primary color so apps can theme the library without hand-writing CSS
  * variables. Tokens that do not depend on the brand (neutrals, status colors)
- * keep the values from `@pickle-ui/react/theme.css`.
+ * keep the values from `native.css`. Platform-free: the web applies the result
+ * with `themeToCss` or as a `style`, React Native with Uniwind's
+ * `ScopedVariables` or `Uniwind.updateCSSVariables`.
  */
 
 import {
@@ -49,9 +51,11 @@ const LIGHT_FOREGROUND: Oklch = { c: 0, h: 0, l: 1, mode: 'oklch' };
 const DARK_FOREGROUND: Oklch = { c: 0.006, h: 285.9, l: 0.21, mode: 'oklch' };
 
 /**
- * Build the light and dark token sets for a brand color. Apply the result
- * with `themeToCss` in a stylesheet, or spread `theme.light` / `theme.dark`
- * as the `style` of a wrapper element.
+ * Build the light and dark token sets for a brand color. On the web, apply
+ * the result with `themeToCss` in a stylesheet, or spread `theme.light` /
+ * `theme.dark` as the `style` of a wrapper element. On React Native, pass the
+ * set for the active scheme to Uniwind's `ScopedVariables`; fonts don't apply
+ * there.
  */
 export function createTheme(options: ThemeOptions): Theme {
   const primary = parseColor(options.primary, 'primary');

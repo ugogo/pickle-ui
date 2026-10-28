@@ -33,7 +33,7 @@ reload without a build. Leave both out of your own app.
 | `src/global.css`                    | Setup and token overrides as Uniwind themes                    |
 | `src/app/_layout.tsx`               | Loading the CSS, token colors for the navigation header        |
 | `src/app/index.tsx`                 | `ScopedVariables` applying a brand to part of the screen       |
-| `src/brands.ts`                     | Brand colors, each with a readable foreground                  |
+| `src/brands.ts`                     | Runtime brands derived with `createTheme`                      |
 | `src/components/ThemeControls.tsx`  | `Uniwind.setTheme`, brand swatches                             |
 | `src/components/NewProjectForm.tsx` | Tokens on `TextInput` and a native `Switch`, `className` merge |
 
@@ -89,11 +89,11 @@ reload without a build. Leave both out of your own app.
 - **Token overrides** go inside `@variant light` and `@variant dark` blocks,
   not `:root` and `.dark`: Uniwind ignores the `.dark` selector, and each
   theme must declare the same variables. See `src/global.css`.
-- **Runtime brands** have no `createTheme` on native yet, so `src/brands.ts`
-  sets `--primary-foreground` by hand next to `--primary`.
-  `ScopedVariables` applies them to a subtree; wrap the root layout to
-  rebrand the whole app, or call `Uniwind.updateCSSVariables(theme, vars)` to
-  change a theme globally.
+- **Runtime brands** come from `createTheme`, as on the web, but apply
+  through `ScopedVariables` on a subtree; wrap the root layout to rebrand the
+  whole app, or call `Uniwind.updateCSSVariables(theme, vars)` to change a
+  theme globally. Its `oklch()` values only resolve through utilities such as
+  `bg-primary`, not in a `style` prop, so the swatches draw with the tokens.
 - **Props that take a color**, not a className, read the token with
   `useColorToken('primary')` from `@pickle-ui/react-native`, which returns
   `undefined` instead of the string `"undefined"` when a token doesn't exist.

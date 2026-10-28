@@ -5,4 +5,5 @@ export * from './entries/button';
 export * from './entries/card';
 export * from './entries/cn';
 export * from './entries/text';
+export * from './entries/theme';
 export * from './entries/use-color-token';

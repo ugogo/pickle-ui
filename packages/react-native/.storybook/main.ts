@@ -2,6 +2,7 @@ import type { StorybookConfig } from '@storybook/react-native-web-vite';
 
 import tailwindcss from '@tailwindcss/vite';
 import { uniwind } from 'uniwind/vite';
+import { defaultClientConditions } from 'vite';
 
 // Renders the components in the browser through react-native-web, with
 // Uniwind's Vite plugin turning their `className`s into styles.
@@ -15,7 +16,20 @@ const config: StorybookConfig = {
   viteFinal: (viteConfig) => ({
     ...viteConfig,
     plugins: [
-      ...(viteConfig.plugins ?? []),
+      // The framework adds vite-tsconfig-paths, which Vite now replaces with
+      // `resolve.tsconfigPaths` and warns about. The package has no `paths`
+      // to resolve, so drop it.
+      ...(viteConfig.plugins ?? [])
+        .flat()
+        .filter(
+          (plugin) =>
+            !(
+              plugin &&
+              typeof plugin === 'object' &&
+              'name' in plugin &&
+              plugin.name === 'vite-tsconfig-paths'
+            ),
+        ),
       tailwindcss(),
       // Uniwind writes src/uniwind-types.d.ts, which adds `className` to
       // React Native's types for the package's own typecheck.
@@ -24,6 +38,15 @@ const config: StorybookConfig = {
         dtsFile: './src/uniwind-types.d.ts',
       }),
     ],
+    // Read @pickle-ui/tokens from its sources, so Storybook runs without
+    // building it first.
+    resolve: {
+      ...viteConfig.resolve,
+      conditions: [
+        '@pickle-ui/source',
+        ...(viteConfig.resolve?.conditions ?? defaultClientConditions),
+      ],
+    },
   }),
 };
 
