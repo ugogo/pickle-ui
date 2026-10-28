@@ -171,7 +171,7 @@ describe('Form', () => {
     await render(<TestForm onSubmit={jest.fn()} />);
 
     expect(screen.getByLabelText('Notification channel')).toHaveProp(
-      'accessibilityRole',
+      'role',
       'radiogroup',
     );
   });
