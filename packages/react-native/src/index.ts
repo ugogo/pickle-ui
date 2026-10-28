@@ -6,6 +6,7 @@ export * from './entries/card';
 export * from './entries/checkbox';
 export * from './entries/cn';
 export * from './entries/flex';
+export * from './entries/form';
 export * from './entries/grid';
 export * from './entries/input';
 export * from './entries/input-group';
