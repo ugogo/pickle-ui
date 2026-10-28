@@ -3,7 +3,7 @@ import { Children, isValidElement } from 'react';
 import { type Insets, Pressable, Text, View } from 'react-native';
 
 import { cn } from '../lib/cn';
-import { Spinner } from './_internal/Spinner';
+import { Spinner } from './Spinner';
 
 // Same variants, sizes and dimensions as `Button` in @pickle-ui/react on a
 // phone, with its text sizes from `sm` up. Like the web's `pointer-coarse` hit area, `hitSlop` stretches every
@@ -75,16 +75,17 @@ const labelVariants = cva('font-medium', {
   },
 });
 
-const spinnerVariants = cva('', {
+// Sized and dimmed like the web button's icons, in the label's color.
+const spinnerVariants = cva('size-4 opacity-80', {
   variants: {
     variant: {
-      default: 'border-primary-foreground',
-      destructive: 'border-destructive-foreground',
-      'destructive-outline': 'border-foreground',
-      ghost: 'border-foreground',
-      link: 'border-foreground',
-      outline: 'border-foreground',
-      secondary: 'border-secondary-foreground',
+      default: 'text-primary-foreground',
+      destructive: 'text-destructive-foreground',
+      'destructive-outline': 'text-foreground',
+      ghost: 'text-foreground',
+      link: 'text-foreground',
+      outline: 'text-foreground',
+      secondary: 'text-secondary-foreground',
     },
   },
 });
@@ -200,7 +201,7 @@ export function Button({
           )}
           {loading ? (
             <View className="absolute">
-              <Spinner className={spinnerVariants({ variant })} />
+              <Spinner aria-hidden className={spinnerVariants({ variant })} />
             </View>
           ) : null}
         </>
