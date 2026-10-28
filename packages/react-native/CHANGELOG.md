@@ -1,5 +1,17 @@
 # @pickle-ui/react-native
 
+## 1.0.0-beta.2
+
+### Minor Changes
+
+- a064f4c: Add `Form`, the React Hook Form bindings of `@pickle-ui/react`: `Form.Field`, `Form.Input`, `Form.Textarea`, `Form.InputGroup`, `Form.Checkbox`, `Form.RadioGroup`, `Form.Button`, `Form.Label`, `Form.Description` and `Form.Error`. `react-hook-form` becomes a peer dependency, as on the web. `Form.Button` and the return key in `Form.Input` submit the form, since React Native has no `<form>`.
+- 27f95b9: Add `Input`, `Textarea`, `Checkbox`, `RadioGroup`, `InputGroup` and `Spinner`, with the names and sizes of `@pickle-ui/react`. Fields take `invalid` and `disabled` props in place of the web's `aria-invalid` and `disabled` attributes, and `Checkbox` and `RadioGroup.Item` style their row and label text through `classNames.field` and `classNames.label`, since text styles don't cascade on native.
+- 36c3510: Add `Flex`, `XStack`, `YStack`, `Grid` and `Separator`, with the props of `@pickle-ui/react` except `as`. `Grid` is built from rows of equal cells, since React Native has no CSS grid: items can't stretch to their cell's height (give them `flex-1`), and the `dense` flows place them like `row` and `column`.
+
+### Patch Changes
+
+- 56c867e: Set `Button` labels to the text sizes `@pickle-ui/react` uses from `sm` up: 14px at `md` (was 16px), 12px at `xs` and 16px at `xl`. The web's larger phone sizes only stop iOS Safari zooming into focused fields, which native apps don't do.
+
 ## 1.0.0-beta.1
 
 ### Minor Changes
