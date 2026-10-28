@@ -103,13 +103,16 @@ export function Checkbox({
   );
 
   return (
+    // `role` and `aria-*` are React Native's current accessibility props;
+    // `accessibilityState` keeps any extra state the caller passes.
     <Pressable
-      accessibilityRole="checkbox"
       accessibilityState={{
         ...accessibilityState,
         checked: indeterminate ? 'mixed' : checked,
         disabled,
       }}
+      aria-checked={indeterminate ? 'mixed' : checked}
+      aria-disabled={disabled}
       className={
         label
           ? cn('flex-row items-center gap-2', classNames?.field)
@@ -118,6 +121,7 @@ export function Checkbox({
       disabled={disabled}
       hitSlop={label ? fieldHitSlop[size] : boxHitSlop[size]}
       onPress={() => setChecked(!checked)}
+      role="checkbox"
       {...props}
     >
       {box}

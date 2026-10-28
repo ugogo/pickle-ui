@@ -11,10 +11,7 @@ describe('RadioGroup', () => {
       </RadioGroup>,
     );
 
-    expect(screen.getByLabelText('Plan')).toHaveProp(
-      'accessibilityRole',
-      'radiogroup',
-    );
+    expect(screen.getByLabelText('Plan')).toHaveProp('role', 'radiogroup');
     expect(screen.getByRole('radio', { name: 'Option A' })).toBeOnTheScreen();
     expect(screen.getByRole('radio', { name: 'Option B' })).toBeOnTheScreen();
   });

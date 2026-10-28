@@ -63,8 +63,9 @@ function RadioGroupItem({
 
   return (
     <Pressable
-      accessibilityRole="radio"
       accessibilityState={{ ...accessibilityState, checked, disabled }}
+      aria-checked={checked}
+      aria-disabled={disabled}
       className={
         label
           ? cn('flex-row items-center gap-2', classNames?.field)
@@ -73,6 +74,7 @@ function RadioGroupItem({
       disabled={disabled}
       hitSlop={label ? fieldHitSlop[size] : controlHitSlop[size]}
       onPress={() => group.onSelect(value)}
+      role="radio"
       {...props}
     >
       <View
@@ -137,11 +139,7 @@ function RadioGroupRoot({
 
   return (
     <RadioGroupContext value={context}>
-      <View
-        accessibilityRole="radiogroup"
-        className={cn('gap-2', className)}
-        {...props}
-      />
+      <View className={cn('gap-2', className)} role="radiogroup" {...props} />
     </RadioGroupContext>
   );
 }
