@@ -45,35 +45,8 @@ const SIZE_COLUMNS: { description: string; key: BadgeSize; label: string }[] = [
   { description: 'h-5.5', key: 'lg', label: 'Large' },
 ];
 
-// Icons don't inherit the label's color on native; pass it to the icon.
-const ICON_COLORS: Record<BadgeVariant, string> = {
-  default: 'bg-primary-foreground',
-  destructive: 'bg-destructive-foreground',
-  error: 'bg-destructive-subtle-foreground',
-  expired: 'bg-secondary-foreground',
-  failed: 'bg-destructive-subtle-foreground',
-  info: 'bg-info-subtle-foreground',
-  inProgress: 'bg-info-subtle-foreground',
-  inReview: 'bg-warning-subtle-foreground',
-  outline: 'bg-foreground',
-  pending: 'bg-warning-subtle-foreground',
-  secondary: 'bg-secondary-foreground',
-  submitted: 'bg-info-subtle-foreground',
-  success: 'bg-success-subtle-foreground',
-  warning: 'bg-warning-subtle-foreground',
-};
-
-function BadgeCell({ column, row }: ComponentMatrixCellProps) {
-  const variant = row.key as BadgeVariant;
-
-  return (
-    <Badge variant={variant}>
-      {column.key === 'icon' ? (
-        <Story.PlaceholderIcon className={ICON_COLORS[variant]} />
-      ) : null}
-      {row.label}
-    </Badge>
-  );
+function BadgeCell({ row }: ComponentMatrixCellProps) {
+  return <Badge variant={row.key as BadgeVariant}>{row.label}</Badge>;
 }
 
 function BadgeSizeCell({ column, row }: ComponentMatrixCellProps) {

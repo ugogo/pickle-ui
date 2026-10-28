@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 
+import { IconArrowUpRight, IconDots } from '@tabler/icons-react-native';
 import { View } from 'react-native';
 
 import { Story } from './_internal/Story';
@@ -29,11 +30,11 @@ export const All: StoryDefinition = {
               </Card.Description>
               <Card.Action>
                 <Button
-                  accessibilityLabel="Add project"
+                  accessibilityLabel="More options"
                   size="icon"
                   variant="ghost"
                 >
-                  <Story.PlaceholderIcon />
+                  <Story.Icon icon={IconDots} />
                 </Button>
               </Card.Action>
             </Card.Header>
@@ -44,6 +45,7 @@ export const All: StoryDefinition = {
             <Card.Footer>
               <Button className="ml-auto" size="sm" variant="ghost">
                 View report
+                <Story.Icon icon={IconArrowUpRight} />
               </Button>
             </Card.Footer>
           </Card>
