@@ -15,6 +15,7 @@ import { cn } from '../../lib/cn';
 import { InputFrame } from '../_internal/InputFrame';
 import { Button, type ButtonProps } from '../Button';
 import { Input, type InputProps } from './Input';
+import { InputGroupStateContext } from './InputGroup.context';
 
 type InputGroupAlign =
   | 'block-end'
@@ -149,7 +150,11 @@ function InputGroupInput({
 function InputGroupRoot({ children, className, ...props }: InputGroupProps) {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<null | TextInputInstance>(null);
-  const { disabled, invalid, parts } = sortChildren(children);
+  const state = use(InputGroupStateContext);
+  const sorted = sortChildren(children);
+  const { parts } = sorted;
+  const disabled = sorted.disabled || Boolean(state?.disabled);
+  const invalid = sorted.invalid || Boolean(state?.invalid);
   const hasInlineEnd = parts['inline-end'].length > 0;
   const hasInlineStart = parts['inline-start'].length > 0;
   const context = useMemo(

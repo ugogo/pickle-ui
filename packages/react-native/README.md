@@ -79,6 +79,7 @@ Each export is also available from its own subpath.
 | `Card`          | `@pickle-ui/react-native/card`            | Parts: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Action`, `Card.Content`, `Card.Footer`                                                                                                                               |
 | `Checkbox`      | `@pickle-ui/react-native/checkbox`        | `checked` / `defaultChecked` / `onCheckedChange`, `indeterminate`, `invalid`, `disabled`, `label`; `size`: `md`, `sm`; `classNames`: `field`, `indicator`, `label`                                                                 |
 | `Flex`          | `@pickle-ui/react-native/flex`            | A row by default, like the web; `direction`, `wrap`, `align`, `justify`, `gap`, `gapX`, `gapY`                                                                                                                                     |
+| `Form`          | `@pickle-ui/react-native/form`            | React Hook Form bindings: `Form.Field` (`label`, `description`, `error`), `Form.Input`, `Form.Textarea`, `Form.InputGroup`, `Form.Checkbox`, `Form.RadioGroup`, `Form.Button`, `Form.Label`, `Form.Description`, `Form.Error`      |
 | `Grid`          | `@pickle-ui/react-native/grid`            | Equal columns built from rows of cells (no CSS grid on native): `columns`, `rows`, `flow`, `gap`, `gapX`, `gapY`, `align`, `justify`, `placeContent`, `placeItems`; items can't stretch to their cell's height, give them `flex-1` |
 | `Input`         | `@pickle-ui/react-native/input`           | `size`: `sm`, `md`, `lg`, the `Button` heights; `invalid`, `disabled`, `unstyled`; `classNames.input`                                                                                                                              |
 | `InputGroup`    | `@pickle-ui/react-native/input-group`     | Parts: `InputGroup.Input`, `InputGroup.Addon` (`align`: `inline-start`, `inline-end`, `block-start`, `block-end`), `InputGroup.Button`, `InputGroup.Text`                                                                          |
@@ -102,6 +103,13 @@ they have focus. Text styles don't cascade on native, so `Checkbox` and
 `RadioGroup.Item` style the row around the control with `classNames.field`
 and the label text with `classNames.label`; pass `label` rather than a
 separate label element, which couldn't toggle the control.
+
+`Form` needs `react-hook-form` (a peer dependency). React Native has no
+`<form>`, so `Form` takes `onSubmit` and runs it through `handleSubmit` when
+`Form.Button` is pressed, or when the return key is pressed in a
+`Form.Input`, like Enter on the web. Give `Form.Button` an `onPress` for
+another action. A `Form.Field` label names its control and focuses it when
+pressed.
 
 `Button` and `Badge` wrap text children in their label and render other
 children, such as icons, as they are. Icons don't inherit the label's color on
