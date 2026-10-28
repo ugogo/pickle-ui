@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 
+import { IconPlus } from '@tabler/icons-react-native';
+
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Button, type ButtonProps } from './Button';
 
@@ -60,6 +62,9 @@ const ICON_SIZES = Object.fromEntries(
   SIZE_COLUMNS.map((column) => [column.key, column.icon]),
 ) as Record<string, ButtonSize>;
 
+// The web's `[&_svg]:size-*` per button size, in points.
+const ICON_PIXELS: Record<string, number> = { xl: 18, xs: 14 };
+
 const CONTENT_ROWS = [
   { key: 'text', label: 'Text' },
   { key: 'with-icon', label: 'Icon and text' },
@@ -72,18 +77,18 @@ const CONTENT_ROWS = [
 
 // Icons don't inherit the label's color on native; pass it to the icon.
 const ICON_COLORS: Record<ButtonVariant, string> = {
-  default: 'bg-primary-foreground',
-  destructive: 'bg-destructive-foreground',
-  'destructive-outline': 'bg-destructive-subtle-foreground',
-  ghost: 'bg-foreground',
-  link: 'bg-foreground',
-  outline: 'bg-foreground',
-  secondary: 'bg-secondary-foreground',
+  default: 'text-primary-foreground',
+  destructive: 'text-destructive-foreground',
+  'destructive-outline': 'text-destructive-subtle-foreground',
+  ghost: 'text-foreground',
+  link: 'text-foreground',
+  outline: 'text-foreground',
+  secondary: 'text-secondary-foreground',
 };
 
 function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
   const variant = column.key as ButtonVariant;
-  const icon = <Story.PlaceholderIcon className={ICON_COLORS[variant]} />;
+  const icon = <Story.Icon className={ICON_COLORS[variant]} icon={IconPlus} />;
 
   if (row.key === 'icon') {
     return (
@@ -102,7 +107,13 @@ function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
 }
 
 function ButtonSizeCell({ column, row }: ComponentMatrixCellProps) {
-  const icon = <Story.PlaceholderIcon className={ICON_COLORS.default} />;
+  const icon = (
+    <Story.Icon
+      className={ICON_COLORS.default}
+      icon={IconPlus}
+      size={ICON_PIXELS[column.key]}
+    />
+  );
 
   if (row.key === 'icon') {
     return (

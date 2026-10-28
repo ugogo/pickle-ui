@@ -1,5 +1,7 @@
+import { type Icon as TablerIconComponent } from '@tabler/icons-react-native';
 import { type ComponentType, type ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
 import { cn } from '../../lib/cn';
 import { Text } from '../Text';
@@ -28,6 +30,37 @@ type ComponentMatrixRow = {
   key: string;
   label: string;
 };
+
+/**
+ * A Tabler icon, the library the web stories use, dimmed and pulled in like
+ * the web `Button` styles its `svg`s. React Native has no `currentColor`, so
+ * `className` sets its color with the label's class (`text-primary-foreground`,
+ * …) and `size` follows the button's (14 for `xs`, 18 for `xl`).
+ */
+function Icon({
+  className,
+  icon: TablerIcon,
+  size = 16,
+}: {
+  className?: string;
+  icon: TablerIconComponent;
+  size?: number;
+}) {
+  const style = useResolveClassNames(
+    cn('text-foreground -mx-0.5 opacity-80', className),
+  );
+
+  return (
+    <TablerIcon
+      accessibilityElementsHidden
+      color={style.color}
+      importantForAccessibility="no-hide-descendants"
+      size={size}
+      strokeWidth={2}
+      style={style}
+    />
+  );
+}
 
 // Same layout as `Story` in @pickle-ui/react, built on React Native
 // primitives: a 12rem column of row labels, then one column per matrix
@@ -123,33 +156,6 @@ function Matrix({
   );
 }
 
-/**
- * A plus sign drawn with views, standing in for an icon library in stories.
- * `className` sets the bars' color (`bg-primary-foreground`, …).
- */
-function PlaceholderIcon({ className }: { className?: string }) {
-  return (
-    <View
-      accessibilityElementsHidden
-      className="size-4 items-center justify-center"
-      importantForAccessibility="no-hide-descendants"
-    >
-      <View
-        className={cn(
-          'bg-foreground absolute h-0.5 w-3 rounded-full',
-          className,
-        )}
-      />
-      <View
-        className={cn(
-          'bg-foreground absolute h-3 w-0.5 rounded-full',
-          className,
-        )}
-      />
-    </View>
-  );
-}
-
 function Section({ children, title }: { children: ReactNode; title: string }) {
   return (
     <View>
@@ -162,9 +168,9 @@ function Section({ children, title }: { children: ReactNode; title: string }) {
 }
 
 const Story = Object.assign(Layout, {
+  Icon,
   Layout,
   Matrix,
-  PlaceholderIcon,
   Section,
 });
 
