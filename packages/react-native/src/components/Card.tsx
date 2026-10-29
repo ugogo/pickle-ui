@@ -45,10 +45,13 @@ function CardFooter({ className, ...props }: CardFooterProps) {
  * like the web header's grid.
  */
 function CardHeader({ children, className, ...props }: CardHeaderProps) {
-  const parts = Children.toArray(children);
-  const actions = parts.filter(
-    (child) => isValidElement(child) && child.type === CardAction,
-  );
+  const actions: React.ReactNode[] = [];
+  const rest: React.ReactNode[] = [];
+  for (const child of Children.toArray(children)) {
+    (isValidElement(child) && child.type === CardAction ? actions : rest).push(
+      child,
+    );
+  }
 
   if (actions.length === 0) {
     return (
@@ -63,9 +66,7 @@ function CardHeader({ children, className, ...props }: CardHeaderProps) {
       className={cn('flex-row items-start gap-4 px-6', className)}
       {...props}
     >
-      <View className="flex-1 gap-1.5">
-        {parts.filter((child) => !actions.includes(child))}
-      </View>
+      <View className="flex-1 gap-1.5">{rest}</View>
       {actions}
     </View>
   );
