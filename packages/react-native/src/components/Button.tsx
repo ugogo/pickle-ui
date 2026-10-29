@@ -42,7 +42,7 @@ const buttonVariants = cva(
   },
 );
 
-const labelVariants = cva('font-medium', {
+const labelVariants = cva('font-sans font-medium', {
   compoundVariants: [
     { className: 'underline', pressed: true, variant: 'link' },
   ],

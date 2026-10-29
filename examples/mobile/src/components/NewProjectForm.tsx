@@ -1,6 +1,12 @@
-import { Button, Card, Text, useColorToken } from '@pickle-ui/react-native';
+import {
+  Button,
+  Card,
+  Input,
+  Text,
+  useColorToken,
+} from '@pickle-ui/react-native';
 import { useState } from 'react';
-import { Switch, TextInput, View } from 'react-native';
+import { Switch, View } from 'react-native';
 
 import { type Project } from '../projects';
 
@@ -13,7 +19,6 @@ export function NewProjectForm({ onCreate }: NewProjectFormProps) {
   const [shipped, setShipped] = useState(false);
   const primary = useColorToken('primary');
   const muted = useColorToken('muted');
-  const mutedForeground = useColorToken('muted-foreground');
 
   const submit = () => {
     if (!name.trim()) return;
@@ -32,13 +37,11 @@ export function NewProjectForm({ onCreate }: NewProjectFormProps) {
         <Card.Title>New project</Card.Title>
       </Card.Header>
       <Card.Content>
-        <TextInput
+        <Input
           accessibilityLabel="Project name"
-          className="border-input bg-background text-foreground h-10 rounded-lg border px-3 text-sm"
           onChangeText={setName}
           onSubmitEditing={submit}
           placeholder="Pickle jar API"
-          placeholderTextColor={mutedForeground}
           returnKeyType="done"
           value={name}
         />

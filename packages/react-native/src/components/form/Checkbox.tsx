@@ -128,7 +128,7 @@ export function Checkbox({
       {label ? (
         <Text
           className={cn(
-            'text-foreground text-sm leading-none font-medium',
+            'text-foreground font-sans text-sm leading-none font-medium',
             disabled && 'opacity-50',
             classNames?.label,
           )}

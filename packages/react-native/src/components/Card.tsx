@@ -86,7 +86,10 @@ function CardRoot({ className, ...props }: CardProps) {
 function CardTitle({ className, ...props }: CardTitleProps) {
   return (
     <Text
-      className={cn('text-card-foreground leading-none', className)}
+      className={cn(
+        'text-card-foreground font-heading leading-none',
+        className,
+      )}
       variant="h3"
       {...props}
     />

@@ -43,7 +43,18 @@ after Tailwind and Uniwind, which is why they come from the same file.
 To bring your own token set, import its pieces instead: `tailwindcss`,
 `uniwind`, your tokens as Uniwind themes, then
 `@pickle-ui/react-native/base.css`, which adds the components to Uniwind's
-content sources and the `Text` type scale.
+content sources, the `Text` type scale and the font defaults.
+
+To use your app's font, set `--font-sans` to one family name after the import
+(`@theme { --font-sans: 'Nunito'; }`) and load its faces under that name with
+expo-font; each text's weight picks its face. Headings follow, unless you also
+set `--font-heading`. Without `--font-sans`, text keeps the system font.
+
+Load every weight under that one name (expo-font's `fontDefinitions`, in
+`useFonts` or its config plugin) rather than declaring a family per weight
+(`--font-sans-medium`, as Uniwind's FAQ does): the components only read
+`--font-sans` and `--font-heading`, so they'd draw the regular face at every
+weight.
 
 Then use the components:
 
@@ -119,9 +130,9 @@ icon-only button an `icon*` size and an `accessibilityLabel`. Buttons keep the w
 are announced as headers.
 
 `Text` sizes come from the shared type scale (`--text-h1` … `--text-code` in
-`@pickle-ui/tokens/typography.css`); override them like any token. Fonts are
-not set yet: text uses the platform's system font, and `code` its monospace
-font.
+`@pickle-ui/tokens/typography.css`); override them like any token. Every
+component's text uses `--font-sans`, and `h1`, `h2` and `Card.Title` use
+`--font-heading`, like the web; `code` keeps the platform's monospace font.
 
 ## Theming
 
@@ -149,4 +160,4 @@ export function Branded({ children }: { children: React.ReactNode }) {
 The values are `oklch()` colors: Uniwind resolves them in `className`
 utilities (`bg-primary`), but React Native can't read them from a `style`
 prop, so draw with the tokens rather than the raw values. Fonts from
-`createTheme` don't apply on native.
+`createTheme` apply too, but React Native reads one family name, not a stack.

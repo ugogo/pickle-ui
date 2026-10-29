@@ -7,7 +7,7 @@ export type FormDescriptionProps = React.ComponentProps<typeof Text>;
 export function FormDescription({ className, ...props }: FormDescriptionProps) {
   return (
     <Text
-      className={cn('text-muted-foreground text-sm', className)}
+      className={cn('text-muted-foreground font-sans text-sm', className)}
       {...props}
     />
   );
