@@ -20,7 +20,7 @@ type SliderProps = SliderPrimitive.Root.Props & {
   classNames?: SlotClassNames<'control' | 'indicator' | 'thumb' | 'track'>;
   getAriaLabel?: SliderPrimitive.Thumb.Props['getAriaLabel'];
   getAriaValueText?: SliderPrimitive.Thumb.Props['getAriaValueText'];
-  /** Render the filled indicator. Set to `false` for sliders with a custom track (e.g. color pickers). Defaults to `true`. */
+  /** Draws the filled track. `false` for a custom track, as in the color picker. Defaults to `true`. */
   indicator?: boolean;
   ref?: Ref<HTMLDivElement>;
   trackStyle?: CSSProperties;

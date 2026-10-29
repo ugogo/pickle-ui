@@ -48,9 +48,8 @@ function useFieldName(name: string | undefined) {
   return name ?? field?.name;
 }
 
-// React Hook Form exposes field state, but it does not attach DOM aria/id
-// props to custom controls. This maps the current Form.Field onto the actual
-// visible control.
+// React Hook Form tracks field state but attaches no aria or id props to
+// custom controls: this maps the current Form.Field onto its visible control.
 function useFormControlProps(
   props: FormControlProps = {},
   { enabled = true }: UseFormControlPropsOptions = {},

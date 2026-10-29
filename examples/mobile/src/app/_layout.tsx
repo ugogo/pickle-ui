@@ -10,9 +10,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useUniwind } from 'uniwind';
 
 /*
- * Customization 3: load the faces of the family global.css sets as
- * `--font-sans`, one per weight Pickle's components use. They share one
- * `fontFamily`, so each text's weight picks its face.
+ * The faces of the family global.css sets as `--font-sans`, one per weight
+ * Pickle's components use. They share one `fontFamily`, so each text's weight
+ * picks its face.
  */
 const FONTS: FontFamilyDefinition[] = [
   {

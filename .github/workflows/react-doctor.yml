@@ -39,18 +39,15 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      # `doctor.config.ts` does `import { defineConfig } from 'react-doctor/api'`,
-      # so react-doctor can only load the config when the dependency is installed.
-      # Without this step the config silently fails to resolve and the action
-      # falls back to its default rules (which is why CI reported findings the
-      # pre-commit hook does not).
+      # `doctor.config.ts` imports `react-doctor/api`. Without the install, the
+      # config silently fails to load and the action runs its default rules.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Run React Doctor
         uses: millionco/react-doctor@v2
         with:
-          # Match the react-doctor version pinned in each package's package.json so CI and
-          # the pre-commit hook evaluate the exact same ruleset.
+          # The version each package pins, so CI and the pre-commit hook run
+          # the same rules.
           version: 0.9.18
           directory: packages/${{ matrix.package }}

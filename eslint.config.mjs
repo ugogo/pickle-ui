@@ -10,17 +10,10 @@ import tseslint from 'typescript-eslint';
 export default defineConfig([
   globalIgnores(['**/dist', '**/storybook-static']),
 
-  // Base JS + TypeScript recommended rules.
   js.configs.recommended,
   tseslint.configs.recommended,
-
-  // React hooks rules of hooks + exhaustive-deps (+ react-compiler checks).
   reactHooks.configs.flat['recommended-latest'],
-
-  // Perfectionist — sort everything (imports, objects, props, types, …).
   perfectionist.configs['recommended-natural'],
-
-  // Storybook best practices for *.stories.* files.
   storybook.configs['flat/recommended'],
 
   {
@@ -78,6 +71,6 @@ export default defineConfig([
     },
   },
 
-  // Disable formatting-related rules that conflict with Prettier. Keep last.
+  // Turns off the rules Prettier covers. Keep last.
   eslintConfigPrettier,
 ]);

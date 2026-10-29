@@ -82,12 +82,10 @@ function AlertIcon({ className, ...props }: AlertIconProps) {
 }
 
 /**
- * An inline message that draws attention to contextual information.
- *
- * The alert has no live-region role by default, so static notices are not
- * announced on page load. When the alert appears in response to a user action,
- * pass `role="alert"` for urgent messages (failures) or `role="status"` for
- * polite ones (confirmations, info).
+ * No live-region role by default, so static notices are not announced on page
+ * load. When the alert appears in response to a user action, pass
+ * `role="alert"` for urgent messages (failures) or `role="status"` for polite
+ * ones (confirmations, info).
  */
 function AlertRoot({ className, variant = 'default', ...props }: AlertProps) {
   return (
