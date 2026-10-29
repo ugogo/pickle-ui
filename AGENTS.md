@@ -4,7 +4,7 @@ Guidance for AI agents (and humans) working in this repository.
 
 ## Project
 
-**pickle-ui** — a design system published as a pnpm monorepo. Each package lives in `packages/<name>`; the workspace root only holds shared tooling (ESLint, Prettier, Husky, lint-staged) and CI.
+**pickle-ui** is a design system published as a pnpm monorepo. Each package lives in `packages/<name>`; the workspace root only holds shared tooling (ESLint, Prettier, Husky, lint-staged) and CI.
 
 | Folder                  | npm package               | Contents                                                                                                                                                                                                                                                                              |
 | ----------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -12,13 +12,37 @@ Guidance for AI agents (and humans) working in this repository.
 | `packages/react-native` | `@pickle-ui/react-native` | React Native components for Expo apps, styled with the tokens through [Uniwind](https://uniwind.dev).                                                                                                                                                                                 |
 | `packages/tokens`       | `@pickle-ui/tokens`       | Design tokens (colors, radii, type scale) as Tailwind CSS v4 theme variables: `native.css` for Uniwind, `theme.css` for the web, `typography.css` for both. `@pickle-ui/react` imports `theme.css`. Also the platform-free code both packages share: `createTheme` in `src/theme.ts`. |
 
-`examples/` holds private workspace apps that consume the packages like a user would: `examples/web` (Vite, `@pickle-ui/react`) and `examples/mobile` (Expo, Uniwind, `@pickle-ui/react-native`). They depend on `workspace:*`, never ship, and need no changeset. Start them with `pnpm example:web` and `pnpm example:mobile`. The examples read `@pickle-ui/react` and `@pickle-ui/react-native` through their `@pickle-ui/source` export condition (`resolve.conditions` in Vite, `resolver.unstable_conditionNames` in Metro, `customConditions` in each tsconfig), so they run and type-check against `src` with no build. When a change renames or removes something the examples use, update them in the same PR; when it adds a customization technique worth copying, show it there with a `Customization N` comment.
+`examples/` holds private workspace apps that consume the packages like a user would: `examples/web` (Vite, `@pickle-ui/react`) and `examples/mobile` (Expo, Uniwind, `@pickle-ui/react-native`).
+
+- They depend on `workspace:*`, never ship, and need no changeset.
+- Start them with `pnpm example:web` and `pnpm example:mobile`.
+- They read both packages through the `@pickle-ui/source` export condition (`resolve.conditions` in Vite, `resolver.unstable_conditionNames` in Metro, `customConditions` in each tsconfig), so they run and type-check against `src` with no build.
+- A change that renames or removes something they use updates them in the same PR.
+- A new customization technique worth copying is shown there with a `Customization N` comment.
 
 In `@pickle-ui/react`, exported components live in `src/components`, internal building blocks in `src/components/_internal`, shared helpers in `src/lib`, and each exported component ships a `*.stories.tsx` for Storybook. Paths in the sections below are relative to `packages/react`.
 
-`@pickle-ui/react-native` follows the same layout (`src/components`, `src/entries`, `src/index.ts`, a `*.test.tsx` per component) and the Public API and Component API rules below where React Native allows: no Base UI, no `render` prop and no `data-*` attributes. Components are Expo-only, built on React Native primitives, and style with token utilities through Uniwind's `className`. Reuse the web component's name, part names and `variant` / `size` / `tone` values, its dimensions on a phone (heights, padding, radii) and the text sizes it uses from `sm` up (14px for fields and `md` buttons): the web's larger phone text only stops iOS Safari zooming into focused fields, which native apps don't do; a control smaller than 44pt reaches a 44pt touch target with `hitSlop`, as the web does with its `pointer-coarse` hit area. Check a port against the web example at 402px and the iOS simulator side by side. Tests run on Jest with `jest-expo` and React Native Testing Library. Each component also ships a `*.stories.tsx` built with its own `src/components/_internal/Story.tsx` (same `Layout` / `Section` / `Matrix` as the web one, on React Native primitives), titled `components/<Name>` like the web story. The Storybook renders them in the browser through `@storybook/react-native-web-vite` and Uniwind's Vite plugin, which writes `src/uniwind-types.d.ts`; commit that file as Uniwind writes it. Apps import only `src/styles.css`, which imports `tailwindcss`, `uniwind`, `@pickle-ui/tokens/native.css` and `./base.css` (the components' `@source`, the type scale and the native font defaults), in that order, then replaces the tokens' `--font-*` variables: they refer to themselves, which the web resolves but Uniwind can't. Keep Tailwind and Uniwind in that file: Uniwind compiles each imported stylesheet on its own to find themes, so a stylesheet that imports the tokens must import both before them, or the `@variant light` / `@variant dark` blocks and Uniwind's `--spacing` utilities fail to compile. `base.css` only imports `@pickle-ui/tokens/typography.css` and declares the font defaults in `@theme default`, theme variables and no themes, so it also works after an app's own token set. Every component that renders text sets `font-sans` (`font-heading` where the web component does), so an app's `--font-sans` reaches it; with none set, the defaults read an undeclared variable and text keeps the system font. Platform split: no `.web.tsx` bridges to `@pickle-ui/react`; each package exports its own components.
+`@pickle-ui/react-native` follows the same layout (`src/components`, `src/entries`, `src/index.ts`, a `*.test.tsx` per component) and the Public API and Component API rules below where React Native allows: no Base UI, no `render` prop and no `data-*` attributes.
 
-`@pickle-ui/tokens` is the source of truth for color and radius values (`packages/tokens/native.css`) and for the type scale behind `Text` (`packages/tokens/typography.css`, imported by both packages' `base.css`). Its values are Uniwind themes (`@variant light` / `@variant dark`), and every theme must declare the same variables. `packages/tokens/theme.css` imports it and defines the `light` and `dark` variants for the web; never define those variants in `native.css`, since Uniwind owns them. `packages/react/src/theme.css` only imports `@pickle-ui/tokens/theme.css`, so `@pickle-ui/react/theme.css` keeps working for consumers. Platform-free code both component packages need (names, values, pure functions, never class strings) lives in `packages/tokens/src` too, built to `dist` and read from `src` through the `@pickle-ui/source` condition by the packages' tests, typecheck and Storybooks; each package re-exports what apps import (`@pickle-ui/react/theme`, `@pickle-ui/react-native/theme`). See [ADR 0001](docs/adr/0001-shared-code-lives-in-tokens.md). `src/tokens.test.ts` compiles the stylesheets and checks that light and dark declare the same variables and that every variable `createTheme` writes is declared and read by a utility.
+- **Platform:** Expo only, built on React Native primitives, styled with token utilities through Uniwind's `className`. No `.web.tsx` bridges to `@pickle-ui/react`; each package exports its own components.
+- **Parity with the web:** reuse the web component's name, part names, `variant` / `size` / `tone` values, phone dimensions (heights, padding, radii) and the text sizes it uses from `sm` up (14px for fields and `md` buttons).
+  - The web's larger phone text only stops iOS Safari zooming into focused fields, which native apps don't do.
+  - Check a port against the web example at 402px and the iOS simulator side by side.
+- **Touch targets:** a control smaller than 44pt reaches 44pt with `hitSlop`, as the web does with its `pointer-coarse` hit area.
+- **Tests:** Jest with `jest-expo` and React Native Testing Library.
+- **Stories:** each component ships a `*.stories.tsx` built with its own `src/components/_internal/Story.tsx` (same `Layout` / `Section` / `Matrix` as the web one, on React Native primitives), titled `components/<Name>` like the web story. Storybook renders them in the browser through `@storybook/react-native-web-vite` and Uniwind's Vite plugin, which writes `src/uniwind-types.d.ts`; commit that file as Uniwind writes it.
+- **Styles:** apps import only `src/styles.css`. It imports `tailwindcss`, `uniwind`, `@pickle-ui/tokens/native.css` and `./base.css` (the components' `@source`, the type scale and the native font defaults), in that order, then replaces the tokens' `--font-*` variables: they refer to themselves, which the web resolves but Uniwind can't.
+- **Import order:** keep Tailwind and Uniwind in that file. Uniwind compiles each imported stylesheet on its own to find themes, so a stylesheet that imports the tokens must import both before them, or the `@variant light` / `@variant dark` blocks and Uniwind's `--spacing` utilities fail to compile.
+- **`base.css`:** only imports `@pickle-ui/tokens/typography.css` and declares the font defaults in `@theme default` (theme variables, no themes), so it also works after an app's own token set.
+- **Fonts:** every component that renders text sets `font-sans` (`font-heading` where the web component does), so an app's `--font-sans` reaches it. With none set, the defaults read an undeclared variable and text keeps the system font.
+
+`@pickle-ui/tokens` is the source of truth for color and radius values (`packages/tokens/native.css`) and for the type scale behind `Text` (`packages/tokens/typography.css`, imported by both packages' `base.css`).
+
+- Its values are Uniwind themes (`@variant light` / `@variant dark`), and every theme must declare the same variables.
+- `packages/tokens/theme.css` imports it and defines the `light` and `dark` variants for the web. Never define those variants in `native.css`: Uniwind owns them.
+- `packages/react/src/theme.css` only imports `@pickle-ui/tokens/theme.css`, so `@pickle-ui/react/theme.css` keeps working for consumers.
+- Platform-free code both component packages need (names, values, pure functions, never class strings) lives in `packages/tokens/src`. It is built to `dist` and read from `src` through the `@pickle-ui/source` condition by the packages' tests, typecheck and Storybooks. Each package re-exports what apps import (`@pickle-ui/react/theme`, `@pickle-ui/react-native/theme`). See [ADR 0001](docs/adr/0001-shared-code-lives-in-tokens.md).
+- `src/tokens.test.ts` compiles the stylesheets and checks that light and dark declare the same variables and that every variable `createTheme` writes is declared and read by a utility.
 
 ## Tooling
 
@@ -33,7 +57,10 @@ In `@pickle-ui/react`, exported components live in `src/components`, internal bu
 Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.github/workflows/release.yml`), which runs on every push to `main`.
 
 - **Every PR that changes a published package adds a changeset**: run `pnpm changeset`, pick the bump and write one changelog line, then commit the generated `.changeset/*.md`. Docs, CI or tooling-only PRs don't need one.
-- **Each package has its own version.** A change to `@pickle-ui/tokens` also releases `@pickle-ui/react` and `@pickle-ui/react-native` with a patch bump, because they pin the exact tokens version they were published with (`updateInternalDependencies` in `.changeset/config.json`). A change to `@pickle-ui/react` or `@pickle-ui/react-native` alone leaves the other packages untouched. Add the changeset to the package you changed; Changesets bumps the dependents.
+- **Each package has its own version.**
+  - A change to `@pickle-ui/tokens` also releases `@pickle-ui/react` and `@pickle-ui/react-native` with a patch bump, because they pin the exact tokens version they were published with (`updateInternalDependencies` in `.changeset/config.json`).
+  - A change to `@pickle-ui/react` or `@pickle-ui/react-native` alone leaves the other packages untouched.
+  - Add the changeset to the package you changed; Changesets bumps the dependents.
 - **The repo is in `beta` pre-release mode** (`.changeset/pre.json`), so every release is `x.y.z-beta.n` on the `beta` dist-tag. Leave it with `pnpm changeset pre exit` only when the user asks for a stable release.
 - **On `main`, the workflow opens or updates a "Version Packages" PR** while changesets are pending. When a user asks for a release, merge that PR (`gh pr merge <n>`) and monitor the run with `gh run watch --exit-status`. Merging it publishes the packages, pushes the tags (`@pickle-ui/react@<version>`) and creates the GitHub Releases.
 - **Never publish or version locally**: no `changeset publish`, `changeset version`, `npm publish` or `pnpm publish`.
@@ -43,11 +70,11 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 
 ## Component layout
 
-- **Exported components** — one top-level file per component in `src/components` (e.g. `Button.tsx`, `Card.tsx`), each with a co-located `*.stories.tsx` for Storybook and a `*.test.tsx`.
-- **Form components** — form controls (e.g. `Input.tsx`, `Select.tsx`, `Checkbox.tsx`) and the React Hook Form bindings (`Form.tsx`, `FormInput.tsx`, …) live in `src/components/form`, with stories titled `components/form/<Name>`.
-- **Subpath entries** — each exported component gets a `src/entries/<kebab-name>.ts` exporting it and its types, so consumers can import `@pickle-ui/react/<kebab-name>`. `src/index.ts` only re-exports every entry (`export * from './entries/<kebab-name>'`).
-- **Internal components** — helpers and Storybook-only utilities that are not part of the public API belong in `src/components/_internal` (e.g. `Story.tsx`, `VisuallyHiddenInput.tsx`). Do not export these from `src/index.ts`.
-- **Implementation modules** — a large component may keep its implementation in a separate file next to its facade (e.g. `form/ColorPickerPrimitive.tsx` behind `form/ColorPicker.tsx`). Only the facade is public; the implementation module is never exported from `src/index.ts` or an entry.
+- **Exported components**: one top-level file per component in `src/components` (e.g. `Button.tsx`, `Card.tsx`), each with a co-located `*.stories.tsx` for Storybook and a `*.test.tsx`.
+- **Form components**: form controls (e.g. `Input.tsx`, `Select.tsx`, `Checkbox.tsx`) and the React Hook Form bindings (`Form.tsx`, `FormInput.tsx`, …) live in `src/components/form`, with stories titled `components/form/<Name>`.
+- **Subpath entries**: each exported component gets a `src/entries/<kebab-name>.ts` exporting it and its types, so consumers can import `@pickle-ui/react/<kebab-name>`. `src/index.ts` only re-exports every entry (`export * from './entries/<kebab-name>'`).
+- **Internal components**: helpers and Storybook-only utilities that are not part of the public API belong in `src/components/_internal` (e.g. `Story.tsx`, `VisuallyHiddenInput.tsx`). Do not export these from `src/index.ts`.
+- **Implementation modules**: a large component may keep its implementation in a separate file next to its facade (e.g. `form/ColorPickerPrimitive.tsx` behind `form/ColorPicker.tsx`). Only the facade is public; the implementation module is never exported from `src/index.ts` or an entry.
 - Stories import internal utilities from `./_internal/…` (`../_internal/…` from `src/components/form`); exported components import internal modules the same way (e.g. `../_internal/VisuallyHiddenInput`).
 - Imports inside `src` are relative, never the `@/` alias: the examples compile `src` directly, where the alias doesn't resolve. ESLint rejects `@/` imports there; convert the ones the `shadcn` CLI writes (its `components.json` aliases still read `paths` in `tsconfig.json`).
 
@@ -56,7 +83,7 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 `src/index.ts` and `src/entries/*.ts` are the public API. Everything they export is a promise kept until the next major, so they stay small and uniform.
 
 - **One value per component**: the compound itself (`Popover`, `Card`, `InputGroup`). Parts are reached through it (`Popover.Trigger`) and never exported under parallel names (`PopoverTrigger`, `GroupRoot`). Component modules may export parts for reuse inside the library; the public files do not re-export them.
-- **Variants**: export `<name>Variants` only where consumers need the look on an element the component does not render — today `buttonVariants`, `badgeVariants` and `textVariants`. Other cva definitions stay private.
+- **Variants**: export `<name>Variants` only where consumers need the look on an element the component does not render, today `buttonVariants`, `badgeVariants` and `textVariants`. Other cva definitions stay private.
 - **Types**: export `<Name>Props` for the root and `<Name><Part>Props` for each part (`PopoverTriggerProps`), nothing else. The root type is always `<Name>Props`, never `<Name>RootProps`; `<Name>RootProps` is reserved for an explicit `.Root` part (`ScrollArea.Root`).
 - **No primitive re-exports**: do not re-export Base UI primitives or a lower-level copy of a component (no `SliderPrimitive`, no `ColorPickerPrimitive`). Consumers who need the headless layer import Base UI directly.
 - **Entries are the source of truth**: a component's public names are written once, in its entry; `src/index.ts` re-exports each entry and nothing else. Keep exports sorted alphabetically.
@@ -65,11 +92,23 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 ## Component API
 
 - Use [Base UI](https://base-ui.com) for headless component primitives. Do not introduce new `radix-ui` imports or dependencies; if generated code uses Radix primitives, convert it to Base UI before committing.
-- **Compound components**: build each part as a plain function (`PopoverTrigger`), then attach them with `const Popover = Object.assign(PopoverRoot, { Trigger: PopoverTrigger, … })`, parts sorted alphabetically. The root is callable (`<Popover>`), never `Popover.Root`, unless the root is a facade that renders several parts itself (`ScrollArea`), in which case `.Root` exposes the bare root. An imperative component with nothing to render in place (`Toast`) is a plain object grouping its `Provider` and the ways to reach it (`manager`, `useToast`).
-- **Part vocabulary**: reuse these names before inventing new ones — `Trigger`, `Content` (the popup, including its portal and positioner), `Header`, `Title`, `Description`, `Footer`, `Close`, `Action`, `Item`, `Group`, `GroupLabel`, `Separator`, `Label`, `Value`, `Icon`, `Indicator`. Follow Base UI's part names when a part wraps a Base UI part of the same role.
-- **Composition**: change the rendered element with Base UI's `render` prop (`<Button render={<a href="/docs" />}>`). Do not add `asChild`. The layout and typography primitives (`Text`, `Flex`, `Grid`, `XStack`, `YStack`) keep their `as` prop, which only swaps the tag name. Parts built on Base UI get `render` for free; plain parts that need it use `useRender` with `mergeProps` from `@base-ui/react`.
+- **Compound components**:
+  - Build each part as a plain function (`PopoverTrigger`), then attach them with `const Popover = Object.assign(PopoverRoot, { Trigger: PopoverTrigger, … })`, parts sorted alphabetically.
+  - The root is callable (`<Popover>`), never `Popover.Root`. The exception is a facade that renders several parts itself (`ScrollArea`), where `.Root` exposes the bare root.
+  - An imperative component with nothing to render in place (`Toast`) is a plain object grouping its `Provider` and the ways to reach it (`manager`, `useToast`).
+- **Part vocabulary**: reuse these names before inventing new ones: `Trigger`, `Content` (the popup, including its portal and positioner), `Header`, `Title`, `Description`, `Footer`, `Close`, `Action`, `Item`, `Group`, `GroupLabel`, `Separator`, `Label`, `Value`, `Icon`, `Indicator`. Follow Base UI's part names when a part wraps a Base UI part of the same role.
+- **Composition**:
+  - Change the rendered element with Base UI's `render` prop (`<Button render={<a href="/docs" />}>`). Do not add `asChild`.
+  - `Text`, `Flex`, `Grid`, `XStack` and `YStack` keep their `as` prop, which only swaps the tag name.
+  - Parts built on Base UI get `render` for free. Plain parts that need it use `useRender` with `mergeProps` from `@base-ui/react`.
 - **Props**: each part takes the props of the element or Base UI part it renders (`React.ComponentProps<'div'>`, `React.ComponentProps<typeof PopoverPrimitive.Trigger>`) plus its own, and spreads the rest onto it. `ref` is a regular prop; never use `forwardRef`. State props follow Base UI's names: `open` / `defaultOpen` / `onOpenChange`, `value` / `defaultValue` / `onValueChange`, `disabled`.
-- **Styling**: every part renders `data-slot="<component>-<part>"` in kebab case (`popover-trigger`; the root is just `popover`) and merges `className` last with `cn`. Style states through Base UI's data attributes (`data-open`, `data-disabled`, `data-side`) rather than props. Visual variants use `cva` with `variant` and `size` props, and the part renders each one's resolved value, default included, as `data-<prop>` (`data-variant="default"`, `data-size="md"`, `data-truncate=""` for a boolean) so consumers can target it in CSS. Set the default in the destructured props (`size = 'md'`) so an explicit `null` skips both the classes and the attribute. `data-size` only ever holds a name from the size scale, never a number: a prop that also accepts a number (`Input`'s native `size`) writes the scale size it renders; sizes use the scale `xs`, `sm`, `md`, `lg`, `xl` with `md` as the default. `classNames` (`SlotClassNames`) is only for a facade that renders several parts from one set of props.
+- **Styling**:
+  - Every part renders `data-slot="<component>-<part>"` in kebab case (`popover-trigger`; the root is just `popover`) and merges `className` last with `cn`.
+  - Style states through Base UI's data attributes (`data-open`, `data-disabled`, `data-side`), not props.
+  - Visual variants use `cva` with `variant` and `size` props. The part renders each one's resolved value, default included, as `data-<prop>` (`data-variant="default"`, `data-size="md"`, `data-truncate=""` for a boolean) so consumers can target it in CSS.
+  - Set the default in the destructured props (`size = 'md'`) so an explicit `null` skips both the classes and the attribute.
+  - `data-size` only holds a name from the size scale (`xs`, `sm`, `md`, `lg`, `xl`; default `md`), never a number. A prop that also accepts a number (`Input`'s native `size`) writes the scale size it renders.
+  - `classNames` (`SlotClassNames`) is only for a facade that renders several parts from one set of props.
 - **Overlays** (Popover, Dialog, Menu, Tooltip…): `Content` owns the portal, the positioner or backdrop, and the popup, so consumers write `<X.Content>` and nothing else. It accepts the positioner's `side`, `align`, `sideOffset` and `alignOffset` with the library's defaults.
 - **`'use client'`**: add it only to modules that call hooks, create context, or attach event handlers themselves. Base UI parts carry their own directive, so thin wrappers stay server-safe and their compound parts work from React Server Components.
 - **Accessibility**: icon-only controls require an accessible name (`aria-label`); text visible only to screen readers is part of the component, not left to the consumer. Built-in strings are English defaults that a prop can replace (a `closeLabel` prop, the `aria-label` of a status), so apps in other languages never fork a component.
@@ -90,6 +129,10 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 - Adding a component, a part, a prop or a variant is a minor release. Renaming or removing any of them, changing a default, or changing a `data-slot` value is breaking.
 - Before removing something, deprecate it in a minor release with a JSDoc `@deprecated` tag that names the replacement, and remove it in the next major.
 - Consumers style through `className`, `data-slot` and the variant data attributes (`data-variant`, `data-size`, …), so treat their values as public API.
+
+## Writing
+
+Docs and code comments follow `.claude/skills/deslop/SKILL.md`: the point first, one fact per sentence, nothing the code or another doc already says.
 
 ## Commit convention
 
