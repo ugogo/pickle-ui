@@ -17,6 +17,10 @@
  * family would also drop the medium and semibold weights on Android.
  * `default` lets any `--font-*` an app or its token set declares win, and
  * replaces Tailwind's web font stacks, which native can't resolve.
+ *
+ * This default is Pickle's, not Uniwind's. Uniwind suggests per-platform
+ * values instead, but `@variant ios` doesn't compile inside `@theme`, and
+ * inside `@layer theme` it overrides the app's own `--font-sans`.
  */
 @theme default {
   --font-sans: var(--pickle-no-font);

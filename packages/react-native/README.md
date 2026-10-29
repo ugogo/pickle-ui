@@ -50,6 +50,12 @@ To use your app's font, set `--font-sans` to one family name after the import
 expo-font; each text's weight picks its face. Headings follow, unless you also
 set `--font-heading`. Without `--font-sans`, text keeps the system font.
 
+Load every weight under that one name (expo-font's `fontDefinitions`, in
+`useFonts` or its config plugin) rather than declaring a family per weight
+(`--font-sans-medium`, as Uniwind's FAQ does): the components only read
+`--font-sans` and `--font-heading`, so they'd draw the regular face at every
+weight.
+
 Then use the components:
 
 ```tsx
