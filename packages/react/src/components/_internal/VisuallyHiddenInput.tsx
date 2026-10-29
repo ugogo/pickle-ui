@@ -16,6 +16,36 @@ interface VisuallyHiddenInputProps<T = InputValue> extends Omit<
   value?: T;
 }
 
+const noSize: { height?: number; width?: number } = {};
+
+// The snapshot is a string so React can compare it by value; an object would be
+// a new snapshot on every read and re-render forever.
+function useElementSize(element: HTMLElement | null) {
+  const subscribe = React.useCallback(
+    (onChange: () => void) => {
+      if (!element) return () => {};
+
+      const resizeObserver = new ResizeObserver(onChange);
+      resizeObserver.observe(element, { box: 'border-box' });
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    },
+    [element],
+  );
+  const getSnapshot = () =>
+    element ? `${element.offsetWidth}x${element.offsetHeight}` : '';
+  const snapshot = React.useSyncExternalStore(subscribe, getSnapshot, () => '');
+
+  return React.useMemo(() => {
+    if (!snapshot) return noSize;
+
+    const [width, height] = snapshot.split('x').map(Number);
+    return { height, width };
+  }, [snapshot]);
+}
+
 function VisuallyHiddenInput<T = InputValue>(
   props: VisuallyHiddenInputProps<T>,
 ) {
@@ -53,55 +83,7 @@ function VisuallyHiddenInput<T = InputValue>(
     return prevValueRef.current.previous;
   }, [isCheckInput, value, checked]);
 
-  const [controlSize, setControlSize] = React.useState<{
-    height?: number;
-    width?: number;
-  }>({});
-
-  // react-doctor-disable-next-line react-doctor/no-cascading-set-state -- this effect measures the control element and only calls setControlSize in mutually exclusive branches (or inside an async ResizeObserver callback), not as a synchronous render cascade
-  React.useLayoutEffect(() => {
-    if (!control) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset measured size synchronously when the control is removed so the hidden input does not retain a stale size
-      setControlSize({});
-      return;
-    }
-
-    setControlSize({
-      height: control.offsetHeight,
-      width: control.offsetWidth,
-    });
-
-    if (typeof window === 'undefined') return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      if (!Array.isArray(entries) || !entries.length) return;
-
-      const entry = entries[0];
-      if (!entry) return;
-
-      let width: number;
-      let height: number;
-
-      if ('borderBoxSize' in entry) {
-        const borderSizeEntry = entry.borderBoxSize;
-        const borderSize = Array.isArray(borderSizeEntry)
-          ? borderSizeEntry[0]
-          : borderSizeEntry;
-        width = borderSize.inlineSize;
-        height = borderSize.blockSize;
-      } else {
-        width = control.offsetWidth;
-        height = control.offsetHeight;
-      }
-
-      setControlSize({ height, width });
-    });
-
-    resizeObserver.observe(control, { box: 'border-box' });
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [control]);
+  const controlSize = useElementSize(control);
 
   React.useEffect(() => {
     const input = inputRef.current;

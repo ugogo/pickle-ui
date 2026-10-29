@@ -62,46 +62,6 @@ export function Checkbox({
     defaultChecked,
     onCheckedChange,
   );
-  const filled = checked && !indeterminate;
-
-  const box = (
-    <View
-      className={cn(
-        'items-center justify-center rounded-[4px] border shadow-xs shadow-black/5',
-        boxClasses[size],
-        // A checked box is filled in both themes, so the dark input
-        // background must not apply to it.
-        filled
-          ? 'border-primary bg-primary'
-          : cn(
-              'border-input bg-background dark:bg-input/32',
-              invalid && 'border-destructive/36',
-            ),
-        (checked || indeterminate || invalid || disabled) && 'shadow-none',
-        disabled && 'opacity-64',
-        className,
-      )}
-    >
-      {indeterminate ? (
-        <View
-          className={cn(
-            'bg-foreground rounded-full',
-            minusClasses[size],
-            classNames?.indicator,
-          )}
-        />
-      ) : checked ? (
-        <View
-          className={cn(
-            'border-primary-foreground -mt-px rotate-45',
-            checkClasses[size],
-            classNames?.indicator,
-          )}
-        />
-      ) : null}
-    </View>
-  );
-
   return (
     // `role` and `aria-*` are React Native's current accessibility props;
     // `accessibilityState` keeps any extra state the caller passes.
@@ -124,7 +84,15 @@ export function Checkbox({
       role="checkbox"
       {...props}
     >
-      {box}
+      <CheckboxBox
+        checked={checked}
+        className={className}
+        disabled={disabled}
+        indeterminate={indeterminate}
+        indicatorClassName={classNames?.indicator}
+        invalid={invalid}
+        size={size}
+      />
       {label ? (
         <Text
           className={cn(
@@ -137,5 +105,63 @@ export function Checkbox({
         </Text>
       ) : null}
     </Pressable>
+  );
+}
+
+function CheckboxBox({
+  checked,
+  className,
+  disabled,
+  indeterminate,
+  indicatorClassName,
+  invalid,
+  size,
+}: {
+  checked: boolean;
+  className?: string;
+  disabled: boolean;
+  indeterminate: boolean;
+  indicatorClassName?: string;
+  invalid: boolean;
+  size: 'md' | 'sm';
+}) {
+  const filled = checked && !indeterminate;
+
+  return (
+    <View
+      className={cn(
+        'items-center justify-center rounded-[4px] border shadow-xs shadow-black/5',
+        boxClasses[size],
+        // A checked box is filled in both themes, so the dark input
+        // background must not apply to it.
+        filled
+          ? 'border-primary bg-primary'
+          : cn(
+              'border-input bg-background dark:bg-input/32',
+              invalid && 'border-destructive/36',
+            ),
+        (checked || indeterminate || invalid || disabled) && 'shadow-none',
+        disabled && 'opacity-64',
+        className,
+      )}
+    >
+      {indeterminate ? (
+        <View
+          className={cn(
+            'bg-foreground rounded-full',
+            minusClasses[size],
+            indicatorClassName,
+          )}
+        />
+      ) : checked ? (
+        <View
+          className={cn(
+            'border-primary-foreground -mt-px rotate-45',
+            checkClasses[size],
+            indicatorClassName,
+          )}
+        />
+      ) : null}
+    </View>
   );
 }
