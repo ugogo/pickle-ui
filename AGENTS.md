@@ -25,7 +25,9 @@ In `@pickle-ui/react`, exported components live in `src/components`, internal bu
 `@pickle-ui/react-native` follows the same layout (`src/components`, `src/entries`, `src/index.ts`, a `*.test.tsx` per component) and the Public API and Component API rules below where React Native allows: no Base UI, no `render` prop and no `data-*` attributes.
 
 - **Platform:** Expo only, built on React Native primitives, styled with token utilities through Uniwind's `className`. No `.web.tsx` bridges to `@pickle-ui/react`; each package exports its own components.
-- **Parity with the web:** reuse the web component's name, part names, `variant` / `size` / `tone` values, phone dimensions (heights, padding, radii) and the text sizes it uses from `sm` up (14px for fields and `md` buttons). The web's larger phone text only stops iOS Safari zooming into focused fields, which native apps don't do. Check a port against the web example at 402px and the iOS simulator side by side.
+- **Parity with the web:** reuse the web component's name, part names, `variant` / `size` / `tone` values, phone dimensions (heights, padding, radii) and the text sizes it uses from `sm` up (14px for fields and `md` buttons).
+  - The web's larger phone text only stops iOS Safari zooming into focused fields, which native apps don't do.
+  - Check a port against the web example at 402px and the iOS simulator side by side.
 - **Touch targets:** a control smaller than 44pt reaches 44pt with `hitSlop`, as the web does with its `pointer-coarse` hit area.
 - **Tests:** Jest with `jest-expo` and React Native Testing Library.
 - **Stories:** each component ships a `*.stories.tsx` built with its own `src/components/_internal/Story.tsx` (same `Layout` / `Section` / `Matrix` as the web one, on React Native primitives), titled `components/<Name>` like the web story. Storybook renders them in the browser through `@storybook/react-native-web-vite` and Uniwind's Vite plugin, which writes `src/uniwind-types.d.ts`; commit that file as Uniwind writes it.
@@ -55,7 +57,10 @@ In `@pickle-ui/react`, exported components live in `src/components`, internal bu
 Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.github/workflows/release.yml`), which runs on every push to `main`.
 
 - **Every PR that changes a published package adds a changeset**: run `pnpm changeset`, pick the bump and write one changelog line, then commit the generated `.changeset/*.md`. Docs, CI or tooling-only PRs don't need one.
-- **Each package has its own version.** A change to `@pickle-ui/tokens` also releases `@pickle-ui/react` and `@pickle-ui/react-native` with a patch bump, because they pin the exact tokens version they were published with (`updateInternalDependencies` in `.changeset/config.json`). A change to `@pickle-ui/react` or `@pickle-ui/react-native` alone leaves the other packages untouched. Add the changeset to the package you changed; Changesets bumps the dependents.
+- **Each package has its own version.**
+  - A change to `@pickle-ui/tokens` also releases `@pickle-ui/react` and `@pickle-ui/react-native` with a patch bump, because they pin the exact tokens version they were published with (`updateInternalDependencies` in `.changeset/config.json`).
+  - A change to `@pickle-ui/react` or `@pickle-ui/react-native` alone leaves the other packages untouched.
+  - Add the changeset to the package you changed; Changesets bumps the dependents.
 - **The repo is in `beta` pre-release mode** (`.changeset/pre.json`), so every release is `x.y.z-beta.n` on the `beta` dist-tag. Leave it with `pnpm changeset pre exit` only when the user asks for a stable release.
 - **On `main`, the workflow opens or updates a "Version Packages" PR** while changesets are pending. When a user asks for a release, merge that PR (`gh pr merge <n>`) and monitor the run with `gh run watch --exit-status`. Merging it publishes the packages, pushes the tags (`@pickle-ui/react@<version>`) and creates the GitHub Releases.
 - **Never publish or version locally**: no `changeset publish`, `changeset version`, `npm publish` or `pnpm publish`.
@@ -87,9 +92,15 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 ## Component API
 
 - Use [Base UI](https://base-ui.com) for headless component primitives. Do not introduce new `radix-ui` imports or dependencies; if generated code uses Radix primitives, convert it to Base UI before committing.
-- **Compound components**: build each part as a plain function (`PopoverTrigger`), then attach them with `const Popover = Object.assign(PopoverRoot, { Trigger: PopoverTrigger, … })`, parts sorted alphabetically. The root is callable (`<Popover>`), never `Popover.Root`, unless the root is a facade that renders several parts itself (`ScrollArea`), in which case `.Root` exposes the bare root. An imperative component with nothing to render in place (`Toast`) is a plain object grouping its `Provider` and the ways to reach it (`manager`, `useToast`).
+- **Compound components**:
+  - Build each part as a plain function (`PopoverTrigger`), then attach them with `const Popover = Object.assign(PopoverRoot, { Trigger: PopoverTrigger, … })`, parts sorted alphabetically.
+  - The root is callable (`<Popover>`), never `Popover.Root`. The exception is a facade that renders several parts itself (`ScrollArea`), where `.Root` exposes the bare root.
+  - An imperative component with nothing to render in place (`Toast`) is a plain object grouping its `Provider` and the ways to reach it (`manager`, `useToast`).
 - **Part vocabulary**: reuse these names before inventing new ones: `Trigger`, `Content` (the popup, including its portal and positioner), `Header`, `Title`, `Description`, `Footer`, `Close`, `Action`, `Item`, `Group`, `GroupLabel`, `Separator`, `Label`, `Value`, `Icon`, `Indicator`. Follow Base UI's part names when a part wraps a Base UI part of the same role.
-- **Composition**: change the rendered element with Base UI's `render` prop (`<Button render={<a href="/docs" />}>`). Do not add `asChild`. The layout and typography primitives (`Text`, `Flex`, `Grid`, `XStack`, `YStack`) keep their `as` prop, which only swaps the tag name. Parts built on Base UI get `render` for free; plain parts that need it use `useRender` with `mergeProps` from `@base-ui/react`.
+- **Composition**:
+  - Change the rendered element with Base UI's `render` prop (`<Button render={<a href="/docs" />}>`). Do not add `asChild`.
+  - `Text`, `Flex`, `Grid`, `XStack` and `YStack` keep their `as` prop, which only swaps the tag name.
+  - Parts built on Base UI get `render` for free. Plain parts that need it use `useRender` with `mergeProps` from `@base-ui/react`.
 - **Props**: each part takes the props of the element or Base UI part it renders (`React.ComponentProps<'div'>`, `React.ComponentProps<typeof PopoverPrimitive.Trigger>`) plus its own, and spreads the rest onto it. `ref` is a regular prop; never use `forwardRef`. State props follow Base UI's names: `open` / `defaultOpen` / `onOpenChange`, `value` / `defaultValue` / `onValueChange`, `disabled`.
 - **Styling**:
   - Every part renders `data-slot="<component>-<part>"` in kebab case (`popover-trigger`; the root is just `popover`) and merges `className` last with `cn`.
