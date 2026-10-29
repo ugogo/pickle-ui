@@ -106,33 +106,34 @@ Each export is also available from its own subpath.
 | `useColorToken` | `@pickle-ui/react-native/use-color-token` | Reads a token as a color string, for props that don't take a `className`                                                                                                                                                           |
 
 Every component takes the props of the React Native element it renders,
-`className` included, and merges your `className` last.
+`className` included, and merges your `className` last. Where native differs
+from the web:
 
-Form fields take `invalid` and `disabled` props where the web reads the
-`aria-invalid` and `disabled` attributes, and draw the web's focus ring while
-they have focus. Text styles don't cascade on native, so `Checkbox` and
-`RadioGroup.Item` style the row around the control with `classNames.field`
-and the label text with `classNames.label`; pass `label` rather than a
-separate label element, which couldn't toggle the control.
-
-`Form` needs `react-hook-form` (a peer dependency). React Native has no
-`<form>`, so `Form` takes `onSubmit` and runs it through `handleSubmit` when
-`Form.Button` is pressed, or when the return key is pressed in a
-`Form.Input`, like Enter on the web. Give `Form.Button` an `onPress` for
-another action. A `Form.Field` label names its control and focuses it when
-pressed.
-
-`Button` and `Badge` wrap text children in their label and render other
-children, such as icons, as they are. Icons don't inherit the label's color on
-native, so pass it to the icon, for example with `useColorToken`. Give an
-icon-only button an `icon*` size and an `accessibilityLabel`. Buttons keep the web's dimensions and the text sizes it uses from `sm` up (14px at `md`), and a `hitSlop` stretches each size to a
-44pt touch target, as the web's `pointer-coarse` hit area does. Headings (`h1` … `h4`)
-are announced as headers.
-
-`Text` sizes come from the shared type scale (`--text-h1` … `--text-code` in
-`@pickle-ui/tokens/typography.css`); override them like any token. Every
-component's text uses `--font-sans`, and `h1`, `h2` and `Card.Title` use
-`--font-heading`, like the web; `code` keeps the platform's monospace font.
+- **Form fields** take `invalid` and `disabled` props where the web reads the
+  `aria-invalid` and `disabled` attributes, and draw the web's focus ring
+  while they have focus.
+- **`Checkbox` and `RadioGroup.Item`** take a `label` prop: a separate label
+  element couldn't toggle the control. Text styles don't cascade on native, so
+  `classNames.field` styles the row around the control and `classNames.label`
+  the label text.
+- **`Form`** needs `react-hook-form` (a peer dependency). React Native has no
+  `<form>`, so `Form` takes `onSubmit` and runs it through `handleSubmit` when
+  `Form.Button` is pressed, or the return key in a `Form.Input`, like Enter on
+  the web. Give `Form.Button` an `onPress` for another action. A `Form.Field`
+  label names its control and focuses it when pressed.
+- **`Button` and `Badge`** wrap text children in their label and render other
+  children, such as icons, as they are. Icons don't inherit the label's color
+  on native: pass it to the icon, for example with `useColorToken`. An
+  icon-only button needs an `icon*` size and an `accessibilityLabel`.
+- **Touch targets**: buttons keep the web's dimensions and the text sizes it
+  uses from `sm` up (14px at `md`), and a `hitSlop` stretches each size to a
+  44pt touch target, as the web's `pointer-coarse` hit area does.
+- **`Text`** sizes come from the shared type scale (`--text-h1` … `--text-code`
+  in `@pickle-ui/tokens/typography.css`); override them like any token.
+  Headings (`h1` … `h4`) are announced as headers.
+- **Fonts**: every component's text uses `--font-sans`, and `h1`, `h2` and
+  `Card.Title` use `--font-heading`, like the web; `code` keeps the platform's
+  monospace font.
 
 ## Theming
 

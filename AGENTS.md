@@ -132,7 +132,7 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
 
 ## Writing
 
-Docs and code comments follow `.claude/skills/deslop/SKILL.md`: the point first, one fact per sentence, nothing the code or another doc already says.
+Docs and code comments follow `.agents/skills/deslop/SKILL.md`: the point first, one fact per sentence, nothing the code or another doc already says.
 
 ## Commit convention
 

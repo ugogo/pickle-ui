@@ -48,9 +48,7 @@ describe('rgb <-> hsv', () => {
     });
   });
 
-  // Documents CURRENT behavior: achromatic colors report hue 0 (red).
-  // Plan 004 changes this to preserve a caller-supplied hue. When 004 lands,
-  // this assertion is expected to be updated there.
+  // Without a fallback hue, an achromatic color reports hue 0.
   it('reports hue 0 for white (achromatic)', () => {
     expect(rgbToHsv({ a: 1, b: 255, g: 255, r: 255 })).toEqual({
       a: 1,

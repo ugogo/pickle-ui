@@ -6,8 +6,9 @@ import { cn } from '../lib/cn';
 import { Spinner } from './Spinner';
 
 // Same variants, sizes and dimensions as `Button` in @pickle-ui/react on a
-// phone, with its text sizes from `sm` up. Like the web's `pointer-coarse` hit area, `hitSlop` stretches every
-// size to a 44pt touch target. Paddings leave room for the 1pt border.
+// phone, with its text sizes from `sm` up. `hitSlop` stretches every size to a
+// 44pt touch target, like the web's `pointer-coarse` hit area. Paddings leave
+// room for the 1pt border.
 const buttonVariants = cva(
   'flex-row items-center justify-center gap-2 rounded-lg border disabled:opacity-64',
   {

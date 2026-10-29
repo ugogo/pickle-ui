@@ -23,8 +23,8 @@
 }
 
 /*
- * Customization 3: your app's font. Name one family, without a fallback
- * stack: React Native reads a single name. `src/app/_layout.tsx` loads its
+ * Your app's font. Name one family, without a fallback stack: React Native
+ * reads a single name. `src/app/_layout.tsx` loads its
  * faces with expo-font, and each text's weight picks its face. Headings
  * follow unless you also set `--font-heading`.
  */

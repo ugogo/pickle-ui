@@ -146,7 +146,7 @@ interface ColorPickerFormatSelectProps
     Omit<React.ComponentProps<typeof Select>, 'onValueChange' | 'value'>,
     Pick<React.ComponentProps<typeof SelectTrigger>, 'className'> {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- a named props interface that is intentionally an alias of the Omit below, kept as an interface for naming and future extension
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- a named alias of the Omit below
 interface ColorPickerImplProps extends Omit<
   ColorPickerProps,
   | 'defaultFormat'

@@ -125,6 +125,7 @@ the element they render, for example
 `Text` and the layout primitives take `as` to change their tag. Parts are
 reached through their component (`Popover.Title`), never imported under their
 own names.
+
 Icons are plain SVG children: any icon library works, and buttons, badges and
 input addons size and space the SVG for you.
 
@@ -230,9 +231,10 @@ own:
   the light and dark values. Import it to share Pickle's palette in a project
   that does not use the components. It re-exports `@pickle-ui/tokens/theme.css`,
   which `@pickle-ui/react` installs as a dependency.
-- `@pickle-ui/react/base.css` holds everything else: animation and variant plugins,
-  the `.dark` variant, the `Text` type scale (from
-  `@pickle-ui/tokens/typography.css`), shared utilities, and element resets. Import it with a token set of your own instead of `theme.css`.
+- `@pickle-ui/react/base.css` holds everything else: animation and variant
+  plugins, the `.dark` variant, the `Text` type scale (from
+  `@pickle-ui/tokens/typography.css`), shared utilities, and element resets.
+  Import it with a token set of your own instead of `theme.css`.
 
 Tokens follow one naming rule: `--x` is a fill and `--x-foreground` is the text
 placed on that fill. Status colors (`destructive`, `info`, `success`,
@@ -445,8 +447,8 @@ breaking change.
 
 ## Upgrading from 0.x
 
-The next major release renames a few styling APIs. Search your code for these
-and update them:
+Version 1.0 renames a few styling APIs. Search your code for these and update
+them:
 
 - **Package name.** `pickle-ui` is now published as `@pickle-ui/react`.
   Replace the dependency and every import, stylesheets included:
@@ -485,11 +487,10 @@ pnpm run lint
 
 ## Releasing
 
-Releases use [Changesets](https://changesets.dev). Add a changeset to every
-pull request that changes a package (`pnpm changeset`). On `main`, the
-`Release` workflow keeps a "Version Packages" pull request up to date; merging
-it publishes each package that changed. Packages version independently, and a
-new `@pickle-ui/tokens` release always comes with a new `@pickle-ui/react`.
+Releases use [Changesets](https://changesets.dev): every pull request that
+changes a package adds one (`pnpm changeset`), and merging the "Version
+Packages" pull request on `main` publishes. The repository's
+`.changeset/README.md` has the rules.
 
 ## License
 

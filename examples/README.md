@@ -47,7 +47,7 @@ numbers follow the [theming guide](../packages/react/README.md#theming).
 | 3   | Reuse a variant function    | `web/src/App.tsx` (`buttonVariants` on a link)         | none: `@pickle-ui/react-native` exports no variants yet   |
 | 4   | Target `data-slot` in CSS   | `web/src/app.css`                                      | none: React Native has no CSS selectors                   |
 
-Two more patterns have no number:
+Three more patterns have no number:
 
 - **Color scheme.** Web: a `dark` class on `<html>`, set before the first paint
   by `web/index.html` and kept in sync by `ThemeControls.tsx`, with light, dark
@@ -56,16 +56,17 @@ Two more patterns have no number:
   (navigation header, `Switch`): `useColorToken` from
   `@pickle-ui/react-native`, used in `mobile/src/app/_layout.tsx`. The web
   never needs it.
+- **Fonts.** Web: `@fontsource` imports in `web/src/main.tsx` and a `@theme`
+  block in `web/src/app.css`. Mobile: `--font-sans` names one family in
+  `mobile/src/global.css`, and `mobile/src/app/_layout.tsx` loads its faces
+  with expo-font.
 
 ## What carries over to native
 
 `@pickle-ui/tokens` carries the colors, the radius scale and the `Text` type
 scale (`--text-h1` … `--text-code`), so `bg-primary`, `text-muted-foreground`,
 `border-border`, `rounded-xl` and `text-h1` mean the same on both platforms.
-`@pickle-ui/react-native` has `Badge`, `Button`, `Card` and `Text`, with the
-web's variants, sizes, tones, parts and dimensions, and `createTheme`
-derives the same runtime brand on both. The rest is
-web-only for now:
-
-- the fonts, which live in `@pickle-ui/react`'s CSS;
-- every other component.
+`@pickle-ui/react-native` ships the components in
+[its README](../packages/react-native/README.md#exports), with the web's
+variants, sizes, tones, parts and dimensions, and `createTheme` derives the
+same runtime brand on both. Every other component is web-only for now.

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-/* eslint-disable react-hooks/refs -- this component intentionally reads prevValueRef.current during render to track the previous value across renders; the ref holds derived bookkeeping state, not render-affecting data. */
+/* eslint-disable react-hooks/refs -- prevValueRef is read during render on purpose: it holds the previous value and never affects the output. */
 
 type InputValue = string | string[];
 
@@ -57,7 +57,7 @@ function VisuallyHiddenInput<T = InputValue>(
     type = 'hidden',
     value,
     ...inputProps
-    // react-doctor-disable-next-line react-doctor/no-event-handler -- this hidden input intentionally mirrors value/checked into the native control and dispatches a native input/click event from an effect; the side effect is driven by prop changes, not a user event, so it cannot move into an event handler
+    // react-doctor-disable-next-line react-doctor/no-event-handler -- an effect mirrors value/checked into the native input and dispatches its event: prop changes drive it, not a user event
   } = props;
 
   const isCheckInput = React.useMemo(

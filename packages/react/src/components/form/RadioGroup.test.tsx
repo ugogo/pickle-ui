@@ -109,13 +109,11 @@ describe('RadioGroup', () => {
         <RadioGroup.Item label="Option C" value="c" />
       </RadioGroup>,
     );
-    // All radios in a group are reachable via keyboard.
     const radios = screen.getAllByRole('radio');
     expect(radios).toHaveLength(3);
-    // The group element exists and has roving-tabindex structure (tabIndex 0 on selected).
     const radioA = screen.getByRole('radio', { name: 'Option A' });
     expect(radioA).toHaveAttribute('aria-checked', 'true');
-    // Click directly to simulate selection change (roving focus is a browser behavior).
+    // Arrow-key roving focus is browser behavior jsdom lacks, so click.
     fireEvent.click(screen.getByRole('radio', { name: 'Option C' }));
     expect(screen.getByRole('radio', { name: 'Option C' })).toHaveAttribute(
       'aria-checked',

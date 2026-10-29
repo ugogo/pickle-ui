@@ -2,10 +2,9 @@ import * as React from 'react';
 
 type PossibleRef<T> = React.Ref<T> | undefined;
 
-/**
- * A utility to compose multiple refs together
- * Accepts callback refs and RefObject(s)
- */
+// Radix UI's compose-refs (MIT): callback refs and ref objects merged into one
+// callback ref, with React 19 ref cleanups.
+
 function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
   return (node) => {
     let hasCleanup = false;
@@ -17,10 +16,8 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
       return cleanup;
     });
 
-    // React <19 will log an error to the console if a callback ref returns a
-    // value. We don't use ref cleanups internally so this will only happen if a
-    // user's ref callback returns a value, which we only expect if they are
-    // using the cleanup functionality added in React 19.
+    // Only return a cleanup when a ref returned one: React 18 logs an error
+    // for a callback ref that returns a value.
     if (hasCleanup) {
       return () => {
         for (let i = 0; i < cleanups.length; i++) {
@@ -36,10 +33,6 @@ function composeRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
   };
 }
 
-/**
- * Set a given ref to a given value
- * This utility takes care of different types of refs: callback refs and RefObject(s)
- */
 function setRef<T>(ref: PossibleRef<T>, value: T) {
   if (typeof ref === 'function') {
     return ref(value);
@@ -50,14 +43,9 @@ function setRef<T>(ref: PossibleRef<T>, value: T) {
   }
 }
 
-/**
- * A custom hook that composes multiple refs
- * Accepts callback refs and RefObject(s)
- */
 function useComposedRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to memoize by all values
-  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo -- memoize by every ref value; the spread `refs` array is the intended dependency list
-  return React.useCallback(composeRefs(...refs), refs); // react-doctor-disable-line react-doctor/exhaustive-deps -- same intentional memo: the dependency list is the spread `refs` array on purpose
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo -- memoized by every ref: the spread `refs` is the dependency list
+  return React.useCallback(composeRefs(...refs), refs); // react-doctor-disable-line react-doctor/exhaustive-deps -- memoized by every ref: the spread `refs` is the dependency list
 }
 
 export { composeRefs, useComposedRefs };
