@@ -11,9 +11,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@expo-google-fonts/nunito": "^0.4.2",
     "@pickle-ui/react-native": "workspace:*",
     "expo": "^58.0.20",
     "expo-constants": "~58.0.13",
+    "expo-font": "~58.0.10",
     "expo-linking": "~58.0.14",
     "expo-router": "~58.0.27",
     "expo-status-bar": "~58.0.4",

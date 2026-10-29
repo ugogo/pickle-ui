@@ -13,7 +13,7 @@ You need the iOS Simulator (Xcode) or an Android emulator, or a phone with
 [Expo Go](https://expo.dev/go) to scan the QR code. If another Metro server
 holds port 8081, Expo offers the next port.
 
-`Button`, `Badge`, `Card`, `Text`, `cn` and `useColorToken` come from
+`Button`, `Badge`, `Card`, `Input`, `Text`, `cn` and `useColorToken` come from
 `@pickle-ui/react-native`. They reuse the web API's names (`variant`, `size`,
 `tone`, `Card.Header`, …) and the web's dimensions. `src/components` only holds the
 screen's own pieces, styled with token utilities (`bg-primary`,
@@ -27,15 +27,15 @@ reload without a build. Leave both out of your own app.
 
 ## Files
 
-| File                                | Shows                                                          |
-| ----------------------------------- | -------------------------------------------------------------- |
-| `metro.config.js`                   | `withUniwindConfig` pointing at the CSS entry                  |
-| `src/global.css`                    | Setup and token overrides as Uniwind themes                    |
-| `src/app/_layout.tsx`               | Loading the CSS, token colors for the navigation header        |
-| `src/app/index.tsx`                 | `ScopedVariables` applying a brand to part of the screen       |
-| `src/brands.ts`                     | Runtime brands derived with `createTheme`                      |
-| `src/components/ThemeControls.tsx`  | `Uniwind.setTheme`, brand swatches                             |
-| `src/components/NewProjectForm.tsx` | Tokens on `TextInput` and a native `Switch`, `className` merge |
+| File                                | Shows                                                     |
+| ----------------------------------- | --------------------------------------------------------- |
+| `metro.config.js`                   | `withUniwindConfig` pointing at the CSS entry             |
+| `src/global.css`                    | Setup, token overrides as Uniwind themes, the app's font  |
+| `src/app/_layout.tsx`               | Loading the CSS and the font, token colors for the header |
+| `src/app/index.tsx`                 | `ScopedVariables` applying a brand to part of the screen  |
+| `src/brands.ts`                     | Runtime brands derived with `createTheme`                 |
+| `src/components/ThemeControls.tsx`  | `Uniwind.setTheme`, brand swatches                        |
+| `src/components/NewProjectForm.tsx` | `Input`, tokens on a native `Switch`, `className` merge   |
 
 ## Setup in your own app
 
@@ -94,6 +94,10 @@ reload without a build. Leave both out of your own app.
   whole app, or call `Uniwind.updateCSSVariables(theme, vars)` to change a
   theme globally. Its `oklch()` values only resolve through utilities such as
   `bg-primary`, not in a `style` prop, so the swatches draw with the tokens.
+- **Fonts**: `--font-sans` names one family, not a stack, and expo-font
+  loads its faces under that name (`useFonts` in `src/app/_layout.tsx`, or
+  its config plugin in a development build). Each text's weight then picks
+  its face. See `src/global.css`.
 - **Props that take a color**, not a className, read the token with
   `useColorToken('primary')` from `@pickle-ui/react-native`, which returns
   `undefined` instead of the string `"undefined"` when a token doesn't exist.

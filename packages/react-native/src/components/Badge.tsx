@@ -35,7 +35,7 @@ const badgeVariants = cva(
   },
 );
 
-const labelVariants = cva('font-medium', {
+const labelVariants = cva('font-sans font-medium', {
   defaultVariants: { size: 'md', variant: 'default' },
   variants: {
     size: {

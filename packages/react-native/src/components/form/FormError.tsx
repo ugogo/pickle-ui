@@ -9,7 +9,10 @@ export function FormError({ className, ...props }: FormErrorProps) {
   return (
     <Text
       accessibilityLiveRegion="polite"
-      className={cn('text-destructive text-sm font-medium', className)}
+      className={cn(
+        'text-destructive font-sans text-sm font-medium',
+        className,
+      )}
       role="alert"
       {...props}
     />

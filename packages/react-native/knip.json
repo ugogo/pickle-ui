@@ -4,7 +4,8 @@
     "src/entries/*.ts",
     "src/**/*.stories.tsx",
     "src/**/*.test.ts",
-    "src/**/*.test.tsx"
+    "src/**/*.test.tsx",
+    "test/*.mjs"
   ],
-  "project": ["src/**/*.{ts,tsx}"]
+  "project": ["src/**/*.{ts,tsx}", "test/*.mjs"]
 }

@@ -1,8 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 
 import { View } from 'react-native';
+import { ScopedVariables } from 'uniwind';
 
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
+import { Badge } from './Badge';
+import { Button } from './Button';
+import { Card } from './Card';
+import { Input } from './form/Input';
 import { Text, type TextProps } from './Text';
 
 const meta = {
@@ -38,10 +43,46 @@ const TONE_COLUMNS: { key: 'default' | TextTone; label: string }[] = [
   { key: 'destructive', label: 'Destructive' },
 ];
 
+// An app sets `--font-sans` in its stylesheet; `ScopedVariables` sets it here
+// so both fonts sit side by side. On the web, `--font-heading` resolves
+// where it's declared, so the scope sets it too; native resolves it in place.
+const FONT_COLUMNS = [
+  { description: 'No --font-sans', key: '', label: 'System font' },
+  {
+    description: "--font-sans: 'Georgia'",
+    key: 'Georgia',
+    label: 'App font',
+  },
+];
+
 const WEIGHT_ROWS: { key: TextWeight; label: string }[] = [
   { key: 'normal', label: 'Normal' },
   { key: 'bold', label: 'Bold' },
 ];
+
+function FontCell({ column }: ComponentMatrixCellProps) {
+  return (
+    <ScopedVariables
+      variables={
+        column.key
+          ? { '--font-heading': column.key, '--font-sans': column.key }
+          : {}
+      }
+    >
+      <Card className="w-80">
+        <Card.Header>
+          <Card.Title>Weekly report</Card.Title>
+          <Card.Description>Every project, every Monday.</Card.Description>
+        </Card.Header>
+        <Card.Content className="items-start gap-3">
+          <Badge variant="success">Shipped</Badge>
+          <Input accessibilityLabel="Email" placeholder="ada@example.com" />
+          <Button>Subscribe</Button>
+        </Card.Content>
+      </Card>
+    </ScopedVariables>
+  );
+}
 
 function ToneCell({ column, row }: ComponentMatrixCellProps) {
   return (
@@ -95,6 +136,14 @@ export const All: StoryDefinition = {
           Cell={WeightCell}
           columns={[{ key: 'body', label: 'Body' }]}
           rows={WEIGHT_ROWS}
+        />
+      </Story.Section>
+
+      <Story.Section title="App font">
+        <Story.Matrix
+          Cell={FontCell}
+          columns={FONT_COLUMNS}
+          rows={[{ key: 'card', label: 'Components' }]}
         />
       </Story.Section>
 

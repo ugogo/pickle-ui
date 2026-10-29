@@ -47,7 +47,7 @@ export function Input({
     <TextInput
       accessibilityState={{ disabled }}
       className={cn(
-        'text-foreground flex-1 text-[14px] outline-none',
+        'text-foreground flex-1 font-sans text-[14px] outline-none',
         paddingClasses[size],
         unstyled ? cn(heightClasses[size], disabled && 'opacity-64') : 'h-full',
         unstyled ? className : classNames?.input,

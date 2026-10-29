@@ -8,7 +8,7 @@ export function FormLabel({ className, ...props }: FormLabelProps) {
   return (
     <Text
       className={cn(
-        'text-foreground text-sm leading-none font-medium',
+        'text-foreground font-sans text-sm leading-none font-medium',
         className,
       )}
       {...props}

@@ -86,7 +86,7 @@ function InputGroupAddon({
     >
       {Children.map(children, (child) =>
         typeof child === 'string' || typeof child === 'number' ? (
-          <Text className="text-foreground text-[14px]">{child}</Text>
+          <Text className="text-foreground font-sans text-[14px]">{child}</Text>
         ) : (
           child
         ),
@@ -204,7 +204,7 @@ function InputGroupRoot({ children, className, ...props }: InputGroupProps) {
 function InputGroupText({ className, ...props }: InputGroupTextProps) {
   return (
     <Text
-      className={cn('text-muted-foreground text-[14px]', className)}
+      className={cn('text-muted-foreground font-sans text-[14px]', className)}
       numberOfLines={1}
       {...props}
     />

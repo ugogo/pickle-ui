@@ -100,7 +100,7 @@ function RadioGroupItem({
       {label ? (
         <Text
           className={cn(
-            'text-sm leading-none font-medium',
+            'font-sans text-sm leading-none font-medium',
             disabled ? 'text-muted-foreground' : 'text-foreground',
             classNames?.label,
           )}

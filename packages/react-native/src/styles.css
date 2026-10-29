@@ -10,3 +10,15 @@
 @import 'uniwind';
 @import '@pickle-ui/tokens/native.css';
 @import './base.css';
+
+/*
+ * The tokens' `--font-*` variables read the app's own on the web, where an
+ * unset one falls back to the inherited font. Uniwind resolves them to
+ * themselves and overflows the stack, so take the native defaults from
+ * `base.css` again. Declare your own `--font-*` after importing this file.
+ */
+@theme {
+  --font-sans: var(--pickle-no-font);
+  --font-heading: var(--font-sans);
+  --font-mono: var(--pickle-no-font);
+}

@@ -1,11 +1,25 @@
 /**
  * Pickle's components as a content source, so Uniwind generates the classes
- * they use, and the type scale behind `Text`'s variants, shared with
- * `@pickle-ui/react`. `styles.css` imports this file; import it alone, after
- * `uniwind`, to bring your own token set instead of
- * `@pickle-ui/tokens/native.css`. The type scale only declares theme
- * variables, so it compiles in any order.
+ * they use, the type scale behind `Text`'s variants, shared with
+ * `@pickle-ui/react`, and the native font defaults. `styles.css` imports this
+ * file; import it alone, after `uniwind`, to bring your own token set instead
+ * of `@pickle-ui/tokens/native.css`. It only declares theme variables, so it
+ * compiles in any order.
  */
 @import '@pickle-ui/tokens/typography.css';
 
 @source './components/**/*.{ts,tsx}';
+
+/*
+ * The components' text uses `font-sans`, and their headings `font-heading`.
+ * Until the app declares `--font-sans`, it reads a variable nothing declares,
+ * so it sets no family and text keeps the system font: an explicit system
+ * family would also drop the medium and semibold weights on Android.
+ * `default` lets any `--font-*` an app or its token set declares win, and
+ * replaces Tailwind's web font stacks, which native can't resolve.
+ */
+@theme default {
+  --font-sans: var(--pickle-no-font);
+  --font-heading: var(--font-sans);
+  --font-mono: var(--pickle-no-font);
+}
