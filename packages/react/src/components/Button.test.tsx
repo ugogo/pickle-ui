@@ -59,11 +59,15 @@ describe('Button', () => {
     expect(button).not.toHaveClass('h-8');
   });
 
-  it('shows a loading indicator when loading', () => {
-    render(<Button loading>Save</Button>);
+  it('shows a silent loading indicator when loading', () => {
+    const { container } = render(<Button loading>Save</Button>);
 
-    expect(screen.getByRole('button', { name: /Save/ })).toBeDisabled();
-    expect(screen.getByRole('status', { name: 'Loading' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(
+      container.querySelector('[data-slot="button-loading-indicator"]'),
+    ).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Loading')).not.toBeInTheDocument();
   });
 
   it('renders button styles on the element passed to render', () => {
