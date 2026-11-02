@@ -1,5 +1,11 @@
 # @pickle-ui/react-native
 
+## 1.0.0-beta.4
+
+### Patch Changes
+
+- e87d0b4: A `Text` nested in another `Text` now inherits its parent's color, font and size, and only applies the props it's given.
+
 ## 1.0.0-beta.3
 
 ### Minor Changes
