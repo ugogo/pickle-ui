@@ -84,6 +84,7 @@ function Button({
         {children}
         {loading ? (
           <Spinner
+            aria-hidden
             className={cn(
               'pointer-events-none absolute',
               classNames?.loadingIndicator,
