@@ -1,13 +1,24 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import { createContext, use } from 'react';
 import { Text as NativeText, Platform, StyleSheet } from 'react-native';
 
 import { cn } from '../lib/cn';
 
-// Same variants, tones and weights as `Text` in @pickle-ui/react, sized by the
-// shared type scale (`@pickle-ui/tokens/typography.css`).
-const textVariants = cva('text-foreground font-sans', {
-  defaultVariants: { variant: 'body' },
+const textVariants = cva('', {
+  compoundVariants: [
+    {
+      className: 'self-start overflow-hidden rounded px-2 py-1',
+      nested: false,
+      variant: 'code',
+    },
+  ],
   variants: {
+    // A nested Text inherits its parent's color, font and size, so it only
+    // sets what its props ask for. Padding and radius don't apply inline.
+    nested: {
+      false: 'text-foreground font-sans',
+      true: '',
+    },
     tone: {
       destructive: 'text-destructive',
       muted: 'text-muted-foreground',
@@ -15,7 +26,7 @@ const textVariants = cva('text-foreground font-sans', {
     },
     variant: {
       body: 'text-body',
-      code: 'text-code bg-muted self-start overflow-hidden rounded px-2 py-1',
+      code: 'text-code bg-muted',
       h1: 'font-heading text-h1 font-semibold tracking-tight',
       h2: 'font-heading text-h2 font-semibold tracking-tight',
       h3: 'text-h3 font-semibold',
@@ -32,16 +43,15 @@ const textVariants = cva('text-foreground font-sans', {
 
 const HEADINGS = new Set(['h1', 'h2', 'h3', 'h4']);
 
-// Uniwind passes `font-mono`'s web font stack through as is, which native
-// fonts don't resolve, so `code` names each platform's monospace font. The
-// `style` prop wins over `font-sans` from `className`.
+const TextNestingContext = createContext(false);
+
 const styles = StyleSheet.create({
   code: { fontFamily: Platform.select({ default: 'monospace', ios: 'Menlo' }) },
 });
 
-export type TextProps = React.ComponentProps<typeof NativeText> &
-  VariantProps<typeof textVariants> & {
-    /** Cuts the text to one line with an ellipsis. */
+export type TextProps = Omit<VariantProps<typeof textVariants>, 'nested'> &
+  React.ComponentProps<typeof NativeText> & {
+    /** Cuts the text to one line with an ellipsis. Ignored on a nested Text. */
     truncate?: boolean;
   };
 
@@ -50,19 +60,30 @@ export function Text({
   style,
   tone,
   truncate,
-  variant = 'body',
+  variant,
   weight,
   ...props
 }: TextProps) {
-  return (
+  const nested = use(TextNestingContext);
+  // Only a top-level Text defaults to `body`; a nested one keeps its parent's.
+  const resolvedVariant = variant === undefined && !nested ? 'body' : variant;
+
+  const text = (
     <NativeText
       accessibilityRole={
-        variant && HEADINGS.has(variant) ? 'header' : undefined
+        !nested && resolvedVariant && HEADINGS.has(resolvedVariant)
+          ? 'header'
+          : undefined
       }
-      className={cn(textVariants({ tone, variant, weight }), className)}
-      numberOfLines={truncate ? 1 : undefined}
-      style={variant === 'code' ? [styles.code, style] : style}
+      className={cn(
+        textVariants({ nested, tone, variant: resolvedVariant, weight }),
+        className,
+      )}
+      numberOfLines={truncate && !nested ? 1 : undefined}
+      style={resolvedVariant === 'code' ? [styles.code, style] : style}
       {...props}
     />
   );
+
+  return nested ? text : <TextNestingContext value>{text}</TextNestingContext>;
 }

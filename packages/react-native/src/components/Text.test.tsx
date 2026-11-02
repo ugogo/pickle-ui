@@ -44,4 +44,41 @@ describe('Text', () => {
       fontFamily: expect.any(String),
     });
   });
+
+  it('lets a nested Text inherit its parent and set only its own props', async () => {
+    await render(
+      <Text tone="muted" variant="h2">
+        Ship <Text weight="bold">today</Text>
+      </Text>,
+    );
+
+    expect(screen.getByText('today')).toHaveProp('className', 'font-semibold');
+  });
+
+  it('keeps a nested code run inline', async () => {
+    await render(
+      <Text>
+        Run <Text variant="code">pnpm test</Text>
+      </Text>,
+    );
+
+    expect(screen.getByText('pnpm test')).toHaveProp(
+      'className',
+      'text-code bg-muted',
+    );
+  });
+
+  it('does not announce or truncate a nested Text', async () => {
+    await render(
+      <Text>
+        Read{' '}
+        <Text truncate variant="h3">
+          Projects
+        </Text>
+      </Text>,
+    );
+
+    expect(screen.queryByRole('header')).toBeNull();
+    expect(screen.getByText('Projects')).not.toHaveProp('numberOfLines', 1);
+  });
 });
