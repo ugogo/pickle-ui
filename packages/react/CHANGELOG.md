@@ -1,5 +1,11 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.10
+
+### Patch Changes
+
+- fc212a8: A loading `Button` no longer announces « Loading »: its spinner is `aria-hidden`, since the button already reports it is busy through `disabled` and `aria-disabled`.
+
 ## 1.0.0-beta.9
 
 ### Patch Changes
