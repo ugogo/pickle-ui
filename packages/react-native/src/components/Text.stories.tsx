@@ -139,6 +139,18 @@ export const All: StoryDefinition = {
         />
       </Story.Section>
 
+      <Story.Section title="Nested">
+        <View className="gap-3">
+          <Text>
+            Deploys run <Text weight="bold">every Monday</Text> from{' '}
+            <Text variant="code">main</Text>.
+          </Text>
+          <Text tone="muted" variant="lead">
+            The <Text tone="primary">beta</Text> keeps its parent&apos;s size.
+          </Text>
+        </View>
+      </Story.Section>
+
       <Story.Section title="App font">
         <Story.Matrix
           Cell={FontCell}
