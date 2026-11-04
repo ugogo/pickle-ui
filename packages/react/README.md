@@ -106,6 +106,7 @@ Subpaths use the same named exports as the root entry (for example `Button` from
 | `@pickle-ui/react/scroll-area`                         | `ScrollArea` with `Viewport`, `Scrollbar`, `Thumb`, `Corner`                                           |
 | `@pickle-ui/react/select`                              | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                        |
 | `@pickle-ui/react/separator`                           | `Separator`                                                                                            |
+| `@pickle-ui/react/sheet`                               | `Sheet` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`                 |
 | `@pickle-ui/react/sidebar`                             | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                       |
 | `@pickle-ui/react/slider`                              | `Slider` with `Label`, `Value`, `Marks`                                                                |
 | `@pickle-ui/react/spinner`                             | `Spinner`                                                                                              |
@@ -407,6 +408,7 @@ attribute sits on the slot listed here:
 | `Alert`, `Menu.Item`                    | `alert`, `menu-item`                           | `data-variant`                                                               |
 | `Text`                                  | `text`                                         | `data-variant`, plus `data-tone`, `data-weight` and `data-truncate` when set |
 | `Dialog.Content`, `AlertDialog.Content` | `dialog-content`, `alert-dialog-content`       | `data-size`                                                                  |
+| `Sheet.Content`                         | `sheet-content`                                | `data-size`, plus Base UI's `data-swipe-direction` (`right` or `down`)       |
 | `Input`, `Textarea`                     | `input-control`, `textarea-control` (wrappers) | `data-size`                                                                  |
 | `Checkbox`                              | `checkbox`                                     | `data-size`                                                                  |
 | `RadioGroup.Item`                       | `radio`                                        | `data-size`                                                                  |
