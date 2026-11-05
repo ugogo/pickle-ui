@@ -96,7 +96,7 @@ Releases use [Changesets](https://changesets.dev) and the `Release` workflow (`.
   - Build each part as a plain function (`PopoverTrigger`), then attach them with `const Popover = Object.assign(PopoverRoot, { Trigger: PopoverTrigger, … })`, parts sorted alphabetically.
   - The root is callable (`<Popover>`), never `Popover.Root`. The exception is a facade that renders several parts itself (`ScrollArea`), where `.Root` exposes the bare root.
   - An imperative component with nothing to render in place (`Toast`) is a plain object grouping its `Provider` and the ways to reach it (`manager`, `useToast`).
-- **Part vocabulary**: reuse these names before inventing new ones: `Trigger`, `Content` (the popup, including its portal and positioner), `Header`, `Title`, `Description`, `Footer`, `Close`, `Action`, `Item`, `Group`, `GroupLabel`, `Separator`, `Label`, `Value`, `Icon`, `Indicator`. Follow Base UI's part names when a part wraps a Base UI part of the same role.
+- **Part vocabulary**: reuse these names before inventing new ones: `Trigger`, `Content` (the popup, including its portal and positioner), `Header`, `Title`, `Description`, `Panel` (an overlay's scrolling body, between `Header` and `Footer`), `Footer`, `Close`, `Action`, `Item`, `Group`, `GroupLabel`, `Separator`, `Label`, `Value`, `Icon`, `Indicator`. Follow Base UI's part names when a part wraps a Base UI part of the same role.
 - **Composition**:
   - Change the rendered element with Base UI's `render` prop (`<Button render={<a href="/docs" />}>`). Do not add `asChild`.
   - `Text`, `Flex`, `Grid`, `XStack` and `YStack` keep their `as` prop, which only swaps the tag name.

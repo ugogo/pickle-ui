@@ -114,9 +114,9 @@ from the web:
   right. It is the platform's sheet through
   [Expo UI](https://docs.expo.dev/versions/latest/sdk/ui/)'s `BottomSheet`
   (a peer dependency, included in Expo Go): the system draws its shape,
-  grabber and backdrop, so it has no `variant`, and it shows no close button
-  unless `showCloseButton` is set. `Drawer.Trigger` and `Drawer.Close` are
-  `Button`s, so they take its `variant` and `size`.
+  grabber and backdrop, and sizes it, so it has no `variant` or `size`.
+  `Drawer.Trigger` and `Drawer.Close` are `Button`s, so they take its
+  `variant` and `size`.
 - **Form fields** take `invalid` and `disabled` props where the web reads the
   `aria-invalid` and `disabled` attributes, and draw the web's focus ring
   while they have focus.

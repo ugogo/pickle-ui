@@ -19,38 +19,27 @@ const meta = {
 } satisfies Meta<typeof Drawer>;
 
 export default meta;
-type Content = 'form' | 'list' | 'plain';
+type ExampleContent = 'close-button' | 'form' | 'list';
 
 type StoryDefinition = StoryObj<typeof meta>;
 
-const CLOSE_BUTTON_ROWS: { description: string; key: string; label: string }[] =
-  [
-    {
-      description: 'Swipe down or tap outside to close',
-      key: 'default',
-      label: 'Default',
-    },
-    {
-      description: 'showCloseButton',
-      key: 'close-button',
-      label: 'With close button',
-    },
-  ];
-
-const CONTENT_COLUMNS: { description: string; key: Content; label: string }[] =
-  [
-    { description: 'Header, panel and footer', key: 'form', label: 'Form' },
-    {
-      description: 'Scroll the panel; from its top, drag down to close',
-      key: 'list',
-      label: 'Long content',
-    },
-    {
-      description: 'No footer',
-      key: 'plain',
-      label: 'Plain',
-    },
-  ];
+const CONTENT_COLUMNS: {
+  description: string;
+  key: ExampleContent;
+  label: string;
+}[] = [
+  { description: 'Header, panel and footer', key: 'form', label: 'Form' },
+  {
+    description: 'Scroll the panel; from its top, drag down to close',
+    key: 'list',
+    label: 'Long content',
+  },
+  {
+    description: 'showCloseButton, no footer',
+    key: 'close-button',
+    label: 'With close button',
+  },
+];
 
 const profileSchema = z.object({
   name: z.string().trim().min(1, 'Enter your name.'),
@@ -62,14 +51,14 @@ const ACTIVITY = Array.from({ length: 24 }, (_, index) => ({
   label: `Deployment #${240 - index}`,
 }));
 
-function DrawerCell({ column, row }: ComponentMatrixCellProps) {
-  const content = column.key as Content;
+function DrawerCell({ column }: ComponentMatrixCellProps) {
+  const content = column.key as ExampleContent;
   const [open, setOpen] = useState(false);
 
   return (
     <Drawer onOpenChange={setOpen} open={open}>
       <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
-      <Drawer.Content showCloseButton={row.key === 'close-button'}>
+      <Drawer.Content showCloseButton={content === 'close-button'}>
         {content === 'form' ? (
           <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
@@ -89,9 +78,12 @@ function DrawerCell({ column, row }: ComponentMatrixCellProps) {
                 </View>
               ))}
             </Drawer.Panel>
+            <Drawer.Footer>
+              <Drawer.Close variant="outline">Close</Drawer.Close>
+            </Drawer.Footer>
           </>
         ) : null}
-        {content === 'plain' ? (
+        {content === 'close-button' ? (
           <>
             <Drawer.Header>
               <Drawer.Title>Share link</Drawer.Title>
@@ -159,7 +151,13 @@ export const All: StoryDefinition = {
         <Story.Matrix
           Cell={DrawerCell}
           columns={CONTENT_COLUMNS}
-          rows={CLOSE_BUTTON_ROWS}
+          rows={[
+            {
+              description: 'Swipe down or tap outside to close',
+              key: 'default',
+              label: 'Default',
+            },
+          ]}
         />
       </Story.Section>
     </Story.Layout>

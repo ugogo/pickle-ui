@@ -14,13 +14,17 @@ type DrawerContextValue = {
 };
 
 const DrawerContext = createContext<DrawerContextValue | null>(null);
+/** Whether the content shows its close button, which the header keeps clear of. */
+const DrawerCloseButtonContext = createContext(false);
 
 export type DrawerCloseProps = ButtonProps;
 
 export type DrawerContentProps = React.ComponentProps<typeof View> & {
   /** Accessible name of the close icon button. Defaults to `"Close"`. */
   closeLabel?: string;
-  /** Renders a close icon button in the top-right corner. Defaults to `false`. */
+  /**
+   * Renders a close icon button in the top-right corner. Defaults to `false`.
+   */
   showCloseButton?: boolean;
 };
 
@@ -38,6 +42,7 @@ export type DrawerProps = {
 };
 export type DrawerTitleProps = Omit<TextProps, 'tone' | 'variant'>;
 export type DrawerTriggerProps = ButtonProps;
+
 /** The web's `IconX`, drawn with two bars: the package ships no icon set. */
 function CloseIcon() {
   return (
@@ -49,7 +54,7 @@ function CloseIcon() {
 }
 
 function DrawerClose({ onPress, ...props }: DrawerCloseProps) {
-  const { setOpen } = useDrawer();
+  const { setOpen } = useDrawer('Close');
 
   return (
     <Button
@@ -75,7 +80,7 @@ function DrawerContent({
   showCloseButton = false,
   ...props
 }: DrawerContentProps) {
-  const { open, setOpen } = useDrawer();
+  const { open, setOpen } = useDrawer('Content');
   const background = useColorToken('popover');
 
   return (
@@ -88,7 +93,9 @@ function DrawerContent({
       onDismiss={() => setOpen(false)}
     >
       <View aria-modal className={className} {...props}>
-        {children}
+        <DrawerCloseButtonContext value={showCloseButton}>
+          {children}
+        </DrawerCloseButtonContext>
         {showCloseButton ? (
           <Button
             accessibilityLabel={closeLabel}
@@ -109,7 +116,7 @@ function DrawerDescription({ className, ...props }: DrawerDescriptionProps) {
   return <Text className={className} tone="muted" variant="body" {...props} />;
 }
 
-/** The sheet keeps its content above the home indicator, so the footer doesn't pad for it. */
+/** The sheet keeps its content above the home indicator, so no bottom inset. */
 function DrawerFooter({ className, ...props }: DrawerFooterProps) {
   return (
     <View
@@ -123,9 +130,16 @@ function DrawerFooter({ className, ...props }: DrawerFooterProps) {
 }
 
 function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
+  const hasCloseButton = use(DrawerCloseButtonContext);
+
   return (
     <View
-      className={cn('gap-1.5 px-6 pe-12 pt-1 pb-4', className)}
+      // A shorter top than the web's: the sheet's grabber sits above it.
+      className={cn(
+        'gap-1.5 px-6 pt-1 pb-6',
+        hasCloseButton && 'pe-12',
+        className,
+      )}
       {...props}
     />
   );
@@ -179,7 +193,7 @@ function DrawerTitle({ className, ...props }: DrawerTitleProps) {
 }
 
 function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
-  const { setOpen } = useDrawer();
+  const { setOpen } = useDrawer('Trigger');
 
   return (
     <Button
@@ -192,9 +206,9 @@ function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
   );
 }
 
-function useDrawer() {
+function useDrawer(part: string) {
   const context = use(DrawerContext);
-  if (!context) throw new Error('Drawer parts must be rendered in a <Drawer>.');
+  if (!context) throw new Error(`Drawer.${part} must be inside a Drawer.`);
   return context;
 }
 

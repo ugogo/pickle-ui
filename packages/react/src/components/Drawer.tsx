@@ -6,14 +6,13 @@ import * as React from 'react';
 import { cn } from '../lib/utils';
 import {
   dialogDescriptionClassName,
+  dialogFooterClassName,
   dialogTitleClassName,
 } from './_internal/dialog-styles';
 import { Button } from './Button';
 
-// iOS sheet curve, as in coss ui's Drawer. Transforms are written as
-// `transform` because Base UI sets an inline `transform` while the drawer is
-// dragged; Tailwind's `translate-*` utilities write `translate`, which would
-// add to it.
+// iOS sheet curve, as in coss ui's Drawer. Moves use `transform`, which Base
+// UI's inline drag offset replaces, where `translate-*` would add to it.
 const drawerMotion =
   'duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none';
 
@@ -22,11 +21,15 @@ const drawerBackdropClassName = cn(
   drawerMotion,
 );
 
-const drawerViewportClassName = 'fixed inset-0 z-50 flex justify-end';
+const drawerViewportClassName = 'fixed inset-0 z-50 flex';
+
+// Fills the gap past the screen edge when a drag pulls a docked drawer inwards.
+const drawerEdgeFillClassName =
+  'after:bg-popover after:pointer-events-none after:absolute after:inset-y-0 after:left-full after:w-12';
 
 const drawerPopupVariants = cva(
   cn(
-    'bg-popover text-popover-foreground relative flex w-[calc(100%-3rem)] min-w-0 flex-col shadow-lg/5 outline-none not-dark:bg-clip-padding',
+    'bg-popover text-popover-foreground relative ml-auto flex w-[calc(100%-3rem)] min-w-0 flex-col shadow-lg/5 outline-none not-dark:bg-clip-padding',
     'transition-transform data-ending-style:duration-[calc(var(--drawer-swipe-strength,1)*400ms)] data-swiping:select-none',
     drawerMotion,
     '[transform:translateX(var(--drawer-swipe-movement-x,0px))] data-ending-style:[transform:translateX(calc(100%+var(--inset,0px)))] data-starting-style:[transform:translateX(calc(100%+var(--inset,0px)))]',
@@ -43,15 +46,16 @@ const drawerPopupVariants = cva(
         sm: 'max-w-sm',
       },
       variant: {
-        // Edge to edge; fills the gap past the screen edge when a drag pulls
-        // the drawer inwards.
-        attached:
-          'after:bg-popover rounded-s-2xl border-s after:pointer-events-none after:absolute after:inset-y-0 after:start-full after:w-12 **:data-[slot=drawer-footer]:rounded-es-[calc(var(--radius-2xl)-1px)]',
+        // Physical sides throughout: the drawer slides in from the right
+        // whatever the text direction.
+        attached: cn(
+          drawerEdgeFillClassName,
+          'rounded-l-2xl border-l **:data-[slot=drawer-footer]:rounded-bl-[calc(var(--radius-2xl)-1px)]',
+        ),
         // Floats inside the viewport, `--inset` away from its edges.
         inset:
-          'my-(--inset) me-(--inset) rounded-2xl border [--inset:--spacing(2)] sm:[--inset:--spacing(4)] **:data-[slot=drawer-footer]:rounded-b-[calc(var(--radius-2xl)-1px)]',
-        straight:
-          'after:bg-popover border-s after:pointer-events-none after:absolute after:inset-y-0 after:start-full after:w-12',
+          'my-(--inset) mr-(--inset) rounded-2xl border [--inset:--spacing(2)] sm:[--inset:--spacing(4)] **:data-[slot=drawer-footer]:rounded-b-[calc(var(--radius-2xl)-1px)]',
+        straight: cn(drawerEdgeFillClassName, 'border-l'),
       },
     },
   },
@@ -62,7 +66,9 @@ type DrawerCloseProps = React.ComponentProps<typeof DrawerPrimitive.Close>;
 type DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive.Popup> & {
   /** Accessible name of the close icon button. Defaults to `"Close"`. */
   closeLabel?: string;
-  /** Renders a close icon button in the top-right corner. Defaults to `false`. */
+  /**
+   * Renders a close icon button in the top-right corner. Defaults to `false`.
+   */
   showCloseButton?: boolean;
   /** Maximum width of the drawer. Defaults to `md`. */
   size?: DrawerSize;
@@ -118,7 +124,12 @@ function DrawerContent({
       />
       <DrawerPrimitive.Viewport className={drawerViewportClassName}>
         <DrawerPrimitive.Popup
-          className={cn(drawerPopupVariants({ size, variant }), className)}
+          className={cn(
+            drawerPopupVariants({ size, variant }),
+            // Keeps the title clear of the close button.
+            showCloseButton && '**:data-[slot=drawer-header]:pr-12',
+            className,
+          )}
           data-size={size}
           data-slot="drawer-content"
           data-variant={variant}
@@ -128,7 +139,7 @@ function DrawerContent({
           {showCloseButton ? (
             <DrawerPrimitive.Close
               aria-label={closeLabel}
-              className="absolute end-3 top-3"
+              className="absolute top-3 right-3"
               data-slot="drawer-close"
               render={<Button size="icon-sm" variant="ghost" />}
             >
@@ -155,7 +166,8 @@ function DrawerFooter({ className, ...props }: DrawerFooterProps) {
   return (
     <div
       className={cn(
-        'bg-muted/72 mt-auto flex flex-col-reverse gap-2 border-t px-6 py-4 sm:flex-row sm:justify-end',
+        dialogFooterClassName,
+        'bg-muted/72 mt-auto border-t px-6 py-4',
         className,
       )}
       data-slot="drawer-footer"
@@ -167,14 +179,17 @@ function DrawerFooter({ className, ...props }: DrawerFooterProps) {
 function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
   return (
     <div
-      className={cn('flex flex-col gap-1.5 p-6 pe-12', className)}
+      className={cn('flex flex-col gap-1.5 p-6', className)}
       data-slot="drawer-header"
       {...props}
     />
   );
 }
 
-/** The scrolling body between the header and the footer. Mouse drags in it select text instead of moving the drawer. */
+/**
+ * The scrolling body between the header and the footer. Mouse drags in it
+ * select text instead of moving the drawer.
+ */
 function DrawerPanel({ className, ...props }: DrawerPanelProps) {
   return (
     <DrawerPrimitive.Content

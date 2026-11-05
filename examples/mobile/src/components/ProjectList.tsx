@@ -1,4 +1,4 @@
-import { Badge, Card, Drawer, Text, XStack } from '@pickle-ui/react-native';
+import { Badge, Card, cn, Drawer, Text, XStack } from '@pickle-ui/react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
@@ -28,11 +28,10 @@ export function ProjectList({ onShip, projects }: ProjectListProps) {
           <Pressable
             accessibilityHint="Shows the project's details"
             accessibilityRole="button"
-            className={
-              index > 0
-                ? 'border-border flex-row items-center justify-between border-t py-3 active:opacity-60'
-                : 'flex-row items-center justify-between py-3 active:opacity-60'
-            }
+            className={cn(
+              'flex-row items-center justify-between py-3 active:opacity-60',
+              index > 0 && 'border-border border-t',
+            )}
             key={project.id}
             onPress={() => {
               setSelectedId(project.id);

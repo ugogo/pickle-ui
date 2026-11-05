@@ -1,4 +1,4 @@
-import { Card, cn, Text, YStack } from '@pickle-ui/react-native';
+import { Card, cn, Text, XStack, YStack } from '@pickle-ui/react-native';
 import { Pressable, View } from 'react-native';
 import { ScopedVariables, Uniwind, useUniwind } from 'uniwind';
 
@@ -57,7 +57,7 @@ export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
             ))}
           </View>
 
-          <View className="flex-row gap-3">
+          <XStack gap={3}>
             {/* This card sits outside the brand scope, so `bg-primary` is global.css's green. */}
             <Swatch
               label="Pickle"
@@ -76,7 +76,7 @@ export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
                 />
               </ScopedVariables>
             ))}
-          </View>
+          </XStack>
         </YStack>
       </Card.Content>
     </Card>

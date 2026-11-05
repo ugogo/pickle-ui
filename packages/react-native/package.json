@@ -95,7 +95,7 @@
     "zod": "4.0.17"
   },
   "peerDependencies": {
-    "@expo/ui": ">=58.0.0",
+    "@expo/ui": "^58.0.0",
     "react": "^19.0.0",
     "react-hook-form": "^7.0.0",
     "react-native": "*",

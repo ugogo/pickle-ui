@@ -21,7 +21,7 @@ const meta = {
 } satisfies Meta<typeof Drawer>;
 
 export default meta;
-type Content = 'form' | 'list' | 'plain';
+type ExampleContent = 'close-button' | 'form' | 'list';
 
 type StoryDefinition = StoryObj<typeof meta>;
 
@@ -47,20 +47,23 @@ const VARIANT_ROWS: {
   },
 ];
 
-const CONTENT_COLUMNS: { description: string; key: Content; label: string }[] =
-  [
-    { description: 'Header, panel and footer', key: 'form', label: 'Form' },
-    {
-      description: 'The panel scrolls between header and footer',
-      key: 'list',
-      label: 'Long content',
-    },
-    {
-      description: 'showCloseButton, no footer',
-      key: 'plain',
-      label: 'With close button',
-    },
-  ];
+const CONTENT_COLUMNS: {
+  description: string;
+  key: ExampleContent;
+  label: string;
+}[] = [
+  { description: 'Header, panel and footer', key: 'form', label: 'Form' },
+  {
+    description: 'The panel scrolls between header and footer',
+    key: 'list',
+    label: 'Long content',
+  },
+  {
+    description: 'showCloseButton, no footer',
+    key: 'close-button',
+    label: 'With close button',
+  },
+];
 
 const SIZE_COLUMNS: {
   description: string;
@@ -88,7 +91,7 @@ function DrawerExample({
   trigger,
   variant,
 }: {
-  content: Content;
+  content: ExampleContent;
   size?: DrawerContentProps['size'];
   trigger: string;
   variant?: DrawerContentProps['variant'];
@@ -101,7 +104,7 @@ function DrawerExample({
         {trigger}
       </Drawer.Trigger>
       <Drawer.Content
-        showCloseButton={content === 'plain'}
+        showCloseButton={content === 'close-button'}
         size={size}
         variant={variant}
       >
@@ -128,7 +131,7 @@ function DrawerExample({
             </Drawer.Footer>
           </>
         ) : null}
-        {content === 'plain' ? (
+        {content === 'close-button' ? (
           <>
             <Drawer.Header>
               <Drawer.Title>Share link</Drawer.Title>
@@ -201,7 +204,7 @@ function SizeCell({ column }: ComponentMatrixCellProps) {
 function VariantCell({ column, row }: ComponentMatrixCellProps) {
   return (
     <DrawerExample
-      content={column.key as Content}
+      content={column.key as ExampleContent}
       trigger="Open"
       variant={row.key as DrawerContentProps['variant']}
     />
