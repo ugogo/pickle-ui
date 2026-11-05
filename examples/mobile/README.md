@@ -12,7 +12,9 @@ pnpm example:mobile                               # later runs: starts Metro for
 
 `Drawer` presents the platform's own sheet through
 [True Sheet](https://sheet.lodev09.com), which ships native code, so the
-example runs as a development build rather than in Expo Go. `expo run:ios`
+example runs as a development build rather than in Expo Go: with
+`expo-dev-client` installed, `pnpm example:mobile` opens that build. Run the
+`ios` or `android` script again after adding a package with native code. `expo run:ios`
 needs Xcode and the iOS Simulator; `expo run:android` needs Android Studio
 and an emulator. If another Metro server holds port 8081, Expo offers the
 next port.
