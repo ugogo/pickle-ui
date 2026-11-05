@@ -179,7 +179,9 @@ function DrawerPanel({ className, ...props }: DrawerPanelProps) {
   return (
     <DrawerPrimitive.Content
       className={cn(
-        'min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-6 first:pt-6',
+        // Pulled 4px into the header's padding and padded back, so the 3px focus
+        // ring of a field at its top isn't clipped by the scroll container.
+        '-mt-1 min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pt-1 pb-6 first:mt-0 first:pt-6',
         className,
       )}
       data-slot="drawer-panel"

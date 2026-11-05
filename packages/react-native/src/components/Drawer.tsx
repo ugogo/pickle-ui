@@ -353,8 +353,13 @@ function DrawerPanel({
 
   return (
     <ScrollView
-      className={cn('shrink grow-0', className)}
-      contentContainerClassName={cn('px-6 pb-6', contentContainerClassName)}
+      // Pulled 4pt into the header's padding and padded back, so a field's 3pt
+      // focus ring at the top isn't clipped by the scroll view.
+      className={cn('-mt-1 shrink grow-0', className)}
+      contentContainerClassName={cn(
+        'px-6 pt-1 pb-6',
+        contentContainerClassName,
+      )}
       keyboardShouldPersistTaps="handled"
       onScroll={(event) => {
         scrollOffsetRef.current = event.nativeEvent.contentOffset.y;
