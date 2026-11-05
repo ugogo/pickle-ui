@@ -7,7 +7,7 @@ import { View } from 'react-native';
 import { z } from 'zod/v4';
 
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
-import { Drawer, type DrawerContentProps } from './Drawer';
+import { Drawer } from './Drawer';
 import { Form } from './form/Form';
 import { Input } from './form/Input';
 import { Text } from './Text';
@@ -23,27 +23,19 @@ type Content = 'form' | 'list' | 'plain';
 
 type StoryDefinition = StoryObj<typeof meta>;
 
-const VARIANT_ROWS: {
-  description: string;
-  key: NonNullable<DrawerContentProps['variant']>;
-  label: string;
-}[] = [
-  {
-    description: 'Floats away from the screen edges',
-    key: 'inset',
-    label: 'Inset (default)',
-  },
-  {
-    description: 'Docked to the bottom edge, rounded top',
-    key: 'attached',
-    label: 'Attached',
-  },
-  {
-    description: 'Docked to the bottom edge, square',
-    key: 'straight',
-    label: 'Straight',
-  },
-];
+const CLOSE_BUTTON_ROWS: { description: string; key: string; label: string }[] =
+  [
+    {
+      description: 'Swipe down or tap outside to close',
+      key: 'default',
+      label: 'Default',
+    },
+    {
+      description: 'showCloseButton',
+      key: 'close-button',
+      label: 'With close button',
+    },
+  ];
 
 const CONTENT_COLUMNS: { description: string; key: Content; label: string }[] =
   [
@@ -54,9 +46,9 @@ const CONTENT_COLUMNS: { description: string; key: Content; label: string }[] =
       label: 'Long content',
     },
     {
-      description: 'showCloseButton={false}, no footer',
+      description: 'No footer',
       key: 'plain',
-      label: 'Without close button',
+      label: 'Plain',
     },
   ];
 
@@ -77,10 +69,7 @@ function DrawerCell({ column, row }: ComponentMatrixCellProps) {
   return (
     <Drawer onOpenChange={setOpen} open={open}>
       <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
-      <Drawer.Content
-        showCloseButton={content !== 'plain'}
-        variant={row.key as DrawerContentProps['variant']}
-      >
+      <Drawer.Content showCloseButton={row.key === 'close-button'}>
         {content === 'form' ? (
           <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
@@ -107,8 +96,7 @@ function DrawerCell({ column, row }: ComponentMatrixCellProps) {
             <Drawer.Header>
               <Drawer.Title>Share link</Drawer.Title>
               <Drawer.Description>
-                Anyone with the link can view this project. Swipe down or tap
-                outside to close.
+                Anyone with the link can view this project.
               </Drawer.Description>
             </Drawer.Header>
             <Drawer.Panel>
@@ -163,15 +151,15 @@ function ProfileForm({ onSaved }: { onSaved: () => void }) {
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Drawer">
-      <Story.Section title="Variants">
+      <Story.Section title="Content">
         <Text tone="muted">
-          A bottom sheet that follows the finger and closes when dragged past
-          half its height or flung down.
+          The platform&apos;s bottom sheet, through Expo UI. It sizes itself to
+          its content and closes when swiped down.
         </Text>
         <Story.Matrix
           Cell={DrawerCell}
           columns={CONTENT_COLUMNS}
-          rows={VARIANT_ROWS}
+          rows={CLOSE_BUTTON_ROWS}
         />
       </Story.Section>
     </Story.Layout>

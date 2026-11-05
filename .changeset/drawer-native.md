@@ -2,4 +2,4 @@
 '@pickle-ui/react-native': minor
 ---
 
-Add `Drawer`, a bottom sheet that follows the finger and closes when dragged down. It floats inset from the screen's edges by default, with the web's `attached` and `straight` variants. It needs `react-native-safe-area-context` as a peer dependency.
+Add `Drawer`, the platform's bottom sheet through Expo UI's `BottomSheet`, sized to its content, with the web's header, panel and footer parts. It needs `@expo/ui` as a peer dependency.

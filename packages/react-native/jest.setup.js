@@ -7,3 +7,21 @@ import { Animated, Easing } from 'react-native';
 void Animated.Value;
 void Animated.View;
 void Easing.linear;
+
+// Expo UI's sheet is a native view. The mock shows its content while it's
+// presented, and an accessibility escape stands in for a swipe down.
+/* global jest */
+jest.mock('@expo/ui', () => {
+  const { createElement } = jest.requireActual('react');
+  const { View } = jest.requireActual('react-native');
+  return {
+    BottomSheet: ({ children, isPresented, onDismiss }) =>
+      isPresented
+        ? createElement(
+            View,
+            { onAccessibilityEscape: onDismiss, testID: 'bottom-sheet' },
+            children,
+          )
+        : null,
+  };
+});

@@ -53,7 +53,7 @@ reload without a build. Leave both out of your own app.
 2. Add Pickle, Uniwind and Tailwind:
 
    ```bash
-   npx expo install @pickle-ui/react-native@beta uniwind tailwindcss
+   npx expo install @pickle-ui/react-native@beta uniwind tailwindcss @expo/ui
    ```
 
 3. Copy `metro.config.js` without the `unstable_conditionNames` block. It
