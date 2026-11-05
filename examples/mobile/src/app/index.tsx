@@ -6,6 +6,7 @@ import { ScopedVariables, useUniwind } from 'uniwind';
 import { type Brand } from '../brands';
 import { NewProjectForm } from '../components/NewProjectForm';
 import { ProjectList } from '../components/ProjectList';
+import { SheetComparison } from '../components/SheetComparison';
 import { ThemeControls } from '../components/ThemeControls';
 import { INITIAL_PROJECTS, type Project } from '../projects';
 
@@ -48,6 +49,7 @@ export default function Projects() {
        */}
       <ScopedVariables variables={brand ? brand.theme[theme] : {}}>
         <ProjectList onShip={shipProject} projects={projects} />
+        <SheetComparison />
         <NewProjectForm onCreate={addProject} />
       </ScopedVariables>
     </ScrollView>
