@@ -408,7 +408,7 @@ attribute sits on the slot listed here:
 | `Alert`, `Menu.Item`                    | `alert`, `menu-item`                           | `data-variant`                                                               |
 | `Text`                                  | `text`                                         | `data-variant`, plus `data-tone`, `data-weight` and `data-truncate` when set |
 | `Dialog.Content`, `AlertDialog.Content` | `dialog-content`, `alert-dialog-content`       | `data-size`                                                                  |
-| `Drawer.Content`                        | `drawer-content`                               | `data-size`                                                                  |
+| `Drawer.Content`                        | `drawer-content`                               | `data-size`, `data-variant`                                                  |
 | `Input`, `Textarea`                     | `input-control`, `textarea-control` (wrappers) | `data-size`                                                                  |
 | `Checkbox`                              | `checkbox`                                     | `data-size`                                                                  |
 | `RadioGroup.Item`                       | `radio`                                        | `data-size`                                                                  |

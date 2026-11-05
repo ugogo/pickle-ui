@@ -43,6 +43,7 @@ describe('Drawer', () => {
     expect(drawer).toHaveAccessibleDescription('Review your items.');
     expect(drawer).toHaveAttribute('data-slot', 'drawer-content');
     expect(drawer).toHaveAttribute('data-size', 'md');
+    expect(drawer).toHaveAttribute('data-variant', 'inset');
     expect(screen.getByRole('heading', { name: 'Cart' })).toHaveAttribute(
       'data-slot',
       'drawer-title',
@@ -54,6 +55,12 @@ describe('Drawer', () => {
     renderDrawer();
 
     expect(await openDrawer()).toHaveAttribute('data-swipe-direction', 'right');
+  });
+
+  it('renders the variant it is given', async () => {
+    renderDrawer({ variant: 'attached' });
+
+    expect(await openDrawer()).toHaveAttribute('data-variant', 'attached');
   });
 
   it('renders the panel and footer inside the drawer', async () => {

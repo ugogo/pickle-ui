@@ -1,3 +1,4 @@
+import { cva, type VariantProps } from 'class-variance-authority';
 import {
   Children,
   createContext,
@@ -41,6 +42,23 @@ const TOP_GAP = 48;
 const DISMISS_RATIO = 0.5;
 const DISMISS_VELOCITY = 0.5;
 const NO_INSETS: EdgeInsets = { bottom: 0, left: 0, right: 0, top: 0 };
+// The `inset` sheet's distance from the screen's sides and bottom.
+const INSET = 8;
+
+// Same variants as the web Drawer: `inset` floats, `attached` and `straight`
+// sit on the bottom edge. The inset sheet clips the footer to its corners.
+const sheetVariants = cva('border-border bg-popover', {
+  defaultVariants: { variant: 'inset' },
+  variants: {
+    variant: {
+      attached: 'rounded-t-2xl border-t',
+      inset: 'overflow-hidden rounded-[32px] border',
+      straight: 'border-t',
+    },
+  },
+});
+
+type DrawerVariant = NonNullable<VariantProps<typeof sheetVariants>['variant']>;
 const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 
 type DrawerContentContextValue = {
@@ -67,6 +85,12 @@ export type DrawerContentProps = React.ComponentProps<typeof View> & {
   closeLabel?: string;
   /** Renders a close icon button in the top-right corner. Defaults to `true`. */
   showCloseButton?: boolean;
+  /**
+   * `inset` floats the sheet away from the screen's sides and bottom,
+   * `attached` docks it to the bottom edge with rounded top corners, and
+   * `straight` docks it without rounding. Defaults to `inset`.
+   */
+  variant?: DrawerVariant;
 };
 export type DrawerDescriptionProps = Omit<TextProps, 'tone' | 'variant'>;
 export type DrawerFooterProps = React.ComponentProps<typeof View>;
@@ -118,6 +142,7 @@ function DrawerContent({
   closeLabel = 'Close',
   showCloseButton = true,
   style,
+  variant = 'inset',
   ...props
 }: DrawerContentProps) {
   const { open, setOpen } = useDrawer();
@@ -126,6 +151,11 @@ function DrawerContent({
   const [height, setHeight] = useState(windowHeight);
   const [translateY] = useState(() => new Animated.Value(windowHeight));
   const scrollOffsetRef = useRef(0);
+  const inset = variant === 'inset' ? INSET : 0;
+  // How far the sheet travels to leave the screen.
+  const offscreen = height + inset;
+  // The inset sheet already clears part of the home indicator.
+  const bottomInset = Math.max(insets.bottom - inset, 0);
 
   // Stays mounted while the closing animation runs. One state, so the open
   // change and the mount land in the same update.
@@ -147,7 +177,7 @@ function DrawerContent({
     Animated.timing(translateY, {
       duration: CLOSE_DURATION,
       easing: EASING,
-      toValue: height,
+      toValue: offscreen,
       useNativeDriver: USE_NATIVE_DRIVER,
     }).start(({ finished }) => {
       if (finished) {
@@ -156,7 +186,7 @@ function DrawerContent({
         );
       }
     });
-  }, [height, open, translateY]);
+  }, [offscreen, open, translateY]);
 
   const panResponder = useMemo(() => {
     const settle = (velocity = 0) =>
@@ -195,8 +225,8 @@ function DrawerContent({
     (child) => isValidElement(child) && child.type === DrawerFooter,
   );
   const contentContext = useMemo(
-    () => ({ bottomInset: insets.bottom, scrollOffsetRef }),
-    [insets.bottom],
+    () => ({ bottomInset, scrollOffsetRef }),
+    [bottomInset],
   );
   const close = () => setOpen(false);
 
@@ -216,7 +246,7 @@ function DrawerContent({
             left: 0,
             opacity: translateY.interpolate({
               extrapolate: 'clamp',
-              inputRange: [0, Math.max(height, 1)],
+              inputRange: [0, Math.max(offscreen, 1)],
               outputRange: [1, 0],
             }),
             position: 'absolute',
@@ -236,19 +266,20 @@ function DrawerContent({
         >
           <Animated.View
             {...panResponder.panHandlers}
-            style={{ transform: [{ translateY }] }}
+            style={{
+              marginBottom: inset,
+              marginHorizontal: inset,
+              transform: [{ translateY }],
+            }}
           >
             <View
               aria-modal
-              className={cn(
-                'border-border bg-popover rounded-t-2xl border-t',
-                className,
-              )}
+              className={cn(sheetVariants({ variant }), className)}
               onAccessibilityEscape={close}
               onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
               role="dialog"
               style={[
-                { maxHeight: windowHeight - insets.top - TOP_GAP },
+                { maxHeight: windowHeight - insets.top - TOP_GAP - inset },
                 style,
               ]}
               {...props}
@@ -259,7 +290,7 @@ function DrawerContent({
               <DrawerContentContext value={contentContext}>
                 {children}
               </DrawerContentContext>
-              {hasFooter ? null : <View style={{ height: insets.bottom }} />}
+              {hasFooter ? null : <View style={{ height: bottomInset }} />}
               {showCloseButton ? (
                 <Button
                   accessibilityLabel={closeLabel}
@@ -271,8 +302,10 @@ function DrawerContent({
                   <CloseIcon />
                 </Button>
               ) : null}
-              {/* Fills the gap below the sheet when a drag pulls it up. */}
-              <View className="bg-popover absolute inset-x-0 top-full h-12" />
+              {/* Fills the gap below a docked sheet when a drag pulls it up. */}
+              {variant === 'inset' ? null : (
+                <View className="bg-popover absolute inset-x-0 top-full h-12" />
+              )}
             </View>
           </Animated.View>
         </KeyboardAvoidingView>

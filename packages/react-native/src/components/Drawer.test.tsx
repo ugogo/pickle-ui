@@ -94,6 +94,15 @@ describe('Drawer', () => {
     ).not.toBeOnTheScreen();
   });
 
+  it.each(['inset', 'attached', 'straight'] as const)(
+    'renders the %s variant',
+    async (variant) => {
+      await renderDrawer({ contentProps: { variant }, defaultOpen: true });
+
+      expect(screen.getByRole('header', { name: 'Cart' })).toBeOnTheScreen();
+    },
+  );
+
   it('follows the open prop when controlled', async () => {
     const onOpenChange = jest.fn();
     await renderDrawer({ onOpenChange, open: false });

@@ -26,22 +26,32 @@ const drawerViewportClassName = 'fixed inset-0 z-50 flex justify-end';
 
 const drawerPopupVariants = cva(
   cn(
-    'bg-popover text-popover-foreground relative flex h-full w-[calc(100%-3rem)] min-w-0 flex-col rounded-s-2xl border-s shadow-lg/5 outline-none not-dark:bg-clip-padding',
+    'bg-popover text-popover-foreground relative flex w-[calc(100%-3rem)] min-w-0 flex-col shadow-lg/5 outline-none not-dark:bg-clip-padding',
     'transition-transform data-ending-style:duration-[calc(var(--drawer-swipe-strength,1)*400ms)] data-swiping:select-none',
     drawerMotion,
-    '[transform:translateX(var(--drawer-swipe-movement-x,0px))] data-ending-style:[transform:translateX(100%)] data-starting-style:[transform:translateX(100%)]',
-    // Fills the gap past the screen edge when a drag pulls the drawer inwards.
-    'after:bg-popover after:pointer-events-none after:absolute after:inset-y-0 after:start-full after:w-12',
+    '[transform:translateX(var(--drawer-swipe-movement-x,0px))] data-ending-style:[transform:translateX(calc(100%+var(--inset,0px)))] data-starting-style:[transform:translateX(calc(100%+var(--inset,0px)))]',
   ),
   {
     defaultVariants: {
       size: 'md',
+      variant: 'inset',
     },
     variants: {
       size: {
         lg: 'max-w-xl',
         md: 'max-w-md',
         sm: 'max-w-sm',
+      },
+      variant: {
+        // Edge to edge; fills the gap past the screen edge when a drag pulls
+        // the drawer inwards.
+        attached:
+          'after:bg-popover rounded-s-2xl border-s after:pointer-events-none after:absolute after:inset-y-0 after:start-full after:w-12 **:data-[slot=drawer-footer]:rounded-es-[calc(var(--radius-2xl)-1px)]',
+        // Floats inside the viewport, `--inset` away from its edges.
+        inset:
+          'my-(--inset) me-(--inset) rounded-2xl border [--inset:--spacing(2)] sm:[--inset:--spacing(4)] **:data-[slot=drawer-footer]:rounded-b-[calc(var(--radius-2xl)-1px)]',
+        straight:
+          'after:bg-popover border-s after:pointer-events-none after:absolute after:inset-y-0 after:start-full after:w-12',
       },
     },
   },
@@ -56,6 +66,12 @@ type DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive.Popup> & {
   showCloseButton?: boolean;
   /** Maximum width of the drawer. Defaults to `md`. */
   size?: DrawerSize;
+  /**
+   * `inset` floats the drawer away from the viewport's edges, `attached`
+   * docks it to the right edge with rounded inner corners, and `straight`
+   * docks it without rounding. Defaults to `inset`.
+   */
+  variant?: DrawerVariant;
 };
 type DrawerDescriptionProps = React.ComponentProps<
   typeof DrawerPrimitive.Description
@@ -77,6 +93,9 @@ type DrawerProps = Omit<
 type DrawerSize = NonNullable<VariantProps<typeof drawerPopupVariants>['size']>;
 type DrawerTitleProps = React.ComponentProps<typeof DrawerPrimitive.Title>;
 type DrawerTriggerProps = React.ComponentProps<typeof DrawerPrimitive.Trigger>;
+type DrawerVariant = NonNullable<
+  VariantProps<typeof drawerPopupVariants>['variant']
+>;
 
 function DrawerClose({ ...props }: DrawerCloseProps) {
   return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
@@ -88,6 +107,7 @@ function DrawerContent({
   closeLabel = 'Close',
   showCloseButton = true,
   size = 'md',
+  variant = 'inset',
   ...props
 }: DrawerContentProps) {
   return (
@@ -98,9 +118,10 @@ function DrawerContent({
       />
       <DrawerPrimitive.Viewport className={drawerViewportClassName}>
         <DrawerPrimitive.Popup
-          className={cn(drawerPopupVariants({ size }), className)}
+          className={cn(drawerPopupVariants({ size, variant }), className)}
           data-size={size}
           data-slot="drawer-content"
+          data-variant={variant}
           {...props}
         >
           {children}
@@ -134,7 +155,7 @@ function DrawerFooter({ className, ...props }: DrawerFooterProps) {
   return (
     <div
       className={cn(
-        'bg-muted/72 mt-auto flex flex-col-reverse gap-2 rounded-es-[calc(var(--radius-2xl)-1px)] border-t px-6 py-4 sm:flex-row sm:justify-end',
+        'bg-muted/72 mt-auto flex flex-col-reverse gap-2 border-t px-6 py-4 sm:flex-row sm:justify-end',
         className,
       )}
       data-slot="drawer-footer"
