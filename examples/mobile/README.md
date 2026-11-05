@@ -13,9 +13,10 @@ You need the iOS Simulator (Xcode) or an Android emulator, or a phone with
 [Expo Go](https://expo.dev/go) to scan the QR code. If another Metro server
 holds port 8081, Expo offers the next port.
 
-`Button`, `Badge`, `Card`, `Input`, `Text`, `cn` and `useColorToken` come from
-`@pickle-ui/react-native`. They reuse the web API's names (`variant`, `size`,
-`tone`, `Card.Header`, …) and the web's dimensions. `src/components` only holds the
+`Button`, `Badge`, `Card`, `Drawer`, `Input`, `Text`, `XStack`, `YStack`, `cn`
+and `useColorToken` come from `@pickle-ui/react-native`. They reuse the web
+API's names (`variant`, `size`, `tone`, `Card.Header`, …) and the web's
+dimensions. `src/components` only holds the
 screen's own pieces, styled with token utilities (`bg-primary`,
 `text-muted-foreground`, `border-border`, `rounded-xl`). See
 [What carries over to native](../README.md#what-carries-over-to-native).
@@ -35,6 +36,7 @@ reload without a build. Leave both out of your own app.
 | `src/app/index.tsx`                 | `ScopedVariables` applying a brand to part of the screen  |
 | `src/brands.ts`                     | Runtime brands derived with `createTheme`                 |
 | `src/components/ThemeControls.tsx`  | `Uniwind.setTheme`, brand swatches                        |
+| `src/components/ProjectList.tsx`    | A controlled `Drawer` with a project's details            |
 | `src/components/NewProjectForm.tsx` | `Input`, tokens on a native `Switch`, `className` merge   |
 
 ## Setup in your own app
