@@ -1,4 +1,4 @@
-import { Card, cn, Text } from '@pickle-ui/react-native';
+import { Card, cn, Text, XStack, YStack } from '@pickle-ui/react-native';
 import { Pressable, View } from 'react-native';
 import { ScopedVariables, Uniwind, useUniwind } from 'uniwind';
 
@@ -30,52 +30,54 @@ export function ThemeControls({ brand, onBrandChange }: ThemeControlsProps) {
         </Card.Description>
       </Card.Header>
       <Card.Content>
-        <View
-          accessibilityLabel="Color scheme"
-          accessibilityRole="radiogroup"
-          className="bg-muted flex-row rounded-lg p-1"
-        >
-          {SCHEMES.map((value) => (
-            <Pressable
-              accessibilityRole="radio"
-              accessibilityState={{ checked: scheme === value }}
-              className={cn(
-                'h-8 flex-1 items-center justify-center rounded-md',
-                scheme === value && 'bg-background',
-              )}
-              key={value}
-              onPress={() => Uniwind.setTheme(value)}
-            >
-              <Text
-                className="capitalize"
-                tone={scheme === value ? undefined : 'muted'}
+        <YStack gap={4}>
+          <View
+            accessibilityLabel="Color scheme"
+            accessibilityRole="radiogroup"
+            className="bg-muted flex-row rounded-lg p-1"
+          >
+            {SCHEMES.map((value) => (
+              <Pressable
+                accessibilityRole="radio"
+                accessibilityState={{ checked: scheme === value }}
+                className={cn(
+                  'h-8 flex-1 items-center justify-center rounded-md',
+                  scheme === value && 'bg-background',
+                )}
+                key={value}
+                onPress={() => Uniwind.setTheme(value)}
               >
-                {value}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+                <Text
+                  className="capitalize"
+                  tone={scheme === value ? undefined : 'muted'}
+                >
+                  {value}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
 
-        <View className="flex-row gap-3">
-          {/* This card sits outside the brand scope, so `bg-primary` is global.css's green. */}
-          <Swatch
-            label="Pickle"
-            onPress={() => onBrandChange(null)}
-            selected={brand === null}
-          />
-          {/* Each swatch reads `bg-primary` through its brand's tokens:
+          <XStack gap={3}>
+            {/* This card sits outside the brand scope, so `bg-primary` is global.css's green. */}
+            <Swatch
+              label="Pickle"
+              onPress={() => onBrandChange(null)}
+              selected={brand === null}
+            />
+            {/* Each swatch reads `bg-primary` through its brand's tokens:
               `createTheme` writes oklch(), which Uniwind resolves but a raw
               `style` color doesn't. */}
-          {BRANDS.map((item) => (
-            <ScopedVariables key={item.label} variables={item.theme[theme]}>
-              <Swatch
-                label={item.label}
-                onPress={() => onBrandChange(item)}
-                selected={brand === item}
-              />
-            </ScopedVariables>
-          ))}
-        </View>
+            {BRANDS.map((item) => (
+              <ScopedVariables key={item.label} variables={item.theme[theme]}>
+                <Swatch
+                  label={item.label}
+                  onPress={() => onBrandChange(item)}
+                  selected={brand === item}
+                />
+              </ScopedVariables>
+            ))}
+          </XStack>
+        </YStack>
       </Card.Content>
     </Card>
   );

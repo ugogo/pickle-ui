@@ -20,6 +20,13 @@ export default function Projects() {
       { ...project, id: String(Date.now()) },
     ]);
 
+  const shipProject = (id: string) =>
+    setProjects((current) =>
+      current.map((project) =>
+        project.id === id ? { ...project, status: 'success' } : project,
+      ),
+    );
+
   return (
     <ScrollView
       automaticallyAdjustKeyboardInsets
@@ -40,7 +47,7 @@ export default function Projects() {
        * from global.css apply.
        */}
       <ScopedVariables variables={brand ? brand.theme[theme] : {}}>
-        <ProjectList projects={projects} />
+        <ProjectList onShip={shipProject} projects={projects} />
         <NewProjectForm onCreate={addProject} />
       </ScopedVariables>
     </ScrollView>

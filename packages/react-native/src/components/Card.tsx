@@ -84,13 +84,13 @@ function CardRoot({ className, ...props }: CardProps) {
   );
 }
 
+// Keeps the type scale's line height where the web sets `leading-none`: iOS
+// clips a text's glyphs to its line box, and a heading font's ascenders rise
+// above a line as tall as its font size.
 function CardTitle({ className, ...props }: CardTitleProps) {
   return (
     <Text
-      className={cn(
-        'text-card-foreground font-heading leading-none',
-        className,
-      )}
+      className={cn('text-card-foreground font-heading', className)}
       variant="h3"
       {...props}
     />

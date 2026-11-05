@@ -81,42 +81,43 @@ import { Form } from '@pickle-ui/react/form';
 Subpaths use the same named exports as the root entry (for example `Button` from
 `@pickle-ui/react/button`, not a default export).
 
-| Subpath                                                | Exports                                                                                                |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| `@pickle-ui/react/alert`                               | `Alert` with `Icon`, `Title`, `Description`, `Action`                                                  |
-| `@pickle-ui/react/alert-dialog`                        | `AlertDialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`           |
-| `@pickle-ui/react/avatar`                              | `Avatar` with `Image`, `Fallback`, `Group`                                                             |
-| `@pickle-ui/react/badge`                               | `Badge`, `badgeVariants`                                                                               |
-| `@pickle-ui/react/button`                              | `Button`, `buttonVariants`                                                                             |
-| `@pickle-ui/react/card`                                | `Card` with `Header`, `Title`, `Description`, `Action`, `Content`, `Footer`                            |
-| `@pickle-ui/react/checkbox`                            | `Checkbox` with `Label`                                                                                |
-| `@pickle-ui/react/color-picker`                        | `ColorPicker` with `Trigger`, `Content`, `Area`, `HueSlider`, `AlphaSlider`, `Swatch`, `Input`, …      |
-| `@pickle-ui/react/combobox`                            | `Combobox` with `Input`, `Content`, `List`, `Item`, `Chips`, …                                         |
-| `@pickle-ui/react/dialog`                              | `Dialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`                |
-| `@pickle-ui/react/flex`, `@pickle-ui/react/grid`       | `Flex`, `Grid` layout primitives                                                                       |
-| `@pickle-ui/react/x-stack`, `@pickle-ui/react/y-stack` | `XStack`, `YStack` row and column shorthands                                                           |
-| `@pickle-ui/react/form`                                | `Form` with `Field`, `Label`, `Description`, `Error`, `Button` and every React Hook Form-bound control |
-| `@pickle-ui/react/group`                               | `Group` with `Separator`, `Text`, for attached button and input groups                                 |
-| `@pickle-ui/react/input`                               | `Input`                                                                                                |
-| `@pickle-ui/react/input-group`                         | `InputGroup` with `Input`, `Addon`, `Button`, `Text`                                                   |
-| `@pickle-ui/react/menu`                                | `Menu` with `Trigger`, `Content`, `Item`, `CheckboxItem`, `RadioGroup`, `Sub`, `Shortcut`, …           |
-| `@pickle-ui/react/popover`                             | `Popover` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Anchor`                        |
-| `@pickle-ui/react/progress`                            | `Progress` with `Label`, `Value`, `Track`, `Indicator`                                                 |
-| `@pickle-ui/react/radio-group`                         | `RadioGroup` with `Item`                                                                               |
-| `@pickle-ui/react/scroll-area`                         | `ScrollArea` with `Viewport`, `Scrollbar`, `Thumb`, `Corner`                                           |
-| `@pickle-ui/react/select`                              | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                        |
-| `@pickle-ui/react/separator`                           | `Separator`                                                                                            |
-| `@pickle-ui/react/sidebar`                             | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                       |
-| `@pickle-ui/react/slider`                              | `Slider` with `Label`, `Value`, `Marks`                                                                |
-| `@pickle-ui/react/spinner`                             | `Spinner`                                                                                              |
-| `@pickle-ui/react/switch`                              | `Switch` with `Label`                                                                                  |
-| `@pickle-ui/react/table`                               | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                              |
-| `@pickle-ui/react/text`                                | `Text`, `textVariants` for headings and body copy                                                      |
-| `@pickle-ui/react/textarea`                            | `Textarea`, growing with its content                                                                   |
-| `@pickle-ui/react/toast`                               | `Toast` with `Provider`, `useToast` and the `manager` for toasts outside React                         |
-| `@pickle-ui/react/tooltip`                             | `Tooltip` with `Trigger`, `Content`, `Provider`                                                        |
-| `@pickle-ui/react/cn`                                  | `cn` class helper, `SlotClassNames` type                                                               |
-| `@pickle-ui/react/theme`                               | `createTheme`, `themeToCss`                                                                            |
+| Subpath                                                | Exports                                                                                                                      |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `@pickle-ui/react/alert`                               | `Alert` with `Icon`, `Title`, `Description`, `Action`                                                                        |
+| `@pickle-ui/react/alert-dialog`                        | `AlertDialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`                                 |
+| `@pickle-ui/react/avatar`                              | `Avatar` with `Image`, `Fallback`, `Group`                                                                                   |
+| `@pickle-ui/react/badge`                               | `Badge`, `badgeVariants`                                                                                                     |
+| `@pickle-ui/react/button`                              | `Button`, `buttonVariants`                                                                                                   |
+| `@pickle-ui/react/card`                                | `Card` with `Header`, `Title`, `Description`, `Action`, `Content`, `Footer`                                                  |
+| `@pickle-ui/react/checkbox`                            | `Checkbox` with `Label`                                                                                                      |
+| `@pickle-ui/react/color-picker`                        | `ColorPicker` with `Trigger`, `Content`, `Area`, `HueSlider`, `AlphaSlider`, `Swatch`, `Input`, …                            |
+| `@pickle-ui/react/combobox`                            | `Combobox` with `Input`, `Content`, `List`, `Item`, `Chips`, …                                                               |
+| `@pickle-ui/react/dialog`                              | `Dialog` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Footer`, `Close`                                      |
+| `@pickle-ui/react/drawer`                              | `Drawer`, sliding in from the right, with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Panel`, `Footer`, `Close` |
+| `@pickle-ui/react/flex`, `@pickle-ui/react/grid`       | `Flex`, `Grid` layout primitives                                                                                             |
+| `@pickle-ui/react/x-stack`, `@pickle-ui/react/y-stack` | `XStack`, `YStack` row and column shorthands                                                                                 |
+| `@pickle-ui/react/form`                                | `Form` with `Field`, `Label`, `Description`, `Error`, `Button` and every React Hook Form-bound control                       |
+| `@pickle-ui/react/group`                               | `Group` with `Separator`, `Text`, for attached button and input groups                                                       |
+| `@pickle-ui/react/input`                               | `Input`                                                                                                                      |
+| `@pickle-ui/react/input-group`                         | `InputGroup` with `Input`, `Addon`, `Button`, `Text`                                                                         |
+| `@pickle-ui/react/menu`                                | `Menu` with `Trigger`, `Content`, `Item`, `CheckboxItem`, `RadioGroup`, `Sub`, `Shortcut`, …                                 |
+| `@pickle-ui/react/popover`                             | `Popover` with `Trigger`, `Content`, `Header`, `Title`, `Description`, `Anchor`                                              |
+| `@pickle-ui/react/progress`                            | `Progress` with `Label`, `Value`, `Track`, `Indicator`                                                                       |
+| `@pickle-ui/react/radio-group`                         | `RadioGroup` with `Item`                                                                                                     |
+| `@pickle-ui/react/scroll-area`                         | `ScrollArea` with `Viewport`, `Scrollbar`, `Thumb`, `Corner`                                                                 |
+| `@pickle-ui/react/select`                              | `Select` with `Trigger`, `Value`, `Content`, `Item`, `Group`, …                                                              |
+| `@pickle-ui/react/separator`                           | `Separator`                                                                                                                  |
+| `@pickle-ui/react/sidebar`                             | `Sidebar` with `Header`, `Content`, `Footer`, `Group`, `Menu`, …                                                             |
+| `@pickle-ui/react/slider`                              | `Slider` with `Label`, `Value`, `Marks`                                                                                      |
+| `@pickle-ui/react/spinner`                             | `Spinner`                                                                                                                    |
+| `@pickle-ui/react/switch`                              | `Switch` with `Label`                                                                                                        |
+| `@pickle-ui/react/table`                               | `Table` with `Header`, `Body`, `Footer`, `Row`, `Head`, `Cell`, `Caption`                                                    |
+| `@pickle-ui/react/text`                                | `Text`, `textVariants` for headings and body copy                                                                            |
+| `@pickle-ui/react/textarea`                            | `Textarea`, growing with its content                                                                                         |
+| `@pickle-ui/react/toast`                               | `Toast` with `Provider`, `useToast` and the `manager` for toasts outside React                                               |
+| `@pickle-ui/react/tooltip`                             | `Tooltip` with `Trigger`, `Content`, `Provider`                                                                              |
+| `@pickle-ui/react/cn`                                  | `cn` class helper, `SlotClassNames` type                                                                                     |
+| `@pickle-ui/react/theme`                               | `createTheme`, `themeToCss`                                                                                                  |
 
 Interactive components and their parts take Base UI's `render` prop to swap
 the element they render, for example
@@ -407,6 +408,7 @@ attribute sits on the slot listed here:
 | `Alert`, `Menu.Item`                    | `alert`, `menu-item`                           | `data-variant`                                                               |
 | `Text`                                  | `text`                                         | `data-variant`, plus `data-tone`, `data-weight` and `data-truncate` when set |
 | `Dialog.Content`, `AlertDialog.Content` | `dialog-content`, `alert-dialog-content`       | `data-size`                                                                  |
+| `Drawer.Content`                        | `drawer-content`                               | `data-size`, `data-variant`                                                  |
 | `Input`, `Textarea`                     | `input-control`, `textarea-control` (wrappers) | `data-size`                                                                  |
 | `Checkbox`                              | `checkbox`                                     | `data-size`                                                                  |
 | `RadioGroup.Item`                       | `radio`                                        | `data-size`                                                                  |

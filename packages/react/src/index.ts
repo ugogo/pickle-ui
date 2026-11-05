@@ -11,6 +11,7 @@ export * from './entries/cn';
 export * from './entries/color-picker';
 export * from './entries/combobox';
 export * from './entries/dialog';
+export * from './entries/drawer';
 export * from './entries/flex';
 export * from './entries/form';
 export * from './entries/grid';

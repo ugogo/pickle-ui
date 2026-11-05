@@ -5,6 +5,7 @@ export * from './entries/button';
 export * from './entries/card';
 export * from './entries/checkbox';
 export * from './entries/cn';
+export * from './entries/drawer';
 export * from './entries/flex';
 export * from './entries/form';
 export * from './entries/grid';
