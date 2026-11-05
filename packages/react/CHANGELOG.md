@@ -1,5 +1,15 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.11
+
+### Minor Changes
+
+- 0c5768f: Add `Drawer`, a panel that slides in from the right, with a scrolling `Drawer.Panel` between its header and footer. It floats inset from the viewport's edges by default; `variant="attached"` and `variant="straight"` dock it to the edge.
+
+### Patch Changes
+
+- 0c5768f: `Form.Label` uses the default line height, like `Form.Description` and `Form.Error`, so a field's label, description and error are spaced the same.
+
 ## 1.0.0-beta.10
 
 ### Patch Changes
