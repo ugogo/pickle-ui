@@ -62,7 +62,7 @@ type DrawerCloseProps = React.ComponentProps<typeof DrawerPrimitive.Close>;
 type DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive.Popup> & {
   /** Accessible name of the close icon button. Defaults to `"Close"`. */
   closeLabel?: string;
-  /** Renders a close icon button in the top-right corner. Defaults to `true`. */
+  /** Renders a close icon button in the top-right corner. Defaults to `false`. */
   showCloseButton?: boolean;
   /** Maximum width of the drawer. Defaults to `md`. */
   size?: DrawerSize;
@@ -105,7 +105,7 @@ function DrawerContent({
   children,
   className,
   closeLabel = 'Close',
-  showCloseButton = true,
+  showCloseButton = false,
   size = 'md',
   variant = 'inset',
   ...props

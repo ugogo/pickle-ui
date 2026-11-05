@@ -77,8 +77,8 @@ describe('Drawer', () => {
     ).toBeInTheDocument();
   });
 
-  it('closes from the built-in close button', async () => {
-    renderDrawer();
+  it('closes from the close button when showCloseButton is set', async () => {
+    renderDrawer({ showCloseButton: true });
 
     const drawer = await openDrawer();
     fireEvent.click(within(drawer).getByRole('button', { name: 'Close' }));
@@ -102,7 +102,7 @@ describe('Drawer', () => {
   });
 
   it('names the close button with closeLabel', async () => {
-    renderDrawer({ closeLabel: 'Fermer' });
+    renderDrawer({ closeLabel: 'Fermer', showCloseButton: true });
 
     const drawer = await openDrawer();
 
@@ -111,8 +111,8 @@ describe('Drawer', () => {
     ).toBeInTheDocument();
   });
 
-  it('omits the close button when showCloseButton is false', async () => {
-    renderDrawer({ showCloseButton: false });
+  it('has no close button by default', async () => {
+    renderDrawer();
 
     const drawer = await openDrawer();
 

@@ -56,9 +56,9 @@ const CONTENT_COLUMNS: { description: string; key: Content; label: string }[] =
       label: 'Long content',
     },
     {
-      description: 'showCloseButton={false}, no footer',
+      description: 'showCloseButton, no footer',
       key: 'plain',
-      label: 'Without close button',
+      label: 'With close button',
     },
   ];
 
@@ -101,7 +101,7 @@ function DrawerExample({
         {trigger}
       </Drawer.Trigger>
       <Drawer.Content
-        showCloseButton={content !== 'plain'}
+        showCloseButton={content === 'plain'}
         size={size}
         variant={variant}
       >
