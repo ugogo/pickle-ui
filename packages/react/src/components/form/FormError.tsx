@@ -10,10 +10,7 @@ type FormErrorProps = React.ComponentProps<typeof Field.Error>;
 function FormError({ className, ...props }: FormErrorProps) {
   return (
     <Field.Error
-      className={cn(
-        'text-destructive text-sm leading-none font-medium',
-        className,
-      )}
+      className={cn('text-destructive text-sm font-medium', className)}
       data-slot="field-error"
       {...props}
     />

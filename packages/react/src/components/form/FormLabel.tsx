@@ -11,7 +11,7 @@ function FormLabel({ className, ...props }: FormLabelProps) {
   return (
     <Field.Label
       className={cn(
-        'text-sm leading-none font-medium data-disabled:cursor-not-allowed data-disabled:opacity-50',
+        'text-sm font-medium data-disabled:cursor-not-allowed data-disabled:opacity-50',
         className,
       )}
       data-slot="field-label"
