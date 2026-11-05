@@ -1,10 +1,10 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import {
-  Children,
   createContext,
-  isValidElement,
   use,
+  useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -15,6 +15,7 @@ import {
   KeyboardAvoidingView,
   Modal,
   PanResponder,
+  type PanResponderCallbacks,
   Platform,
   Pressable,
   ScrollView,
@@ -63,6 +64,8 @@ const USE_NATIVE_DRIVER = Platform.OS !== 'web';
 
 type DrawerContentContextValue = {
   bottomInset: number;
+  /** Counts a mounted `Drawer.Footer`, which pads itself past the home indicator. */
+  registerFooter: () => () => void;
   /** The panel's vertical scroll offset; a drag only moves the sheet from the top. */
   scrollOffsetRef: React.RefObject<number>;
 };
@@ -75,6 +78,7 @@ type DrawerContextValue = {
 const DrawerContext = createContext<DrawerContextValue | null>(null);
 const DrawerContentContext = createContext<DrawerContentContextValue>({
   bottomInset: 0,
+  registerFooter: () => () => {},
   scrollOffsetRef: { current: 0 },
 });
 
@@ -188,7 +192,7 @@ function DrawerContent({
     });
   }, [offscreen, open, translateY]);
 
-  const panResponder = useMemo(() => {
+  const [sheetResponder, handleResponder] = useMemo(() => {
     const settle = (velocity = 0) =>
       Animated.spring(translateY, {
         bounciness: 0,
@@ -198,13 +202,7 @@ function DrawerContent({
       }).start();
     const isVertical = (dx: number, dy: number) =>
       Math.abs(dy) > 6 && Math.abs(dy) > Math.abs(dx);
-
-    // eslint-disable-next-line react-hooks/refs -- PanResponder.create only stores the callbacks, which read scrollOffsetRef during a gesture, not during render.
-    return PanResponder.create({
-      onMoveShouldSetPanResponder: (_, { dx, dy }) => isVertical(dx, dy),
-      // Takes a downward drag from the panel once it is scrolled to the top.
-      onMoveShouldSetPanResponderCapture: (_, { dx, dy }) =>
-        dy > 0 && isVertical(dx, dy) && scrollOffsetRef.current <= 0,
+    const drag: PanResponderCallbacks = {
       onPanResponderMove: (_, { dy }) => {
         // Past the top, the sheet resists like a rubber band.
         translateY.setValue(dy >= 0 ? dy : -Math.sqrt(-dy));
@@ -218,15 +216,33 @@ function DrawerContent({
       },
       onPanResponderTerminate: () => settle(),
       onPanResponderTerminationRequest: () => false,
-    });
+    };
+
+    return [
+      PanResponder.create({
+        ...drag,
+        onMoveShouldSetPanResponder: (_, { dx, dy }) => isVertical(dx, dy),
+        // Takes a downward drag from the panel once it is scrolled to the top.
+        onMoveShouldSetPanResponderCapture: (_, { dx, dy }) =>
+          dy > 0 && isVertical(dx, dy) && scrollOffsetRef.current <= 0,
+      }),
+      // The handle takes the touch as it starts, so a drag from it never
+      // depends on the move negotiation above.
+      PanResponder.create({
+        ...drag,
+        onStartShouldSetPanResponder: () => true,
+      }),
+    ];
   }, [height, setOpen, translateY]);
 
-  const hasFooter = Children.toArray(children).some(
-    (child) => isValidElement(child) && child.type === DrawerFooter,
-  );
+  const [footerCount, setFooterCount] = useState(0);
+  const registerFooter = useCallback(() => {
+    setFooterCount((count) => count + 1);
+    return () => setFooterCount((count) => count - 1);
+  }, []);
   const contentContext = useMemo(
-    () => ({ bottomInset, scrollOffsetRef }),
-    [bottomInset],
+    () => ({ bottomInset, registerFooter, scrollOffsetRef }),
+    [bottomInset, registerFooter],
   );
   const close = () => setOpen(false);
 
@@ -265,7 +281,7 @@ function DrawerContent({
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <Animated.View
-            {...panResponder.panHandlers}
+            {...sheetResponder.panHandlers}
             style={{
               marginBottom: inset,
               marginHorizontal: inset,
@@ -284,13 +300,18 @@ function DrawerContent({
               ]}
               {...props}
             >
-              <View className="items-center py-3">
+              <View
+                className="items-center py-3"
+                {...handleResponder.panHandlers}
+              >
                 <View className="bg-input h-1 w-12 rounded-full" />
               </View>
               <DrawerContentContext value={contentContext}>
                 {children}
               </DrawerContentContext>
-              {hasFooter ? null : <View style={{ height: bottomInset }} />}
+              {footerCount > 0 ? null : (
+                <View style={{ height: bottomInset }} />
+              )}
               {showCloseButton ? (
                 <Button
                   accessibilityLabel={closeLabel}
@@ -318,8 +339,10 @@ function DrawerDescription({ className, ...props }: DrawerDescriptionProps) {
   return <Text className={className} tone="muted" variant="body" {...props} />;
 }
 
+/** Pads itself past the home indicator, also when nested in a `Form`. */
 function DrawerFooter({ className, style, ...props }: DrawerFooterProps) {
-  const { bottomInset } = use(DrawerContentContext);
+  const { bottomInset, registerFooter } = use(DrawerContentContext);
+  useLayoutEffect(registerFooter, [registerFooter]);
 
   return (
     <View
@@ -350,6 +373,10 @@ function DrawerPanel({
   ...props
 }: DrawerPanelProps) {
   const { scrollOffsetRef } = use(DrawerContentContext);
+  // A reopened drawer mounts a new panel at the top.
+  useEffect(() => {
+    scrollOffsetRef.current = 0;
+  }, [scrollOffsetRef]);
 
   return (
     <ScrollView

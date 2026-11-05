@@ -1,9 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
+import { z } from 'zod/v4';
 
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Drawer, type DrawerContentProps } from './Drawer';
+import { Form } from './form/Form';
 import { Input } from './form/Input';
 import { Text } from './Text';
 
@@ -55,6 +60,11 @@ const CONTENT_COLUMNS: { description: string; key: Content; label: string }[] =
     },
   ];
 
+const profileSchema = z.object({
+  name: z.string().trim().min(1, 'Enter your name.'),
+  username: z.string().trim().min(2, 'Use at least 2 characters.'),
+});
+
 const ACTIVITY = Array.from({ length: 24 }, (_, index) => ({
   id: index,
   label: `Deployment #${240 - index}`,
@@ -62,37 +72,17 @@ const ACTIVITY = Array.from({ length: 24 }, (_, index) => ({
 
 function DrawerCell({ column, row }: ComponentMatrixCellProps) {
   const content = column.key as Content;
+  const [open, setOpen] = useState(false);
 
   return (
-    <Drawer>
+    <Drawer onOpenChange={setOpen} open={open}>
       <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
       <Drawer.Content
         showCloseButton={content !== 'plain'}
         variant={row.key as DrawerContentProps['variant']}
       >
         {content === 'form' ? (
-          <>
-            <Drawer.Header>
-              <Drawer.Title>Edit profile</Drawer.Title>
-              <Drawer.Description>
-                Make changes to your profile, then save when you are done.
-              </Drawer.Description>
-            </Drawer.Header>
-            <Drawer.Panel contentContainerClassName="gap-4">
-              <View className="gap-2">
-                <Text className="text-sm font-medium">Name</Text>
-                <Input defaultValue="Ada Lovelace" />
-              </View>
-              <View className="gap-2">
-                <Text className="text-sm font-medium">Username</Text>
-                <Input defaultValue="@ada" />
-              </View>
-            </Drawer.Panel>
-            <Drawer.Footer>
-              <Drawer.Close variant="outline">Cancel</Drawer.Close>
-              <Drawer.Close>Save changes</Drawer.Close>
-            </Drawer.Footer>
-          </>
+          <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
         {content === 'list' ? (
           <>
@@ -128,6 +118,45 @@ function DrawerCell({ column, row }: ComponentMatrixCellProps) {
         ) : null}
       </Drawer.Content>
     </Drawer>
+  );
+}
+
+/**
+ * A `Form` around the header, panel and footer, so `Form.Button` in the footer
+ * submits it. `shrink` lets the panel scroll inside the sheet's max height,
+ * and `gap-0` leaves the parts' own spacing.
+ */
+function ProfileForm({ onSaved }: { onSaved: () => void }) {
+  const form = useForm<z.infer<typeof profileSchema>>({
+    defaultValues: { name: 'Ada Lovelace', username: 'ada' },
+    resolver: zodResolver(profileSchema),
+  });
+
+  return (
+    <Form className="shrink gap-0" form={form} onSubmit={onSaved}>
+      <Drawer.Header>
+        <Drawer.Title>Edit profile</Drawer.Title>
+        <Drawer.Description>
+          Make changes to your profile, then save when you are done.
+        </Drawer.Description>
+      </Drawer.Header>
+      <Drawer.Panel contentContainerClassName="gap-6">
+        <Form.Field label="Name" name="name">
+          <Form.Input autoComplete="name" />
+        </Form.Field>
+        <Form.Field
+          description="Shown on your public profile."
+          label="Username"
+          name="username"
+        >
+          <Form.Input autoCapitalize="none" autoComplete="username" />
+        </Form.Field>
+      </Drawer.Panel>
+      <Drawer.Footer>
+        <Drawer.Close variant="outline">Cancel</Drawer.Close>
+        <Form.Button>Save changes</Form.Button>
+      </Drawer.Footer>
+    </Form>
   );
 }
 

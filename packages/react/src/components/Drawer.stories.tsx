@@ -1,8 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod/v4';
+
 import { type ComponentMatrixCellProps, Story } from './_internal/Story';
 import { Button } from './Button';
 import { Drawer, type DrawerContentProps } from './Drawer';
+import { Form } from './form/Form';
 import { Input } from './form/Input';
 import { Text } from './Text';
 
@@ -66,6 +72,11 @@ const SIZE_COLUMNS: {
   { description: 'max-w-xl', key: 'lg', label: 'Large' },
 ];
 
+const profileSchema = z.object({
+  name: z.string().trim().min(1, 'Enter your name.'),
+  username: z.string().trim().min(2, 'Use at least 2 characters.'),
+});
+
 const ACTIVITY = Array.from({ length: 24 }, (_, index) => ({
   id: index,
   label: `Deployment #${240 - index}`,
@@ -82,8 +93,10 @@ function DrawerExample({
   trigger: string;
   variant?: DrawerContentProps['variant'];
 }) {
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <Drawer>
+    <Drawer onOpenChange={setOpen} open={open}>
       <Drawer.Trigger render={<Button variant="outline" />}>
         {trigger}
       </Drawer.Trigger>
@@ -93,30 +106,7 @@ function DrawerExample({
         variant={variant}
       >
         {content === 'form' ? (
-          <>
-            <Drawer.Header>
-              <Drawer.Title>Edit profile</Drawer.Title>
-              <Drawer.Description>
-                Make changes to your profile, then save when you are done.
-              </Drawer.Description>
-            </Drawer.Header>
-            <Drawer.Panel className="grid content-start gap-4">
-              <label className="grid gap-2 text-sm font-medium">
-                Name
-                <Input defaultValue="Ada Lovelace" />
-              </label>
-              <label className="grid gap-2 text-sm font-medium">
-                Username
-                <Input defaultValue="@ada" />
-              </label>
-            </Drawer.Panel>
-            <Drawer.Footer>
-              <Drawer.Close render={<Button variant="outline" />}>
-                Cancel
-              </Drawer.Close>
-              <Button type="submit">Save changes</Button>
-            </Drawer.Footer>
-          </>
+          <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
         {content === 'list' ? (
           <>
@@ -154,6 +144,47 @@ function DrawerExample({
         ) : null}
       </Drawer.Content>
     </Drawer>
+  );
+}
+
+/**
+ * A `Form` around the header, panel and footer, so `Form.Button` in the footer
+ * submits it. `contents` (and no `space-y`) keeps the three parts laid out
+ * by the drawer.
+ */
+function ProfileForm({ onSaved }: { onSaved: () => void }) {
+  const form = useForm<z.infer<typeof profileSchema>>({
+    defaultValues: { name: 'Ada Lovelace', username: 'ada' },
+    resolver: zodResolver(profileSchema),
+  });
+
+  return (
+    <Form className="contents space-y-0" form={form} onSubmit={onSaved}>
+      <Drawer.Header>
+        <Drawer.Title>Edit profile</Drawer.Title>
+        <Drawer.Description>
+          Make changes to your profile, then save when you are done.
+        </Drawer.Description>
+      </Drawer.Header>
+      <Drawer.Panel className="space-y-6">
+        <Form.Field label="Name" name="name">
+          <Form.Input autoComplete="name" />
+        </Form.Field>
+        <Form.Field
+          description="Shown on your public profile."
+          label="Username"
+          name="username"
+        >
+          <Form.Input autoComplete="username" />
+        </Form.Field>
+      </Drawer.Panel>
+      <Drawer.Footer>
+        <Drawer.Close render={<Button variant="outline" />}>
+          Cancel
+        </Drawer.Close>
+        <Form.Button type="submit">Save changes</Form.Button>
+      </Drawer.Footer>
+    </Form>
   );
 }
 
