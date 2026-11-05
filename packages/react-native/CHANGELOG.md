@@ -1,5 +1,16 @@
 # @pickle-ui/react-native
 
+## 1.0.0-beta.5
+
+### Minor Changes
+
+- 0c5768f: Install `@expo/ui` (`npx expo install @expo/ui`): it is a new peer dependency, imported by the package root. It brings `Drawer`, the platform's bottom sheet through Expo UI's `BottomSheet`, sized to its content, with the web's header, panel and footer parts.
+
+### Patch Changes
+
+- 0c5768f: Stop clipping the top of `Card.Title` on iOS: it keeps the type scale's line height instead of `leading-none`.
+- 0c5768f: `Form.Label` uses the default line height, like `Form.Description` and `Form.Error`, so a field's label, description and error are spaced the same.
+
 ## 1.0.0-beta.4
 
 ### Patch Changes
