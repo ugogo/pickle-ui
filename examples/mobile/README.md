@@ -8,7 +8,14 @@ colors.
 ```bash
 pnpm --filter @pickle-ui/example-mobile ios       # or android: builds and opens the app
 pnpm example:mobile                               # later runs: starts Metro for the installed build
+pnpm example:mobile:release                       # a connected iPhone, with the JS bundled in
 ```
+
+The release build runs on its own, without Metro or the same Wi-Fi, so it
+is the quickest way to try the app on a phone. It has no live reload: run
+it again after a change. Signed with a free Apple ID, it stops opening after
+7 days, and the first time, iOS asks you to trust the developer in Settings ›
+General › VPN & Device Management.
 
 `Drawer` presents the platform's own sheet through
 [True Sheet](https://sheet.lodev09.com), which ships native code, so the
