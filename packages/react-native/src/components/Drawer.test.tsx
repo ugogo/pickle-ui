@@ -31,6 +31,14 @@ async function renderDrawer({
   );
 }
 
+// The first native-driver animation on a mounted view loads React Native's
+// renderer and DOM modules, a slow transform on a cold CI cache. Open a drawer
+// once here, under its own timeout, so no test's timeout pays for it.
+beforeAll(async () => {
+  await renderDrawer({ defaultOpen: true });
+  screen.unmount();
+}, 30_000);
+
 beforeEach(() => {
   jest.useFakeTimers();
 });
