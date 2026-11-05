@@ -1,0 +1,393 @@
+import {
+  Children,
+  createContext,
+  isValidElement,
+  use,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  Animated,
+  Easing,
+  KeyboardAvoidingView,
+  Modal,
+  PanResponder,
+  Platform,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import {
+  type EdgeInsets,
+  SafeAreaInsetsContext,
+} from 'react-native-safe-area-context';
+
+import { cn } from '../lib/cn';
+import { useControllableState } from './_internal/useControllableState';
+import { Button, type ButtonProps } from './Button';
+import { Text, type TextProps } from './Text';
+
+// The iOS sheet curve the web Drawer uses.
+const EASING = Easing.bezier(0.32, 0.72, 0, 1);
+const OPEN_DURATION = 450;
+const CLOSE_DURATION = 300;
+// Room left above the sheet at its tallest, below the status bar.
+const TOP_GAP = 48;
+// A release past this share of the sheet's height, or faster than this
+// velocity (pt/ms), closes it, as on the web.
+const DISMISS_RATIO = 0.5;
+const DISMISS_VELOCITY = 0.5;
+const NO_INSETS: EdgeInsets = { bottom: 0, left: 0, right: 0, top: 0 };
+const USE_NATIVE_DRIVER = Platform.OS !== 'web';
+
+type DrawerContentContextValue = {
+  bottomInset: number;
+  /** The panel's vertical scroll offset; a drag only moves the sheet from the top. */
+  scrollOffsetRef: React.RefObject<number>;
+};
+
+type DrawerContextValue = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+
+const DrawerContext = createContext<DrawerContextValue | null>(null);
+const DrawerContentContext = createContext<DrawerContentContextValue>({
+  bottomInset: 0,
+  scrollOffsetRef: { current: 0 },
+});
+
+export type DrawerCloseProps = ButtonProps;
+
+export type DrawerContentProps = React.ComponentProps<typeof View> & {
+  /** Accessible name of the close icon button. Defaults to `"Close"`. */
+  closeLabel?: string;
+  /** Renders a close icon button in the top-right corner. Defaults to `true`. */
+  showCloseButton?: boolean;
+};
+export type DrawerDescriptionProps = Omit<TextProps, 'tone' | 'variant'>;
+export type DrawerFooterProps = React.ComponentProps<typeof View>;
+export type DrawerHeaderProps = React.ComponentProps<typeof View>;
+export type DrawerPanelProps = React.ComponentProps<typeof ScrollView>;
+export type DrawerProps = {
+  children?: React.ReactNode;
+  /** Whether the drawer is initially open. Defaults to `false`. */
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Whether the drawer is open. Use with `onOpenChange` to control it. */
+  open?: boolean;
+};
+export type DrawerTitleProps = Omit<TextProps, 'tone' | 'variant'>;
+export type DrawerTriggerProps = ButtonProps;
+/** The web's `IconX`, drawn with two bars: the package ships no icon set. */
+function CloseIcon() {
+  return (
+    <View className="size-4 items-center justify-center opacity-80">
+      <View className="bg-foreground absolute h-[1.5px] w-4 rotate-45 rounded-full" />
+      <View className="bg-foreground absolute h-[1.5px] w-4 -rotate-45 rounded-full" />
+    </View>
+  );
+}
+
+function DrawerClose({ onPress, ...props }: DrawerCloseProps) {
+  const { setOpen } = useDrawer();
+
+  return (
+    <Button
+      onPress={(event) => {
+        onPress?.(event);
+        setOpen(false);
+      }}
+      {...props}
+    />
+  );
+}
+
+/**
+ * The bottom sheet, in a modal over a dimmed backdrop. It slides up when the
+ * drawer opens, follows the finger, and closes when dragged past half its
+ * height or flung down. A drag inside `Drawer.Panel` scrolls it until it
+ * reaches the top, then moves the sheet.
+ */
+function DrawerContent({
+  children,
+  className,
+  closeLabel = 'Close',
+  showCloseButton = true,
+  style,
+  ...props
+}: DrawerContentProps) {
+  const { open, setOpen } = useDrawer();
+  const insets = use(SafeAreaInsetsContext) ?? NO_INSETS;
+  const { height: windowHeight } = useWindowDimensions();
+  const [height, setHeight] = useState(windowHeight);
+  const [translateY] = useState(() => new Animated.Value(windowHeight));
+  const scrollOffsetRef = useRef(0);
+
+  // Stays mounted while the closing animation runs. One state, so the open
+  // change and the mount land in the same update.
+  const [presence, setPresence] = useState({ mounted: open, open });
+  if (presence.open !== open) {
+    setPresence({ mounted: open || presence.mounted, open });
+  }
+
+  useEffect(() => {
+    if (open) {
+      Animated.timing(translateY, {
+        duration: OPEN_DURATION,
+        easing: EASING,
+        toValue: 0,
+        useNativeDriver: USE_NATIVE_DRIVER,
+      }).start();
+      return;
+    }
+    Animated.timing(translateY, {
+      duration: CLOSE_DURATION,
+      easing: EASING,
+      toValue: height,
+      useNativeDriver: USE_NATIVE_DRIVER,
+    }).start(({ finished }) => {
+      if (finished) {
+        setPresence((current) =>
+          current.open ? current : { ...current, mounted: false },
+        );
+      }
+    });
+  }, [height, open, translateY]);
+
+  const panResponder = useMemo(() => {
+    const settle = (velocity = 0) =>
+      Animated.spring(translateY, {
+        bounciness: 0,
+        toValue: 0,
+        useNativeDriver: USE_NATIVE_DRIVER,
+        velocity,
+      }).start();
+    const isVertical = (dx: number, dy: number) =>
+      Math.abs(dy) > 6 && Math.abs(dy) > Math.abs(dx);
+
+    // eslint-disable-next-line react-hooks/refs -- PanResponder.create only stores the callbacks, which read scrollOffsetRef during a gesture, not during render.
+    return PanResponder.create({
+      onMoveShouldSetPanResponder: (_, { dx, dy }) => isVertical(dx, dy),
+      // Takes a downward drag from the panel once it is scrolled to the top.
+      onMoveShouldSetPanResponderCapture: (_, { dx, dy }) =>
+        dy > 0 && isVertical(dx, dy) && scrollOffsetRef.current <= 0,
+      onPanResponderMove: (_, { dy }) => {
+        // Past the top, the sheet resists like a rubber band.
+        translateY.setValue(dy >= 0 ? dy : -Math.sqrt(-dy));
+      },
+      onPanResponderRelease: (_, { dy, vy }) => {
+        if (dy > height * DISMISS_RATIO || vy > DISMISS_VELOCITY) {
+          setOpen(false);
+        } else {
+          settle(vy);
+        }
+      },
+      onPanResponderTerminate: () => settle(),
+      onPanResponderTerminationRequest: () => false,
+    });
+  }, [height, setOpen, translateY]);
+
+  const hasFooter = Children.toArray(children).some(
+    (child) => isValidElement(child) && child.type === DrawerFooter,
+  );
+  const contentContext = useMemo(
+    () => ({ bottomInset: insets.bottom, scrollOffsetRef }),
+    [insets.bottom],
+  );
+  const close = () => setOpen(false);
+
+  return (
+    <Modal
+      animationType="none"
+      navigationBarTranslucent
+      onRequestClose={close}
+      statusBarTranslucent
+      transparent
+      visible={presence.mounted}
+    >
+      <View className="flex-1 justify-end">
+        <Animated.View
+          style={{
+            bottom: 0,
+            left: 0,
+            opacity: translateY.interpolate({
+              extrapolate: 'clamp',
+              inputRange: [0, Math.max(height, 1)],
+              outputRange: [1, 0],
+            }),
+            position: 'absolute',
+            right: 0,
+            top: 0,
+          }}
+        >
+          <Pressable
+            accessible={false}
+            className="flex-1 bg-black/32"
+            importantForAccessibility="no"
+            onPress={close}
+          />
+        </Animated.View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <Animated.View
+            {...panResponder.panHandlers}
+            style={{ transform: [{ translateY }] }}
+          >
+            <View
+              aria-modal
+              className={cn(
+                'border-border bg-popover rounded-t-2xl border-t',
+                className,
+              )}
+              onAccessibilityEscape={close}
+              onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
+              role="dialog"
+              style={[
+                { maxHeight: windowHeight - insets.top - TOP_GAP },
+                style,
+              ]}
+              {...props}
+            >
+              <View className="items-center py-3">
+                <View className="bg-input h-1 w-12 rounded-full" />
+              </View>
+              <DrawerContentContext value={contentContext}>
+                {children}
+              </DrawerContentContext>
+              {hasFooter ? null : <View style={{ height: insets.bottom }} />}
+              {showCloseButton ? (
+                <Button
+                  accessibilityLabel={closeLabel}
+                  className="absolute end-3 top-3"
+                  onPress={close}
+                  size="icon-sm"
+                  variant="ghost"
+                >
+                  <CloseIcon />
+                </Button>
+              ) : null}
+              {/* Fills the gap below the sheet when a drag pulls it up. */}
+              <View className="bg-popover absolute inset-x-0 top-full h-12" />
+            </View>
+          </Animated.View>
+        </KeyboardAvoidingView>
+      </View>
+    </Modal>
+  );
+}
+
+function DrawerDescription({ className, ...props }: DrawerDescriptionProps) {
+  return <Text className={className} tone="muted" variant="body" {...props} />;
+}
+
+function DrawerFooter({ className, style, ...props }: DrawerFooterProps) {
+  const { bottomInset } = use(DrawerContentContext);
+
+  return (
+    <View
+      className={cn(
+        'border-border bg-muted/72 flex-col-reverse gap-2 border-t px-6 pt-4',
+        className,
+      )}
+      style={[{ paddingBottom: 16 + bottomInset }, style]}
+      {...props}
+    />
+  );
+}
+
+function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
+  return (
+    <View
+      className={cn('gap-1.5 px-6 pe-12 pt-1 pb-4', className)}
+      {...props}
+    />
+  );
+}
+
+/** The scrolling body between the header and the footer. */
+function DrawerPanel({
+  className,
+  contentContainerClassName,
+  onScroll,
+  ...props
+}: DrawerPanelProps) {
+  const { scrollOffsetRef } = use(DrawerContentContext);
+
+  return (
+    <ScrollView
+      className={cn('shrink grow-0', className)}
+      contentContainerClassName={cn('px-6 pb-6', contentContainerClassName)}
+      keyboardShouldPersistTaps="handled"
+      onScroll={(event) => {
+        scrollOffsetRef.current = event.nativeEvent.contentOffset.y;
+        onScroll?.(event);
+      }}
+      scrollEventThrottle={16}
+      {...props}
+    />
+  );
+}
+
+function DrawerRoot({
+  children,
+  defaultOpen = false,
+  onOpenChange,
+  open: openProp,
+}: DrawerProps) {
+  const [open, setOpen] = useControllableState(
+    openProp,
+    defaultOpen,
+    onOpenChange,
+  );
+  const value = useMemo(() => ({ open, setOpen }), [open, setOpen]);
+
+  return <DrawerContext value={value}>{children}</DrawerContext>;
+}
+
+function DrawerTitle({ className, ...props }: DrawerTitleProps) {
+  return (
+    <Text
+      className={cn('font-heading leading-snug font-semibold', className)}
+      variant="h4"
+      {...props}
+    />
+  );
+}
+
+function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
+  const { setOpen } = useDrawer();
+
+  return (
+    <Button
+      onPress={(event) => {
+        onPress?.(event);
+        setOpen(true);
+      }}
+      {...props}
+    />
+  );
+}
+
+function useDrawer() {
+  const context = use(DrawerContext);
+  if (!context) throw new Error('Drawer parts must be rendered in a <Drawer>.');
+  return context;
+}
+
+const Drawer = Object.assign(DrawerRoot, {
+  Close: DrawerClose,
+  Content: DrawerContent,
+  Description: DrawerDescription,
+  Footer: DrawerFooter,
+  Header: DrawerHeader,
+  Panel: DrawerPanel,
+  Title: DrawerTitle,
+  Trigger: DrawerTrigger,
+});
+
+export { Drawer };
