@@ -7,3 +7,9 @@ import { Animated, Easing } from 'react-native';
 void Animated.Value;
 void Animated.View;
 void Easing.linear;
+
+/* global jest */
+// True Sheet presents a native sheet; its mock renders the sheet's children.
+jest.mock('@lodev09/react-native-true-sheet', () =>
+  jest.requireActual('@lodev09/react-native-true-sheet/mock'),
+);

@@ -6,12 +6,16 @@ and form as the web example, a light / dark / system switch and runtime brand
 colors.
 
 ```bash
-pnpm example:mobile   # from the repository root, then press i or a
+pnpm --filter @pickle-ui/example-mobile ios       # or android: builds and opens the app
+pnpm example:mobile                               # later runs: starts Metro for the installed build
 ```
 
-You need the iOS Simulator (Xcode) or an Android emulator, or a phone with
-[Expo Go](https://expo.dev/go) to scan the QR code. If another Metro server
-holds port 8081, Expo offers the next port.
+`Drawer` presents the platform's own sheet through
+[True Sheet](https://sheet.lodev09.com), which ships native code, so the
+example runs as a development build rather than in Expo Go. `expo run:ios`
+needs Xcode and the iOS Simulator; `expo run:android` needs Android Studio
+and an emulator. If another Metro server holds port 8081, Expo offers the
+next port.
 
 `Button`, `Badge`, `Card`, `Drawer`, `Input`, `Text`, `XStack`, `YStack`, `cn`
 and `useColorToken` come from `@pickle-ui/react-native`. They reuse the web

@@ -1,6 +1,4 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
-import { View } from 'react-native';
-import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
 import { Drawer, type DrawerContentProps, type DrawerProps } from './Drawer';
 
@@ -102,27 +100,6 @@ describe('Drawer', () => {
     expect(
       screen.queryByRole('button', { name: 'Close' }),
     ).not.toBeOnTheScreen();
-  });
-
-  it('pads a nested footer past the home indicator', async () => {
-    await render(
-      <SafeAreaInsetsContext.Provider
-        value={{ bottom: 34, left: 0, right: 0, top: 47 }}
-      >
-        <Drawer defaultOpen>
-          <Drawer.Content variant="attached">
-            {/* A Form puts the footer below a wrapper, not under the content. */}
-            <View>
-              <Drawer.Footer testID="footer">
-                <Drawer.Close>Done</Drawer.Close>
-              </Drawer.Footer>
-            </View>
-          </Drawer.Content>
-        </Drawer>
-      </SafeAreaInsetsContext.Provider>,
-    );
-
-    expect(screen.getByTestId('footer')).toHaveStyle({ paddingBottom: 50 });
   });
 
   it.each(['inset', 'attached', 'straight'] as const)(

@@ -24,7 +24,7 @@ Pickle UI: [`web`](./examples/web) (Vite + `@pickle-ui/react`) and
 
 ```bash
 pnpm example:web      # http://localhost:5173
-pnpm example:mobile   # Expo: press i for iOS, a for Android
+pnpm --filter @pickle-ui/example-mobile ios   # builds the mobile app, then `pnpm example:mobile`
 ```
 
 ## Development

@@ -1,73 +1,26 @@
-import { cva, type VariantProps } from 'class-variance-authority';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import {
   createContext,
   use,
-  useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import {
-  Animated,
-  Easing,
-  KeyboardAvoidingView,
-  Modal,
-  PanResponder,
-  type PanResponderCallbacks,
-  Platform,
-  Pressable,
-  ScrollView,
-  useWindowDimensions,
-  View,
-} from 'react-native';
-import {
-  type EdgeInsets,
-  SafeAreaInsetsContext,
-} from 'react-native-safe-area-context';
+import { ScrollView, View } from 'react-native';
 
+import { useColorToken } from '../hooks/useColorToken';
 import { cn } from '../lib/cn';
 import { useControllableState } from './_internal/useControllableState';
 import { Button, type ButtonProps } from './Button';
 import { Text, type TextProps } from './Text';
 
-// The iOS sheet curve the web Drawer uses.
-const EASING = Easing.bezier(0.32, 0.72, 0, 1);
-const OPEN_DURATION = 450;
-const CLOSE_DURATION = 300;
-// Room left above the sheet at its tallest, below the status bar.
-const TOP_GAP = 48;
-// A release past this share of the sheet's height, or faster than this
-// velocity (pt/ms), closes it, as on the web.
-const DISMISS_RATIO = 0.5;
-const DISMISS_VELOCITY = 0.5;
-const NO_INSETS: EdgeInsets = { bottom: 0, left: 0, right: 0, top: 0 };
-// The `inset` sheet's distance from the screen's sides and bottom.
+// The web's `inset` gap, used where True Sheet draws a floating card (web).
 const INSET = 8;
 
-// Same variants as the web Drawer: `inset` floats, `attached` and `straight`
-// sit on the bottom edge. The inset sheet clips the footer to its corners.
-const sheetVariants = cva('border-border bg-popover', {
-  defaultVariants: { variant: 'inset' },
-  variants: {
-    variant: {
-      attached: 'rounded-t-2xl border-t',
-      inset: 'overflow-hidden rounded-[32px] border',
-      straight: 'border-t',
-    },
-  },
-});
-
-type DrawerVariant = NonNullable<VariantProps<typeof sheetVariants>['variant']>;
-const USE_NATIVE_DRIVER = Platform.OS !== 'web';
-
 type DrawerContentContextValue = {
-  bottomInset: number;
-  /** Counts a mounted `Drawer.Footer`, which pads itself past the home indicator. */
-  registerFooter: () => () => void;
-  /** The panel's vertical scroll offset; a drag only moves the sheet from the top. */
-  scrollOffsetRef: React.RefObject<number>;
+  /** The panel's scroll view, handed to True Sheet for nested scrolling. */
+  scrollableRef: React.RefObject<null | ScrollViewInstance>;
 };
 
 type DrawerContextValue = {
@@ -75,12 +28,26 @@ type DrawerContextValue = {
   setOpen: (open: boolean) => void;
 };
 
+type DrawerVariant = 'attached' | 'inset' | 'straight';
+
+type Presence = { mounted: boolean; open: boolean };
+
+type ScrollViewInstance = React.ComponentRef<typeof ScrollView>;
+
 const DrawerContext = createContext<DrawerContextValue | null>(null);
 const DrawerContentContext = createContext<DrawerContentContextValue>({
-  bottomInset: 0,
-  registerFooter: () => () => {},
-  scrollOffsetRef: { current: 0 },
+  scrollableRef: { current: null },
 });
+
+function useDrawer() {
+  const context = use(DrawerContext);
+  if (!context) throw new Error('Drawer parts must be rendered in a <Drawer>.');
+  return context;
+}
+
+/** Unmounts the content once the sheet is closed and stays closed. */
+const unmountClosed = (current: Presence) =>
+  current.open ? current : { ...current, mounted: false };
 
 export type DrawerCloseProps = ButtonProps;
 
@@ -90,9 +57,10 @@ export type DrawerContentProps = React.ComponentProps<typeof View> & {
   /** Renders a close icon button in the top-right corner. Defaults to `true`. */
   showCloseButton?: boolean;
   /**
-   * `inset` floats the sheet away from the screen's sides and bottom,
-   * `attached` docks it to the bottom edge with rounded top corners, and
-   * `straight` docks it without rounding. Defaults to `inset`.
+   * `inset` floats the sheet away from the screen's edges, `attached` docks
+   * it with the platform's rounded corners, and `straight` docks it without
+   * rounding. On iOS 26 the system floats a sheet at its compact height
+   * whatever the variant. Defaults to `inset`.
    */
   variant?: DrawerVariant;
 };
@@ -110,6 +78,7 @@ export type DrawerProps = {
 };
 export type DrawerTitleProps = Omit<TextProps, 'tone' | 'variant'>;
 export type DrawerTriggerProps = ButtonProps;
+
 /** The web's `IconX`, drawn with two bars: the package ships no icon set. */
 function CloseIcon() {
   return (
@@ -135,203 +104,83 @@ function DrawerClose({ onPress, ...props }: DrawerCloseProps) {
 }
 
 /**
- * The bottom sheet, in a modal over a dimmed backdrop. It slides up when the
- * drawer opens, follows the finger, and closes when dragged past half its
- * height or flung down. A drag inside `Drawer.Panel` scrolls it until it
- * reaches the top, then moves the sheet.
+ * The bottom sheet, presented by the platform through True Sheet:
+ * `UISheetPresentationController` on iOS, Material's bottom sheet on Android.
+ * The system draws the grabber and the dimmed backdrop, follows the finger,
+ * hands drags between the sheet and `Drawer.Panel`, and avoids the keyboard
+ * and the home indicator. The sheet sizes itself to its content.
  */
 function DrawerContent({
   children,
   className,
   closeLabel = 'Close',
   showCloseButton = true,
-  style,
   variant = 'inset',
   ...props
 }: DrawerContentProps) {
   const { open, setOpen } = useDrawer();
-  const insets = use(SafeAreaInsetsContext) ?? NO_INSETS;
-  const { height: windowHeight } = useWindowDimensions();
-  const [height, setHeight] = useState(windowHeight);
-  const [translateY] = useState(() => new Animated.Value(windowHeight));
-  const scrollOffsetRef = useRef(0);
-  const inset = variant === 'inset' ? INSET : 0;
-  // How far the sheet travels to leave the screen.
-  const offscreen = height + inset;
-  // The inset sheet already clears part of the home indicator.
-  const bottomInset = Math.max(insets.bottom - inset, 0);
+  const sheetRef = useRef<TrueSheet>(null);
+  const scrollableRef = useRef<null | ScrollViewInstance>(null);
+  // Whether the sheet is up, so closing never dismisses it twice.
+  const presentedRef = useRef(false);
+  const background = useColorToken('popover');
 
-  // Stays mounted while the closing animation runs. One state, so the open
-  // change and the mount land in the same update.
-  const [presence, setPresence] = useState({ mounted: open, open });
+  // The content stays mounted until the sheet has finished dismissing. One
+  // state, so the open change and the mount land in the same update.
+  const [presence, setPresence] = useState<Presence>({ mounted: open, open });
   if (presence.open !== open) {
     setPresence({ mounted: open || presence.mounted, open });
   }
 
   useEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheet) return;
     if (open) {
-      Animated.timing(translateY, {
-        duration: OPEN_DURATION,
-        easing: EASING,
-        toValue: 0,
-        useNativeDriver: USE_NATIVE_DRIVER,
-      }).start();
-      return;
+      presentedRef.current = true;
+      void sheet.present();
+    } else if (presentedRef.current) {
+      presentedRef.current = false;
+      void sheet.dismiss().then(() => setPresence(unmountClosed));
     }
-    Animated.timing(translateY, {
-      duration: CLOSE_DURATION,
-      easing: EASING,
-      toValue: offscreen,
-      useNativeDriver: USE_NATIVE_DRIVER,
-    }).start(({ finished }) => {
-      if (finished) {
-        setPresence((current) =>
-          current.open ? current : { ...current, mounted: false },
-        );
-      }
-    });
-  }, [offscreen, open, translateY]);
+  }, [open]);
 
-  const [sheetResponder, handleResponder] = useMemo(() => {
-    const settle = (velocity = 0) =>
-      Animated.spring(translateY, {
-        bounciness: 0,
-        toValue: 0,
-        useNativeDriver: USE_NATIVE_DRIVER,
-        velocity,
-      }).start();
-    const isVertical = (dx: number, dy: number) =>
-      Math.abs(dy) > 6 && Math.abs(dy) > Math.abs(dx);
-    const drag: PanResponderCallbacks = {
-      onPanResponderMove: (_, { dy }) => {
-        // Past the top, the sheet resists like a rubber band.
-        translateY.setValue(dy >= 0 ? dy : -Math.sqrt(-dy));
-      },
-      onPanResponderRelease: (_, { dy, vy }) => {
-        if (dy > height * DISMISS_RATIO || vy > DISMISS_VELOCITY) {
-          setOpen(false);
-        } else {
-          settle(vy);
-        }
-      },
-      onPanResponderTerminate: () => settle(),
-      onPanResponderTerminationRequest: () => false,
-    };
-
-    return [
-      PanResponder.create({
-        ...drag,
-        onMoveShouldSetPanResponder: (_, { dx, dy }) => isVertical(dx, dy),
-        // Takes a downward drag from the panel once it is scrolled to the top.
-        onMoveShouldSetPanResponderCapture: (_, { dx, dy }) =>
-          dy > 0 && isVertical(dx, dy) && scrollOffsetRef.current <= 0,
-      }),
-      // The handle takes the touch as it starts, so a drag from it never
-      // depends on the move negotiation above.
-      PanResponder.create({
-        ...drag,
-        onStartShouldSetPanResponder: () => true,
-      }),
-    ];
-  }, [height, setOpen, translateY]);
-
-  const [footerCount, setFooterCount] = useState(0);
-  const registerFooter = useCallback(() => {
-    setFooterCount((count) => count + 1);
-    return () => setFooterCount((count) => count - 1);
-  }, []);
-  const contentContext = useMemo(
-    () => ({ bottomInset, registerFooter, scrollOffsetRef }),
-    [bottomInset, registerFooter],
-  );
-  const close = () => setOpen(false);
+  const contentContext = useMemo(() => ({ scrollableRef }), []);
 
   return (
-    <Modal
-      animationType="none"
-      navigationBarTranslucent
-      onRequestClose={close}
-      statusBarTranslucent
-      transparent
-      visible={presence.mounted}
+    <TrueSheet
+      backgroundColor={background}
+      cornerRadius={variant === 'straight' ? 0 : undefined}
+      detached={variant === 'inset'}
+      detachedOffset={INSET}
+      detents={['auto']}
+      // A swipe, a tap on the backdrop or Android's back button.
+      onDidDismiss={() => {
+        presentedRef.current = false;
+        if (open) setOpen(false);
+        setPresence(unmountClosed);
+      }}
+      ref={sheetRef}
+      scrollableRef={scrollableRef}
     >
-      <View className="flex-1 justify-end">
-        <Animated.View
-          style={{
-            bottom: 0,
-            left: 0,
-            opacity: translateY.interpolate({
-              extrapolate: 'clamp',
-              inputRange: [0, Math.max(offscreen, 1)],
-              outputRange: [1, 0],
-            }),
-            position: 'absolute',
-            right: 0,
-            top: 0,
-          }}
-        >
-          <Pressable
-            accessible={false}
-            className="flex-1 bg-black/32"
-            importantForAccessibility="no"
-            onPress={close}
-          />
-        </Animated.View>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <Animated.View
-            {...sheetResponder.panHandlers}
-            style={{
-              marginBottom: inset,
-              marginHorizontal: inset,
-              transform: [{ translateY }],
-            }}
-          >
-            <View
-              aria-modal
-              className={cn(sheetVariants({ variant }), className)}
-              onAccessibilityEscape={close}
-              onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
-              role="dialog"
-              style={[
-                { maxHeight: windowHeight - insets.top - TOP_GAP - inset },
-                style,
-              ]}
-              {...props}
+      {presence.mounted ? (
+        <View aria-modal className={cn('pt-2', className)} {...props}>
+          <DrawerContentContext value={contentContext}>
+            {children}
+          </DrawerContentContext>
+          {showCloseButton ? (
+            <Button
+              accessibilityLabel={closeLabel}
+              className="absolute end-3 top-3"
+              onPress={() => setOpen(false)}
+              size="icon-sm"
+              variant="ghost"
             >
-              <View
-                className="items-center py-3"
-                {...handleResponder.panHandlers}
-              >
-                <View className="bg-input h-1 w-12 rounded-full" />
-              </View>
-              <DrawerContentContext value={contentContext}>
-                {children}
-              </DrawerContentContext>
-              {footerCount > 0 ? null : (
-                <View style={{ height: bottomInset }} />
-              )}
-              {showCloseButton ? (
-                <Button
-                  accessibilityLabel={closeLabel}
-                  className="absolute end-3 top-3"
-                  onPress={close}
-                  size="icon-sm"
-                  variant="ghost"
-                >
-                  <CloseIcon />
-                </Button>
-              ) : null}
-              {/* Fills the gap below a docked sheet when a drag pulls it up. */}
-              {variant === 'inset' ? null : (
-                <View className="bg-popover absolute inset-x-0 top-full h-12" />
-              )}
-            </View>
-          </Animated.View>
-        </KeyboardAvoidingView>
-      </View>
-    </Modal>
+              <CloseIcon />
+            </Button>
+          ) : null}
+        </View>
+      ) : null}
+    </TrueSheet>
   );
 }
 
@@ -339,18 +188,14 @@ function DrawerDescription({ className, ...props }: DrawerDescriptionProps) {
   return <Text className={className} tone="muted" variant="body" {...props} />;
 }
 
-/** Pads itself past the home indicator, also when nested in a `Form`. */
-function DrawerFooter({ className, style, ...props }: DrawerFooterProps) {
-  const { bottomInset, registerFooter } = use(DrawerContentContext);
-  useLayoutEffect(registerFooter, [registerFooter]);
-
+/** The sheet insets itself from the home indicator, so the footer doesn't. */
+function DrawerFooter({ className, ...props }: DrawerFooterProps) {
   return (
     <View
       className={cn(
-        'border-border bg-muted/72 flex-col-reverse gap-2 border-t px-6 pt-4',
+        'border-border bg-muted/72 flex-col-reverse gap-2 border-t px-6 py-4',
         className,
       )}
-      style={[{ paddingBottom: 16 + bottomInset }, style]}
       {...props}
     />
   );
@@ -359,7 +204,7 @@ function DrawerFooter({ className, style, ...props }: DrawerFooterProps) {
 function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
   return (
     <View
-      className={cn('gap-1.5 px-6 pe-12 pt-1 pb-4', className)}
+      className={cn('gap-1.5 px-6 pe-12 pt-4 pb-4', className)}
       {...props}
     />
   );
@@ -369,14 +214,10 @@ function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
 function DrawerPanel({
   className,
   contentContainerClassName,
-  onScroll,
+  ref,
   ...props
 }: DrawerPanelProps) {
-  const { scrollOffsetRef } = use(DrawerContentContext);
-  // A reopened drawer mounts a new panel at the top.
-  useEffect(() => {
-    scrollOffsetRef.current = 0;
-  }, [scrollOffsetRef]);
+  const { scrollableRef } = use(DrawerContentContext);
 
   return (
     <ScrollView
@@ -388,11 +229,11 @@ function DrawerPanel({
         contentContainerClassName,
       )}
       keyboardShouldPersistTaps="handled"
-      onScroll={(event) => {
-        scrollOffsetRef.current = event.nativeEvent.contentOffset.y;
-        onScroll?.(event);
+      ref={(node) => {
+        scrollableRef.current = node;
+        if (typeof ref === 'function') return ref(node);
+        if (ref) ref.current = node;
       }}
-      scrollEventThrottle={16}
       {...props}
     />
   );
@@ -436,12 +277,6 @@ function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
       {...props}
     />
   );
-}
-
-function useDrawer() {
-  const context = use(DrawerContext);
-  if (!context) throw new Error('Drawer parts must be rendered in a <Drawer>.');
-  return context;
 }
 
 const Drawer = Object.assign(DrawerRoot, {
