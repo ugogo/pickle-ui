@@ -42,8 +42,9 @@ export type DrawerProps = {
   open?: boolean;
   /**
    * Heights the sheet rests at, as Base UI's: a number from 0 to 1 is a
-   * fraction of the screen's height, a larger one a height in points. Without
-   * them, the sheet sizes to its content.
+   * fraction of the screen's height, a larger one a height in points. Android
+   * rests at half or full height, the nearest to each. Without them, the sheet
+   * sizes to its content.
    */
   snapPoints?: readonly number[];
 };
@@ -115,8 +116,9 @@ function DrawerContent({
   return (
     <BottomSheet
       containerColor={background}
-      // The parts pad themselves; the top clears the grabber.
-      contentPadding={{ top: 8 }}
+      // The parts pad themselves; the top clears the grabber and, with the
+      // header's 4pt, matches the web header's 24px.
+      contentPadding={{ top: 20 }}
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
       onDismiss={() => setOpen(false)}

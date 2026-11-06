@@ -19,7 +19,7 @@ const meta = {
 } satisfies Meta<typeof Drawer>;
 
 export default meta;
-type ExampleContent = 'close-button' | 'form' | 'list' | 'snap-points';
+type ExampleContent = 'close-button' | 'form' | 'list';
 
 type StoryDefinition = StoryObj<typeof meta>;
 
@@ -39,11 +39,37 @@ const CONTENT_COLUMNS: {
     key: 'close-button',
     label: 'With close button',
   },
+];
+
+const SNAP_POINT_COLUMNS: {
+  description: string;
+  key: string;
+  label: string;
+  snapPoints: number[];
+}[] = [
   {
-    description:
-      'snapPoints [0.9]: the panel fills the sheet, the footer stays at its foot',
-    key: 'snap-points',
-    label: 'Snap points',
+    description: 'Half the screen; the panel scrolls',
+    key: 'half',
+    label: '[0.5]',
+    snapPoints: [0.5],
+  },
+  {
+    description: 'The panel fills the sheet, the footer stays at its foot',
+    key: 'tall',
+    label: '[0.9]',
+    snapPoints: [0.9],
+  },
+  {
+    description: 'A height in points',
+    key: 'height',
+    label: '[360]',
+    snapPoints: [360],
+  },
+  {
+    description: 'Rests at half; drag up to 90%',
+    key: 'two',
+    label: '[0.5, 0.9]',
+    snapPoints: [0.5, 0.9],
   },
 ];
 
@@ -57,42 +83,40 @@ const ACTIVITY = Array.from({ length: 24 }, (_, index) => ({
   label: `Deployment #${240 - index}`,
 }));
 
+/** A header, a long scrolling panel and a footer. */
+function ActivityContent() {
+  return (
+    <>
+      <Drawer.Header>
+        <Drawer.Title>Activity</Drawer.Title>
+        <Drawer.Description>The last 24 deployments.</Drawer.Description>
+      </Drawer.Header>
+      <Drawer.Panel contentContainerClassName="gap-2">
+        {ACTIVITY.map(({ id, label }) => (
+          <View className="border-border rounded-lg border px-3 py-2" key={id}>
+            <Text>{label}</Text>
+          </View>
+        ))}
+      </Drawer.Panel>
+      <Drawer.Footer>
+        <Drawer.Close variant="outline">Close</Drawer.Close>
+      </Drawer.Footer>
+    </>
+  );
+}
+
 function DrawerCell({ column }: ComponentMatrixCellProps) {
   const content = column.key as ExampleContent;
   const [open, setOpen] = useState(false);
 
   return (
-    <Drawer
-      onOpenChange={setOpen}
-      open={open}
-      snapPoints={content === 'snap-points' ? [0.9] : undefined}
-    >
+    <Drawer onOpenChange={setOpen} open={open}>
       <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
       <Drawer.Content showCloseButton={content === 'close-button'}>
         {content === 'form' ? (
           <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
-        {content === 'list' || content === 'snap-points' ? (
-          <>
-            <Drawer.Header>
-              <Drawer.Title>Activity</Drawer.Title>
-              <Drawer.Description>The last 24 deployments.</Drawer.Description>
-            </Drawer.Header>
-            <Drawer.Panel contentContainerClassName="gap-2">
-              {ACTIVITY.map(({ id, label }) => (
-                <View
-                  className="border-border rounded-lg border px-3 py-2"
-                  key={id}
-                >
-                  <Text>{label}</Text>
-                </View>
-              ))}
-            </Drawer.Panel>
-            <Drawer.Footer>
-              <Drawer.Close variant="outline">Close</Drawer.Close>
-            </Drawer.Footer>
-          </>
-        ) : null}
+        {content === 'list' ? <ActivityContent /> : null}
         {content === 'close-button' ? (
           <>
             <Drawer.Header>
@@ -150,6 +174,20 @@ function ProfileForm({ onSaved }: { onSaved: () => void }) {
   );
 }
 
+function SnapPointsCell({ column }: ComponentMatrixCellProps) {
+  const { snapPoints } =
+    SNAP_POINT_COLUMNS.find(({ key }) => key === column.key) ?? {};
+
+  return (
+    <Drawer snapPoints={snapPoints}>
+      <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
+      <Drawer.Content>
+        <ActivityContent />
+      </Drawer.Content>
+    </Drawer>
+  );
+}
+
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Drawer">
@@ -164,6 +202,31 @@ export const All: StoryDefinition = {
           rows={[
             {
               description: 'Swipe down or tap outside to close',
+              key: 'default',
+              label: 'Default',
+            },
+          ]}
+        />
+      </Story.Section>
+    </Story.Layout>
+  ),
+};
+
+export const SnapPoints: StoryDefinition = {
+  render: () => (
+    <Story.Layout className="max-w-5xl" title="Drawer">
+      <Story.Section title="Snap points">
+        <Text tone="muted">
+          A number up to 1 is a fraction of the screen&apos;s height, a larger
+          one a height in points. Android rests at half or full height, the
+          nearest to each.
+        </Text>
+        <Story.Matrix
+          Cell={SnapPointsCell}
+          columns={SNAP_POINT_COLUMNS}
+          rows={[
+            {
+              description: 'Drag between the snap points, down to close',
               key: 'default',
               label: 'Default',
             },
