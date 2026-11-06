@@ -29,15 +29,6 @@ type WebElement = {
   style: { animation: string; transform: string };
 };
 
-/**
- * Puts Expo UI's web grabber where iOS draws its own: 5px from the sheet's top,
- * in a 20px row. The panel in the selector outranks Expo UI's class.
- */
-const WEB_SHEET_CSS = `[data-expo-ui-bottom-sheet-panel] [data-expo-ui-bottom-sheet-handle] {
-  margin-top: 0;
-  padding: 5px 16px 10px;
-}`;
-
 const DrawerContext = createContext<DrawerContextValue | null>(null);
 /** Whether the content shows its close button, which the header keeps clear of. */
 const DrawerCloseButtonContext = createContext(false);
@@ -103,7 +94,8 @@ function DrawerClose({ onPress, ...props }: DrawerCloseProps) {
  * The bottom sheet, presented through Expo UI's `BottomSheet`: SwiftUI's sheet
  * on iOS, Material's on Android, a `<dialog>` on the web. The system draws the
  * sheet's shape, grabber and backdrop, follows the finger and sizes the sheet
- * to its content, or to the drawer's `snapPoints`.
+ * to its content, or to the drawer's `snapPoints`. On the web, the grabber is
+ * this component's, placed like iOS's.
  */
 function DrawerContent({
   children,
@@ -142,19 +134,24 @@ function DrawerContent({
       containerColor={background}
       // The parts pad themselves. On iOS and Android the top clears the
       // grabber and, with the header's 4pt, matches the web header's 24px; on
-      // the web, the grabber's row is the same 20px (`WEB_SHEET_CSS`).
+      // the web, the grabber's row is the same 20px.
       contentPadding={Platform.OS === 'web' ? 0 : { top: 20 }}
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
       onDismiss={() => setOpen(false)}
+      // The web draws its own grabber, where iOS draws the system's.
+      showDragIndicator={Platform.OS !== 'web'}
       snapPoints={snapPoints?.map(toSnapPoint)}
     >
       {Platform.OS === 'web' ? (
         <>
-          <style href="pickle-ui-drawer" precedence="pickle-ui">
-            {WEB_SHEET_CSS}
-          </style>
-          <View aria-hidden ref={keepWebSheetDraggable} />
+          <View
+            aria-hidden
+            className="web:cursor-grab h-5 shrink-0 items-center pt-[5px]"
+            ref={keepWebSheetDraggable}
+          >
+            <View className="bg-foreground/25 h-[5px] w-9 rounded-full" />
+          </View>
           {content}
         </>
       ) : (
