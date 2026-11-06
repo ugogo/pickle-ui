@@ -13,6 +13,21 @@ type DrawerContextValue = {
   setOpen: (open: boolean) => void;
   snapPoints?: readonly number[];
 };
+/** The DOM members the web fix uses: the package compiles without the DOM lib. */
+type WebAnimationEvent = { animationName: string; target: unknown };
+
+type WebElement = {
+  addEventListener: (
+    type: 'animationend',
+    listener: (event: WebAnimationEvent) => void,
+  ) => void;
+  closest: (selector: string) => null | WebElement;
+  removeEventListener: (
+    type: 'animationend',
+    listener: (event: WebAnimationEvent) => void,
+  ) => void;
+  style: { animation: string; transform: string };
+};
 
 const DrawerContext = createContext<DrawerContextValue | null>(null);
 /** Whether the content shows its close button, which the header keeps clear of. */
@@ -125,7 +140,10 @@ function DrawerContent({
       snapPoints={snapPoints?.map(toSnapPoint)}
     >
       {Platform.OS === 'web' ? (
-        content
+        <>
+          <View aria-hidden ref={keepWebSheetDraggable} />
+          {content}
+        </>
       ) : (
         // SwiftUI and Compose lay out what they host: the content takes the
         // sheet's width, and its height from itself or from the snap point.
@@ -238,6 +256,29 @@ function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
       {...props}
     />
   );
+}
+
+/**
+ * Expo UI's web sheet holds its enter animation's last frame over an inline
+ * `translateY(100%)`, and an animation outranks the inline `translateY` a
+ * downward drag writes, so the sheet stayed put under the pointer. Once the
+ * sheet is in, both go and the drag shows.
+ */
+function keepWebSheetDraggable(node: unknown) {
+  const panel = (node as null | WebElement)?.closest(
+    '[data-expo-ui-bottom-sheet-panel]',
+  );
+  if (!panel) return;
+
+  const onAnimationEnd = (event: WebAnimationEvent) => {
+    if (event.target !== panel || event.animationName !== 'expo-ui-sheet-in') {
+      return;
+    }
+    panel.style.animation = '';
+    panel.style.transform = '';
+  };
+  panel.addEventListener('animationend', onAnimationEnd);
+  return () => panel.removeEventListener('animationend', onAnimationEnd);
 }
 
 /** A snap point as Expo UI takes it: a fraction up to 1, points beyond. */

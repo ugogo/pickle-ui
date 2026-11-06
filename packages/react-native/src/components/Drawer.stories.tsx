@@ -208,13 +208,6 @@ export const All: StoryDefinition = {
           ]}
         />
       </Story.Section>
-    </Story.Layout>
-  ),
-};
-
-export const SnapPoints: StoryDefinition = {
-  render: () => (
-    <Story.Layout className="max-w-5xl" title="Drawer">
       <Story.Section title="Snap points">
         <Text tone="muted">
           A number up to 1 is a fraction of the screen&apos;s height, a larger
