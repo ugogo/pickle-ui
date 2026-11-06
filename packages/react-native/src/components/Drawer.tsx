@@ -1,4 +1,4 @@
-import { BottomSheet, RNHostView, type SnapPoint } from '@expo/ui';
+import { BottomSheet, Host, RNHostView, type SnapPoint } from '@expo/ui';
 import { createContext, use, useMemo } from 'react';
 import { Platform, ScrollView, useWindowDimensions, View } from 'react-native';
 
@@ -107,7 +107,7 @@ function DrawerContent({
 }: DrawerContentProps) {
   const { open, setOpen, snapPoints } = useDrawer('Content');
   const background = useColorToken('popover');
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   // Material sizes its sheet to the content, so on Android the content takes
   // the largest snap point's height; elsewhere it fills the sheet. Without snap
   // points, it shrinks to the sheet's max height and `Drawer.Panel` scrolls.
@@ -145,7 +145,7 @@ function DrawerContent({
     </View>
   );
 
-  return (
+  const sheet = (
     <BottomSheet
       containerColor={background}
       // The parts pad themselves. On iOS the top clears the grabber drawn over
@@ -184,6 +184,22 @@ function DrawerContent({
         </RNHostView>
       )}
     </BottomSheet>
+  );
+
+  if (Platform.OS !== 'ios') {
+    return sheet;
+  }
+
+  return (
+    // The sheet's own Host has no width: the content would lay out once
+    // without one, and text there would never wrap. Sized to the window, as
+    // Expo UI's community bottom sheet does.
+    <Host
+      pointerEvents="none"
+      style={{ position: 'absolute', width: windowWidth }}
+    >
+      {sheet}
+    </Host>
   );
 }
 

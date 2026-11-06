@@ -1,4 +1,4 @@
-import { BottomSheet, RNHostView } from '@expo/ui';
+import { BottomSheet, Host, RNHostView } from '@expo/ui';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Dimensions, Platform } from 'react-native';
 
@@ -146,6 +146,15 @@ describe('Drawer', () => {
     ]);
     expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
       contentPadding: 0,
+    });
+  });
+
+  it('hosts the sheet at the window’s width on iOS, so its text wraps', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    await renderDrawer({ defaultOpen: true });
+
+    expect(jest.mocked(Host).mock.lastCall?.[0]).toMatchObject({
+      style: { position: 'absolute', width: Dimensions.get('window').width },
     });
   });
 });
