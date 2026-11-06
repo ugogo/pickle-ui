@@ -29,11 +29,19 @@ function FormRadioGroupRoot({ name: nameProp, ...props }: FormRadioGroupProps) {
       {...controlProps}
       inputRef={field.ref}
       name={field.name}
+      onBlur={(event) => {
+        // Arrow keys move focus between the radios, which isn't leaving the group.
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          field.onBlur();
+        }
+        radioGroupProps.onBlur?.(event);
+      }}
       onValueChange={(value, eventDetails) => {
         field.onChange(value);
         radioGroupProps.onValueChange?.(value, eventDetails);
       }}
-      value={field.value}
+      // Keep the group controlled while the form value is still unset.
+      value={field.value ?? null}
     />
   );
 }

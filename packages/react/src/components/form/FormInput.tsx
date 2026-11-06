@@ -19,10 +19,7 @@ function FormInput({ id: idProp, name: nameProp, ...props }: FormInputProps) {
   const name = useRequiredFieldName(nameProp, 'Form.Input');
   const methods = useFormMethods();
   const registeredProps = methods.register(name);
-  const controlProps = useFormControlProps(
-    { id: idProp },
-    { enabled: !isInsideInputGroup },
-  );
+  const { id, ...controlProps } = useFormControlProps({ id: idProp });
 
   const InputComponent = isInsideInputGroup ? InputGroupInput : Input;
 
@@ -31,6 +28,8 @@ function FormInput({ id: idProp, name: nameProp, ...props }: FormInputProps) {
       {...props}
       {...registeredProps}
       {...controlProps}
+      // Form.InputGroup gives the field's id to its first input only.
+      id={isInsideInputGroup ? idProp : id}
       name={name}
     />
   );

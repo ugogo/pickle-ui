@@ -51,7 +51,8 @@ function SliderMarks({
   const tickCount = Math.floor((max - min) / step) + 1;
   const ticks = Array.from(
     { length: tickCount },
-    (_, index) => min + index * step,
+    // Rounded so a fractional step labels `0.3`, not `0.30000000000000004`.
+    (_, index) => Number((min + index * step).toFixed(10)),
   );
 
   return (

@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { Slider } from './Slider';
@@ -29,5 +29,12 @@ describe('Slider', () => {
     expect(container.querySelector('[data-slot="slider-thumb"]')).toHaveClass(
       'thumb-x',
     );
+  });
+
+  it('rounds the labels of fractional marks', () => {
+    render(<Slider.Marks max={1} min={0} step={0.1} />);
+
+    expect(screen.getByText('0.3')).toBeInTheDocument();
+    expect(screen.getByText('0.7')).toBeInTheDocument();
   });
 });

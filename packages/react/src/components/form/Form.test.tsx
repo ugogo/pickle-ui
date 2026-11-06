@@ -1,6 +1,12 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Form } from './Form';
@@ -285,6 +291,130 @@ describe('Form', () => {
 
       expect(await screen.findByText('Pick a fruit.')).toBeInTheDocument();
       expect(screen.getByRole('combobox', { name: 'Fruit' })).toHaveAttribute(
+        'aria-invalid',
+        'true',
+      );
+    });
+  });
+  describe('field state', () => {
+    type StateFormValues = {
+      fruit: null | { label: string; value: string };
+      role?: string;
+      site: string;
+      size?: string;
+      terms: boolean;
+    };
+
+    function StateForm({
+      onForm,
+    }: {
+      onForm: (form: UseFormReturn<StateFormValues>) => void;
+    }) {
+      const form = useForm<StateFormValues>({
+        defaultValues: { fruit: null, site: '', terms: false },
+      });
+      React.useEffect(() => {
+        onForm(form);
+      }, [form, onForm]);
+
+      return (
+        <Form form={form} onSubmit={vi.fn()}>
+          <Form.Field label="Role" name="role">
+            <Form.Select>
+              <Form.Select.Trigger>
+                <Form.Select.Value placeholder="Select a role" />
+              </Form.Select.Trigger>
+              <Form.Select.Content>
+                <Form.Select.Item value="designer">Designer</Form.Select.Item>
+              </Form.Select.Content>
+            </Form.Select>
+          </Form.Field>
+
+          <Form.Field label="Size" name="size">
+            <Form.RadioGroup>
+              <Form.RadioGroup.Item label="Small" value="sm" />
+              <Form.RadioGroup.Item label="Large" value="lg" />
+            </Form.RadioGroup>
+          </Form.Field>
+
+          <Form.Field label="Fruit" name="fruit">
+            <Form.Combobox items={[{ label: 'Apple', value: 'apple' }]}>
+              <Form.Combobox.Input />
+            </Form.Combobox>
+          </Form.Field>
+
+          <Form.Field name="terms">
+            <Form.Checkbox label="Accept terms" />
+          </Form.Field>
+
+          <Form.Field label="Site" name="site">
+            <Form.InputGroup>
+              <Form.Input />
+            </Form.InputGroup>
+          </Form.Field>
+        </Form>
+      );
+    }
+
+    function renderStateForm() {
+      let form!: UseFormReturn<StateFormValues>;
+      render(<StateForm onForm={(value) => (form = value)} />);
+
+      return () => form;
+    }
+
+    it('clears a select and a radio group without defaults on reset', () => {
+      const getForm = renderStateForm();
+      const trigger = screen.getByRole('combobox', { name: 'Role' });
+
+      act(() => {
+        getForm().setValue('role', 'designer');
+        getForm().setValue('size', 'lg');
+      });
+      expect(trigger).toHaveTextContent('Designer');
+      expect(screen.getByRole('radio', { name: 'Large' })).toBeChecked();
+
+      act(() => getForm().reset());
+      expect(trigger).toHaveTextContent('Select a role');
+      expect(screen.getByRole('radio', { name: 'Large' })).not.toBeChecked();
+    });
+
+    it('marks controlled fields touched on blur', () => {
+      const getForm = renderStateForm();
+
+      fireEvent.blur(screen.getByRole('combobox', { name: 'Role' }));
+      fireEvent.blur(screen.getByRole('combobox', { name: 'Fruit' }));
+      fireEvent.blur(screen.getByRole('checkbox', { name: 'Accept terms' }));
+
+      expect(getForm().getFieldState('role').isTouched).toBe(true);
+      expect(getForm().getFieldState('fruit').isTouched).toBe(true);
+      expect(getForm().getFieldState('terms').isTouched).toBe(true);
+    });
+
+    it('keeps a radio group untouched while focus moves between its radios', () => {
+      const getForm = renderStateForm();
+      const small = screen.getByRole('radio', { name: 'Small' });
+
+      fireEvent.blur(small, {
+        relatedTarget: screen.getByRole('radio', { name: 'Large' }),
+      });
+      expect(getForm().getFieldState('size').isTouched).toBe(false);
+
+      fireEvent.blur(small);
+      expect(getForm().getFieldState('size').isTouched).toBe(true);
+    });
+
+    it('marks an input inside Form.InputGroup invalid', () => {
+      const getForm = renderStateForm();
+
+      act(() =>
+        getForm().setError('site', {
+          message: 'Enter a site.',
+          type: 'manual',
+        }),
+      );
+
+      expect(screen.getByRole('textbox', { name: 'Site' })).toHaveAttribute(
         'aria-invalid',
         'true',
       );

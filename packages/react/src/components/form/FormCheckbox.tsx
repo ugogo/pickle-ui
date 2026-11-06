@@ -33,6 +33,10 @@ function FormCheckboxRoot({
       checked={Boolean(field.value)}
       inputRef={field.ref}
       name={field.name}
+      onBlur={(event) => {
+        field.onBlur();
+        props.onBlur?.(event);
+      }}
       onCheckedChange={(checked, eventDetails) => {
         field.onChange(checked);
         props.onCheckedChange?.(checked, eventDetails);

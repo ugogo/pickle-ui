@@ -195,8 +195,12 @@ interface FormatInputProps extends ColorPickerInputProps {
   onColorChange: (color: ColorValue) => void;
 }
 
-interface HsbInputProps extends Omit<FormatInputProps, 'color'> {
+interface HsbInputProps extends Omit<
+  FormatInputProps,
+  'color' | 'onColorChange'
+> {
   hsv: HSVColorValue;
+  onHsvChange: (hsv: HSVColorValue) => void;
 }
 
 function ColorPicker(props: ColorPickerProps) {
@@ -323,12 +327,13 @@ function ColorPickerAlphaSlider(props: React.ComponentProps<typeof Slider>) {
 
   const onValueChange = React.useCallback(
     (value: number | readonly number[]) => {
+      if (context.readOnly) return;
       const alpha = getSliderValue(value) / 100;
       const newColor = { ...color, a: alpha };
       const newHsv = { ...hsv, a: alpha };
       store.setValue(newColor, newHsv);
     },
-    [color, hsv, store],
+    [color, context.readOnly, hsv, store],
   );
 
   const gradientColor = `rgb(${color?.r ?? 0}, ${color?.g ?? 0}, ${color?.b ?? 0})`;
@@ -338,7 +343,7 @@ function ColorPickerAlphaSlider(props: React.ComponentProps<typeof Slider>) {
       data-slot="color-picker-alpha-slider"
       {...sliderProps}
       className={className}
-      disabled={context.disabled}
+      disabled={sliderProps.disabled || context.disabled}
       indicator={false}
       max={100}
       onValueChange={onValueChange}
@@ -404,7 +409,7 @@ function ColorPickerArea(props: DivProps) {
 
   const onPointerDown = React.useCallback(
     (event: React.PointerEvent<AreaElement>) => {
-      if (context.disabled) return;
+      if (context.disabled || context.readOnly) return;
       propsRef.current.onPointerDown?.(event);
       if (event.defaultPrevented) return;
 
@@ -412,7 +417,7 @@ function ColorPickerArea(props: DivProps) {
       areaRef.current?.setPointerCapture(event.pointerId);
       updateColorFromPosition(event.clientX, event.clientY);
     },
-    [context.disabled, updateColorFromPosition, propsRef],
+    [context.disabled, context.readOnly, updateColorFromPosition, propsRef],
   );
 
   const onPointerMove = React.useCallback(
@@ -543,7 +548,7 @@ function ColorPickerEyeDropper(props: React.ComponentProps<typeof Button>) {
   const color = useStore((state) => state.color);
   const hsv = useStore((state) => state.hsv);
 
-  const isDisabled = disabled || context.disabled;
+  const isDisabled = disabled || context.disabled || context.readOnly;
 
   const onEyeDropper = React.useCallback(async () => {
     if (!window.EyeDropper) return;
@@ -632,6 +637,7 @@ function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
 
   const onValueChange = React.useCallback(
     (value: number | readonly number[]) => {
+      if (context.readOnly) return;
       const newHsv: HSVColorValue = {
         a: hsv?.a ?? 1,
         h: getSliderValue(value),
@@ -640,7 +646,7 @@ function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
       };
       store.setValue(hsvToRgb(newHsv), newHsv);
     },
-    [hsv, store],
+    [context.readOnly, hsv, store],
   );
 
   return (
@@ -648,7 +654,7 @@ function ColorPickerHueSlider(props: React.ComponentProps<typeof Slider>) {
       data-slot="color-picker-hue-slider"
       {...sliderProps}
       className={className}
-      disabled={context.disabled}
+      disabled={sliderProps.disabled || context.disabled}
       indicator={false}
       max={360}
       onValueChange={onValueChange}
@@ -723,7 +729,7 @@ function ColorPickerImpl(props: ColorPickerImplProps) {
 
   const root = useRender({
     defaultTagName: 'div',
-    props: rootProps,
+    props: { 'data-slot': 'color-picker', ...rootProps },
     ref: composedRef,
     render,
   });
@@ -788,6 +794,15 @@ function ColorPickerInput(props: ColorPickerInputProps) {
     [hsv, store],
   );
 
+  // HSB edits keep their own HSV: converting through RGB loses the hue and
+  // saturation of greys and black.
+  const onHsvChange = React.useCallback(
+    (newHsv: HSVColorValue) => {
+      store.setValue(hsvToRgb(newHsv), newHsv);
+    },
+    [store],
+  );
+
   if (format === 'hex') {
     return (
       <HexInput
@@ -826,7 +841,7 @@ function ColorPickerInput(props: ColorPickerInputProps) {
       <HsbInput
         context={context}
         hsv={hsv}
-        onColorChange={onColorChange}
+        onHsvChange={onHsvChange}
         {...props}
       />
     );
@@ -914,12 +929,26 @@ function HexInput(props: FormatInputProps) {
     ...inputProps
   } = props;
 
-  const hexValue = rgbToHex(color);
+  // The typed text shows until the field blurs: a partial hex such as
+  // `#00000` doesn't parse, and showing the color instead would revert it on
+  // every keystroke.
+  const [draft, setDraft] = React.useState<null | string>(null);
+  const hexValue = draft ?? rgbToHex(color);
   const alphaValue = Math.round((color?.a ?? 1) * 100);
+
+  const { onBlur } = inputProps;
+  const onHexBlur = React.useCallback(
+    (event: Parameters<NonNullable<typeof onBlur>>[0]) => {
+      setDraft(null);
+      onBlur?.(event);
+    },
+    [onBlur],
+  );
 
   const onHexChange = React.useCallback(
     (event: React.ChangeEvent<InputElement>) => {
       const value = event.target.value;
+      setDraft(value);
       const parsedColor = parseColorString(value);
       if (parsedColor) {
         onColorChange({ ...parsedColor, a: color?.a ?? 1 });
@@ -944,9 +973,11 @@ function HexInput(props: FormatInputProps) {
         aria-label="Hex color value"
         {...inputProps}
         className={cn('font-mono', className)}
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
+        onBlur={onHexBlur}
         onChange={onHexChange}
         placeholder="#000000"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hexValue}
       />
     );
@@ -958,22 +989,25 @@ function HexInput(props: FormatInputProps) {
         aria-label="Hex color value"
         {...inputProps}
         className="flex-1 font-mono"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
+        onBlur={onHexBlur}
         onChange={onHexChange}
         placeholder="#000000"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hexValue}
       />
       <InputGroupInput
         aria-label="Alpha transparency percentage"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="100"
         min="0"
         onChange={onAlphaChange}
         pattern="[0-9]*"
         placeholder="100"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={alphaValue}
       />
     </InputGroup>
@@ -981,14 +1015,8 @@ function HexInput(props: FormatInputProps) {
 }
 
 function HsbInput(props: HsbInputProps) {
-  const {
-    className,
-    context,
-    hsv,
-    onColorChange,
-    withoutAlpha,
-    ...inputProps
-  } = props;
+  const { className, context, hsv, onHsvChange, withoutAlpha, ...inputProps } =
+    props;
 
   const alphaValue = Math.round((hsv?.a ?? 1) * 100);
 
@@ -997,23 +1025,20 @@ function HsbInput(props: HsbInputProps) {
       (event: React.ChangeEvent<InputElement>) => {
         const value = Number.parseInt(event.target.value, 10);
         if (!Number.isNaN(value) && value >= 0 && value <= max) {
-          const newHsv = { ...hsv, [channel]: value };
-          const newColor = hsvToRgb(newHsv);
-          onColorChange(newColor);
+          onHsvChange({ ...hsv, [channel]: value });
         }
       },
-    [hsv, onColorChange],
+    [hsv, onHsvChange],
   );
 
   const onAlphaChange = React.useCallback(
     (event: React.ChangeEvent<InputElement>) => {
       const value = Number.parseInt(event.target.value, 10);
       if (!Number.isNaN(value) && value >= 0 && value <= 100) {
-        const currentColor = hsvToRgb(hsv);
-        onColorChange({ ...currentColor, a: value / 100 });
+        onHsvChange({ ...hsv, a: value / 100 });
       }
     },
-    [hsv, onColorChange],
+    [hsv, onHsvChange],
   );
 
   return (
@@ -1022,39 +1047,42 @@ function HsbInput(props: HsbInputProps) {
         aria-label="Hue degree (0-360)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="360"
         min="0"
         onChange={onHsvChannelChange('h', 360)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hsv?.h ?? 0}
       />
       <InputGroupInput
         aria-label="Saturation percentage (0-100)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="100"
         min="0"
         onChange={onHsvChannelChange('s', 100)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hsv?.s ?? 0}
       />
       <InputGroupInput
         aria-label="Brightness percentage (0-100)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="100"
         min="0"
         onChange={onHsvChannelChange('v', 100)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hsv?.v ?? 0}
       />
       {!withoutAlpha && (
@@ -1062,13 +1090,14 @@ function HsbInput(props: HsbInputProps) {
           aria-label="Alpha transparency percentage"
           {...inputProps}
           className="w-14"
-          disabled={context.disabled}
+          disabled={inputProps.disabled || context.disabled}
           inputMode="numeric"
           max="100"
           min="0"
           onChange={onAlphaChange}
           pattern="[0-9]*"
           placeholder="100"
+          readOnly={inputProps.readOnly || context.readOnly}
           value={alphaValue}
         />
       )}
@@ -1118,39 +1147,42 @@ function HslInput(props: FormatInputProps) {
         aria-label="Hue degree (0-360)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="360"
         min="0"
         onChange={onHslChannelChange('h', 360)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hsl.h}
       />
       <InputGroupInput
         aria-label="Saturation percentage (0-100)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="100"
         min="0"
         onChange={onHslChannelChange('s', 100)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hsl.s}
       />
       <InputGroupInput
         aria-label="Lightness percentage (0-100)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="100"
         min="0"
         onChange={onHslChannelChange('l', 100)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={hsl.l}
       />
       {!withoutAlpha && (
@@ -1158,13 +1190,14 @@ function HslInput(props: FormatInputProps) {
           aria-label="Alpha transparency percentage"
           {...inputProps}
           className="w-14"
-          disabled={context.disabled}
+          disabled={inputProps.disabled || context.disabled}
           inputMode="numeric"
           max="100"
           min="0"
           onChange={onAlphaChange}
           pattern="[0-9]*"
           placeholder="100"
+          readOnly={inputProps.readOnly || context.readOnly}
           value={alphaValue}
         />
       )}
@@ -1205,39 +1238,42 @@ function RgbInput(props: FormatInputProps) {
         aria-label="Red color component (0-255)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="255"
         min="0"
         onChange={onChannelChange('r', 255)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={rValue}
       />
       <InputGroupInput
         aria-label="Green color component (0-255)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="255"
         min="0"
         onChange={onChannelChange('g', 255)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={gValue}
       />
       <InputGroupInput
         aria-label="Blue color component (0-255)"
         {...inputProps}
         className="w-14"
-        disabled={context.disabled}
+        disabled={inputProps.disabled || context.disabled}
         inputMode="numeric"
         max="255"
         min="0"
         onChange={onChannelChange('b', 255)}
         pattern="[0-9]*"
         placeholder="0"
+        readOnly={inputProps.readOnly || context.readOnly}
         value={bValue}
       />
       {!withoutAlpha && (
@@ -1245,13 +1281,14 @@ function RgbInput(props: FormatInputProps) {
           aria-label="Alpha transparency percentage"
           {...inputProps}
           className="w-14"
-          disabled={context.disabled}
+          disabled={inputProps.disabled || context.disabled}
           inputMode="numeric"
           max="100"
           min="0"
           onChange={onChannelChange('a', 100, true)}
           pattern="[0-9]*"
           placeholder="100"
+          readOnly={inputProps.readOnly || context.readOnly}
           value={alphaValue}
         />
       )}

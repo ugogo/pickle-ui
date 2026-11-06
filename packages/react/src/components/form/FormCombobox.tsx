@@ -5,6 +5,7 @@ import { useController } from 'react-hook-form';
 
 import { Combobox, type ComboboxProps } from './Combobox';
 import {
+  FormFieldBlurContext,
   useFormControlProps,
   useFormMethods,
   useRequiredFieldName,
@@ -21,20 +22,42 @@ type FormComboboxProps<
 
 function FormComboboxChipsInput({
   id: idProp,
+  onBlur,
   ...props
 }: WithoutAriaInvalid<React.ComponentProps<typeof Combobox.ChipsInput>>) {
   const controlProps = useFormControlProps({ id: idProp });
+  const onFieldBlur = React.useContext(FormFieldBlurContext);
 
-  return <Combobox.ChipsInput {...props} {...controlProps} />;
+  return (
+    <Combobox.ChipsInput
+      {...props}
+      {...controlProps}
+      onBlur={(event) => {
+        onFieldBlur?.();
+        onBlur?.(event);
+      }}
+    />
+  );
 }
 
 function FormComboboxInput({
   id: idProp,
+  onBlur,
   ...props
 }: WithoutAriaInvalid<React.ComponentProps<typeof Combobox.Input>>) {
   const controlProps = useFormControlProps({ id: idProp });
+  const onFieldBlur = React.useContext(FormFieldBlurContext);
 
-  return <Combobox.Input {...props} {...controlProps} />;
+  return (
+    <Combobox.Input
+      {...props}
+      {...controlProps}
+      onBlur={(event) => {
+        onFieldBlur?.();
+        onBlur?.(event);
+      }}
+    />
+  );
 }
 
 function FormComboboxRoot<Value, Multiple extends boolean | undefined = false>({
@@ -50,17 +73,19 @@ function FormComboboxRoot<Value, Multiple extends boolean | undefined = false>({
   });
 
   return (
-    <Combobox<Value, Multiple>
-      {...props}
-      inputRef={field.ref}
-      name={field.name}
-      onValueChange={(value, eventDetails) => {
-        field.onChange(value);
-        props.onValueChange?.(value, eventDetails);
-      }}
-      // Keep the combobox controlled while the form value is still unset.
-      value={field.value ?? (props.multiple ? EMPTY_VALUE : null)}
-    />
+    <FormFieldBlurContext.Provider value={field.onBlur}>
+      <Combobox<Value, Multiple>
+        {...props}
+        inputRef={field.ref}
+        name={field.name}
+        onValueChange={(value, eventDetails) => {
+          field.onChange(value);
+          props.onValueChange?.(value, eventDetails);
+        }}
+        // Keep the combobox controlled while the form value is still unset.
+        value={field.value ?? (props.multiple ? EMPTY_VALUE : null)}
+      />
+    </FormFieldBlurContext.Provider>
   );
 }
 

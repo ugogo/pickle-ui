@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useController } from 'react-hook-form';
 
 import {
+  FormFieldBlurContext,
   useFormControlProps,
   useFormMethods,
   useRequiredFieldName,
@@ -23,26 +24,43 @@ function FormSelectRoot({ name: nameProp, ...props }: FormSelectProps) {
   });
 
   return (
-    <Select
-      {...props}
-      inputRef={field.ref}
-      name={field.name}
-      onValueChange={(value, eventDetails) => {
-        field.onChange(value);
-        props.onValueChange?.(value, eventDetails);
-      }}
-      value={field.value}
-    />
+    <FormFieldBlurContext.Provider value={field.onBlur}>
+      <Select
+        {...props}
+        inputRef={field.ref}
+        name={field.name}
+        onValueChange={(value, eventDetails) => {
+          field.onChange(value);
+          props.onValueChange?.(value, eventDetails);
+        }}
+        // Keep the select controlled while the form value is still unset.
+        value={field.value ?? null}
+      />
+    </FormFieldBlurContext.Provider>
   );
 }
 
 function FormSelectTrigger({
   id: idProp,
+  onBlur,
   ...props
 }: WithoutAriaInvalid<React.ComponentProps<typeof Select.Trigger>>) {
   const controlProps = useFormControlProps({ id: idProp });
+  const onFieldBlur = React.useContext(FormFieldBlurContext);
 
-  return <Select.Trigger {...props} {...controlProps} />;
+  return (
+    <Select.Trigger
+      {...props}
+      {...controlProps}
+      onBlur={(event) => {
+        // Opening the popup moves focus into it, which isn't leaving the field.
+        if (!event.currentTarget.hasAttribute('data-popup-open')) {
+          onFieldBlur?.();
+        }
+        onBlur?.(event);
+      }}
+    />
+  );
 }
 
 const FormSelect = Object.assign(FormSelectRoot, {

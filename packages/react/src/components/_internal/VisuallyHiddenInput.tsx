@@ -18,6 +18,12 @@ interface VisuallyHiddenInputProps<T = InputValue> extends Omit<
 
 const noSize: { height?: number; width?: number } = {};
 
+function serializeValue(value: unknown) {
+  return typeof value === 'object' && value !== null
+    ? JSON.stringify(value)
+    : (value as string | undefined);
+}
+
 // The snapshot is a string so React can compare it by value; an object would be
 // a new snapshot on every read and re-render forever.
 function useElementSize(element: HTMLElement | null) {
@@ -96,9 +102,7 @@ function VisuallyHiddenInput<T = InputValue>(
 
     const serializedCurrentValue = isCheckInput
       ? checked
-      : typeof value === 'object' && value !== null
-        ? JSON.stringify(value)
-        : value;
+      : serializeValue(value);
 
     const descriptor = Object.getOwnPropertyDescriptor(inputProto, propertyKey);
 
@@ -136,6 +140,8 @@ function VisuallyHiddenInput<T = InputValue>(
       {...inputProps}
       aria-hidden={isCheckInput}
       defaultChecked={isCheckInput ? checked : undefined}
+      // The effect only writes later changes, so the first value goes here.
+      defaultValue={isCheckInput ? undefined : serializeValue(value)}
       ref={inputRef}
       style={composedStyle}
       tabIndex={-1}

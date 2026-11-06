@@ -12,9 +12,6 @@ type FormFieldContextValue = {
   controlId?: string;
   name?: string;
 };
-type UseFormControlPropsOptions = {
-  enabled?: boolean;
-};
 type WithoutAriaInvalid<Props> = Omit<Props, 'aria-invalid'> & {
   'aria-invalid'?: never;
 };
@@ -23,6 +20,11 @@ const FormFieldContext = React.createContext<FormFieldContextValue | null>(
   null,
 );
 const FormInputGroupContext = React.createContext(false);
+// The field's `onBlur`, for a binding whose root renders no focusable element:
+// the part that takes focus reports the blur.
+const FormFieldBlurContext = React.createContext<(() => void) | undefined>(
+  undefined,
+);
 
 function getErrorMessage(error: unknown): React.ReactNode {
   if (!error || typeof error !== 'object') {
@@ -50,20 +52,17 @@ function useFieldName(name: string | undefined) {
 
 // React Hook Form tracks field state but attaches no aria or id props to
 // custom controls: this maps the current Form.Field onto its visible control.
-function useFormControlProps(
-  props: FormControlProps = {},
-  { enabled = true }: UseFormControlPropsOptions = {},
-) {
+function useFormControlProps(props: FormControlProps = {}) {
   const field = React.useContext(FormFieldContext);
   const { control, getFieldState } = useFormMethods();
-  const name = enabled ? field?.name : undefined;
+  const name = field?.name;
   const formState = useFormState({
     control,
     disabled: !name,
     exact: true,
     name,
   });
-  const controlId = enabled ? field?.controlId : undefined;
+  const controlId = field?.controlId;
   const invalid = name ? getFieldState(name, formState).invalid : false;
 
   return {
@@ -97,6 +96,7 @@ function useRequiredFieldName(name: string | undefined, componentName: string) {
 }
 
 export {
+  FormFieldBlurContext,
   FormFieldContext,
   FormInputGroupContext,
   getErrorMessage,
@@ -105,9 +105,4 @@ export {
   useFormMethods,
   useRequiredFieldName,
 };
-export type {
-  FormControlProps,
-  FormFieldContextValue,
-  UseFormControlPropsOptions,
-  WithoutAriaInvalid,
-};
+export type { FormControlProps, FormFieldContextValue, WithoutAriaInvalid };
