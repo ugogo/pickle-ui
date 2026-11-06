@@ -29,6 +29,15 @@ type WebElement = {
   style: { animation: string; transform: string };
 };
 
+/**
+ * Puts Expo UI's web grabber where iOS draws its own: 5px from the sheet's top,
+ * in a 20px row. The panel in the selector outranks Expo UI's class.
+ */
+const WEB_SHEET_CSS = `[data-expo-ui-bottom-sheet-panel] [data-expo-ui-bottom-sheet-handle] {
+  margin-top: 0;
+  padding: 5px 16px 10px;
+}`;
+
 const DrawerContext = createContext<DrawerContextValue | null>(null);
 /** Whether the content shows its close button, which the header keeps clear of. */
 const DrawerCloseButtonContext = createContext(false);
@@ -132,8 +141,8 @@ function DrawerContent({
     <BottomSheet
       containerColor={background}
       // The parts pad themselves. On iOS and Android the top clears the
-      // grabber and, with the header's 4pt, matches the web header's 24px; the
-      // web sheet's grabber has its own row above the content.
+      // grabber and, with the header's 4pt, matches the web header's 24px; on
+      // the web, the grabber's row is the same 20px (`WEB_SHEET_CSS`).
       contentPadding={Platform.OS === 'web' ? 0 : { top: 20 }}
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
@@ -142,6 +151,9 @@ function DrawerContent({
     >
       {Platform.OS === 'web' ? (
         <>
+          <style href="pickle-ui-drawer" precedence="pickle-ui">
+            {WEB_SHEET_CSS}
+          </style>
           <View aria-hidden ref={keepWebSheetDraggable} />
           {content}
         </>
