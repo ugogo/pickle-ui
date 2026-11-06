@@ -1,3 +1,4 @@
+import { BottomSheet } from '@expo/ui';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { Drawer, type DrawerContentProps, type DrawerProps } from './Drawer';
@@ -96,5 +97,21 @@ describe('Drawer', () => {
 
     expect(onOpenChange).toHaveBeenCalledWith(true);
     expect(screen.queryByText('Cart')).not.toBeOnTheScreen();
+  });
+
+  it('sizes the sheet to its content by default', async () => {
+    await renderDrawer({ defaultOpen: true });
+
+    expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
+      snapPoints: undefined,
+    });
+  });
+
+  it('rests the sheet at its snap points, fractions and heights', async () => {
+    await renderDrawer({ defaultOpen: true, snapPoints: [0.9, 320] });
+
+    expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
+      snapPoints: [{ fraction: 0.9 }, { height: 320 }],
+    });
   });
 });

@@ -15,7 +15,7 @@ jest.mock('@expo/ui', () => {
   const { createElement } = jest.requireActual('react');
   const { View } = jest.requireActual('react-native');
   return {
-    BottomSheet: ({ children, isPresented, onDismiss }) =>
+    BottomSheet: jest.fn(({ children, isPresented, onDismiss }) =>
       isPresented
         ? createElement(
             View,
@@ -23,5 +23,7 @@ jest.mock('@expo/ui', () => {
             children,
           )
         : null,
+    ),
+    RNHostView: ({ children }) => children,
   };
 });

@@ -1,6 +1,6 @@
-import { BottomSheet } from '@expo/ui';
+import { BottomSheet, RNHostView, type SnapPoint } from '@expo/ui';
 import { createContext, use, useMemo } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 
 import { useColorToken } from '../hooks/useColorToken';
 import { cn } from '../lib/cn';
@@ -11,6 +11,7 @@ import { Text, type TextProps } from './Text';
 type DrawerContextValue = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  snapPoints?: readonly number[];
 };
 
 const DrawerContext = createContext<DrawerContextValue | null>(null);
@@ -39,6 +40,12 @@ export type DrawerProps = {
   onOpenChange?: (open: boolean) => void;
   /** Whether the drawer is open. Use with `onOpenChange` to control it. */
   open?: boolean;
+  /**
+   * Heights the sheet rests at, as Base UI's: a number from 0 to 1 is a
+   * fraction of the screen's height, a larger one a height in points. Without
+   * them, the sheet sizes to its content.
+   */
+  snapPoints?: readonly number[];
 };
 export type DrawerTitleProps = Omit<TextProps, 'tone' | 'variant'>;
 export type DrawerTriggerProps = ButtonProps;
@@ -71,7 +78,7 @@ function DrawerClose({ onPress, ...props }: DrawerCloseProps) {
  * The bottom sheet, presented through Expo UI's `BottomSheet`: SwiftUI's sheet
  * on iOS, Material's on Android, a `<dialog>` on the web. The system draws the
  * sheet's shape, grabber and backdrop, follows the finger and sizes the sheet
- * to its content.
+ * to its content, or to the drawer's `snapPoints`.
  */
 function DrawerContent({
   children,
@@ -80,8 +87,30 @@ function DrawerContent({
   showCloseButton = false,
   ...props
 }: DrawerContentProps) {
-  const { open, setOpen } = useDrawer('Content');
+  const { open, setOpen, snapPoints } = useDrawer('Content');
   const background = useColorToken('popover');
+  const content = (
+    <View
+      aria-modal
+      className={cn(snapPoints && 'h-0 grow', className)}
+      {...props}
+    >
+      <DrawerCloseButtonContext value={showCloseButton}>
+        {children}
+      </DrawerCloseButtonContext>
+      {showCloseButton ? (
+        <Button
+          accessibilityLabel={closeLabel}
+          className="absolute end-3 top-1"
+          onPress={() => setOpen(false)}
+          size="icon-sm"
+          variant="ghost"
+        >
+          <CloseIcon />
+        </Button>
+      ) : null}
+    </View>
+  );
 
   return (
     <BottomSheet
@@ -91,23 +120,17 @@ function DrawerContent({
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
       onDismiss={() => setOpen(false)}
+      snapPoints={snapPoints?.map(toSnapPoint)}
     >
-      <View aria-modal className={className} {...props}>
-        <DrawerCloseButtonContext value={showCloseButton}>
-          {children}
-        </DrawerCloseButtonContext>
-        {showCloseButton ? (
-          <Button
-            accessibilityLabel={closeLabel}
-            className="absolute end-3 top-1"
-            onPress={() => setOpen(false)}
-            size="icon-sm"
-            variant="ghost"
-          >
-            <CloseIcon />
-          </Button>
-        ) : null}
-      </View>
+      {Platform.OS === 'web' ? (
+        content
+      ) : (
+        // SwiftUI and Compose lay out what they host: the content takes the
+        // sheet's width, and its height from itself or from the snap point.
+        <RNHostView matchContents={snapPoints ? false : { vertical: true }}>
+          {content}
+        </RNHostView>
+      )}
     </BottomSheet>
   );
 }
@@ -145,17 +168,22 @@ function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
   );
 }
 
-/** The scrolling body between the header and the footer. */
+/**
+ * The scrolling body between the header and the footer. With snap points, it
+ * fills the height they leave.
+ */
 function DrawerPanel({
   className,
   contentContainerClassName,
   ...props
 }: DrawerPanelProps) {
+  const { snapPoints } = useDrawer('Panel');
+
   return (
     <ScrollView
       // Pulled 4pt into the header's padding and padded back, so a field's 3pt
       // focus ring at the top isn't clipped by the scroll view.
-      className={cn('-mt-1 shrink grow-0', className)}
+      className={cn('-mt-1 shrink', snapPoints ? 'grow' : 'grow-0', className)}
       contentContainerClassName={cn(
         'px-6 pt-1 pb-6',
         contentContainerClassName,
@@ -171,13 +199,17 @@ function DrawerRoot({
   defaultOpen = false,
   onOpenChange,
   open: openProp,
+  snapPoints,
 }: DrawerProps) {
   const [open, setOpen] = useControllableState(
     openProp,
     defaultOpen,
     onOpenChange,
   );
-  const value = useMemo(() => ({ open, setOpen }), [open, setOpen]);
+  const value = useMemo(
+    () => ({ open, setOpen, snapPoints }),
+    [open, setOpen, snapPoints],
+  );
 
   return <DrawerContext value={value}>{children}</DrawerContext>;
 }
@@ -204,6 +236,11 @@ function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
       {...props}
     />
   );
+}
+
+/** A snap point as Expo UI takes it: a fraction up to 1, points beyond. */
+function toSnapPoint(snapPoint: number): SnapPoint {
+  return snapPoint <= 1 ? { fraction: snapPoint } : { height: snapPoint };
 }
 
 function useDrawer(part: string) {

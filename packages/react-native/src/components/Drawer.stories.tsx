@@ -19,7 +19,7 @@ const meta = {
 } satisfies Meta<typeof Drawer>;
 
 export default meta;
-type ExampleContent = 'close-button' | 'form' | 'list';
+type ExampleContent = 'close-button' | 'form' | 'list' | 'snap-points';
 
 type StoryDefinition = StoryObj<typeof meta>;
 
@@ -39,6 +39,12 @@ const CONTENT_COLUMNS: {
     key: 'close-button',
     label: 'With close button',
   },
+  {
+    description:
+      'snapPoints [0.9]: the panel fills the sheet, the footer stays at its foot',
+    key: 'snap-points',
+    label: 'Snap points',
+  },
 ];
 
 const profileSchema = z.object({
@@ -56,13 +62,17 @@ function DrawerCell({ column }: ComponentMatrixCellProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Drawer onOpenChange={setOpen} open={open}>
+    <Drawer
+      onOpenChange={setOpen}
+      open={open}
+      snapPoints={content === 'snap-points' ? [0.9] : undefined}
+    >
       <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
       <Drawer.Content showCloseButton={content === 'close-button'}>
         {content === 'form' ? (
           <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
-        {content === 'list' ? (
+        {content === 'list' || content === 'snap-points' ? (
           <>
             <Drawer.Header>
               <Drawer.Title>Activity</Drawer.Title>
