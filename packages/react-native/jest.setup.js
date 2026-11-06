@@ -24,6 +24,6 @@ jest.mock('@expo/ui', () => {
           )
         : null,
     ),
-    RNHostView: ({ children }) => children,
+    RNHostView: jest.fn(({ children }) => children),
   };
 });

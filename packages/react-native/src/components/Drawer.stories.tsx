@@ -211,8 +211,8 @@ export const All: StoryDefinition = {
       <Story.Section title="Snap points">
         <Text className="mb-4" tone="muted">
           A number up to 1 is a fraction of the screen&apos;s height, a larger
-          one a height in points. Android rests at half or full height, the
-          nearest to each.
+          one a height in points. Android&apos;s sheet is as tall as the largest
+          and can also rest at half the screen.
         </Text>
         <Story.Matrix
           Cell={SnapPointsCell}

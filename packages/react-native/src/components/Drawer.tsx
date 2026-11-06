@@ -1,6 +1,6 @@
 import { BottomSheet, RNHostView, type SnapPoint } from '@expo/ui';
 import { createContext, use, useMemo } from 'react';
-import { Platform, ScrollView, View } from 'react-native';
+import { Platform, ScrollView, useWindowDimensions, View } from 'react-native';
 
 import { useColorToken } from '../hooks/useColorToken';
 import { cn } from '../lib/cn';
@@ -57,9 +57,9 @@ export type DrawerProps = {
   open?: boolean;
   /**
    * Heights the sheet rests at, as Base UI's: a number from 0 to 1 is a
-   * fraction of the screen's height, a larger one a height in points. Android
-   * rests at half or full height, the nearest to each. Without them, the sheet
-   * sizes to its content.
+   * fraction of the screen's height, a larger one a height in points. Android's
+   * sheet is as tall as the largest and can also rest at half the screen.
+   * Without them, the sheet sizes to its content.
    */
   snapPoints?: readonly number[];
 };
@@ -102,14 +102,30 @@ function DrawerContent({
   className,
   closeLabel = 'Close',
   showCloseButton = false,
+  style,
   ...props
 }: DrawerContentProps) {
   const { open, setOpen, snapPoints } = useDrawer('Content');
   const background = useColorToken('popover');
+  const { height: windowHeight } = useWindowDimensions();
+  // Material sizes its sheet to the content, so on Android the content takes
+  // the largest snap point's height; elsewhere it fills the sheet. Without snap
+  // points, it shrinks to the sheet's max height and `Drawer.Panel` scrolls.
+  const androidHeight =
+    Platform.OS === 'android' && snapPoints
+      ? Math.max(...snapPoints.map((point) => toHeight(point, windowHeight)))
+      : undefined;
   const content = (
     <View
       aria-modal
-      className={cn(snapPoints && 'h-0 grow', className)}
+      className={cn(
+        snapPoints ? androidHeight === undefined && 'h-0 grow' : 'shrink',
+        className,
+      )}
+      style={[
+        androidHeight === undefined ? null : { height: androidHeight },
+        style,
+      ]}
       {...props}
     >
       <DrawerCloseButtonContext value={showCloseButton}>
@@ -132,10 +148,10 @@ function DrawerContent({
   return (
     <BottomSheet
       containerColor={background}
-      // The parts pad themselves. On iOS and Android the top clears the
-      // grabber and, with the header's 4pt, matches the web header's 24px; on
-      // the web, the grabber's row is the same 20px.
-      contentPadding={Platform.OS === 'web' ? 0 : { top: 20 }}
+      // The parts pad themselves. On iOS the top clears the grabber drawn over
+      // the content and, with the header's 4pt, matches the web header's 24px;
+      // the web's grabber row is the same 20px, and Material's has its own.
+      contentPadding={Platform.OS === 'ios' ? { top: 20 } : 0}
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
       onDismiss={() => setOpen(false)}
@@ -157,7 +173,13 @@ function DrawerContent({
       ) : (
         // SwiftUI and Compose lay out what they host: the content takes the
         // sheet's width, and its height from itself or from the snap point.
-        <RNHostView matchContents={snapPoints ? false : { vertical: true }}>
+        <RNHostView
+          matchContents={
+            snapPoints && androidHeight === undefined
+              ? false
+              : { vertical: true }
+          }
+        >
           {content}
         </RNHostView>
       )}
@@ -237,7 +259,12 @@ function DrawerRoot({
     onOpenChange,
   );
   const value = useMemo(
-    () => ({ open, setOpen, snapPoints }),
+    // An empty list is no snap points, as Expo UI reads it.
+    () => ({
+      open,
+      setOpen,
+      snapPoints: snapPoints?.length ? snapPoints : undefined,
+    }),
     [open, setOpen, snapPoints],
   );
 
@@ -289,6 +316,11 @@ function keepWebSheetDraggable(node: unknown) {
   };
   panel.addEventListener('animationend', onAnimationEnd);
   return () => panel.removeEventListener('animationend', onAnimationEnd);
+}
+
+/** A snap point's height in points: a fraction up to 1, points beyond. */
+function toHeight(snapPoint: number, windowHeight: number) {
+  return snapPoint <= 1 ? snapPoint * windowHeight : snapPoint;
 }
 
 /** A snap point as Expo UI takes it: a fraction up to 1, points beyond. */
