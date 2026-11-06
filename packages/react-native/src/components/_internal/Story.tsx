@@ -77,7 +77,7 @@ function Layout({
 }) {
   return (
     <View className="bg-background min-h-screen">
-      <View className={cn('px-8 py-12', className)}>
+      <View className={cn('mx-auto w-full px-8 py-12', className)}>
         <View className="mb-12">
           <Text variant="h1">{title}</Text>
         </View>
@@ -111,9 +111,9 @@ function Matrix({
               )}
               key={column.key}
             >
-              <Text className="font-medium">{column.label}</Text>
+              <Text className="text-sm font-medium">{column.label}</Text>
               {column.description ? (
-                <Text className="mt-1" tone="muted" variant="small">
+                <Text className="mt-1 text-xs" tone="muted">
                   {column.description}
                 </Text>
               ) : null}
@@ -129,9 +129,9 @@ function Matrix({
                 rowIndex < rows.length - 1 && 'border-b',
               )}
             >
-              <Text className="font-medium">{row.label}</Text>
+              <Text className="text-sm font-medium">{row.label}</Text>
               {row.description ? (
-                <Text className="mt-1 max-w-40" tone="muted" variant="small">
+                <Text className="mt-1 max-w-40 text-xs" tone="muted">
                   {row.description}
                 </Text>
               ) : null}

@@ -1,6 +1,6 @@
-import { BottomSheet } from '@expo/ui';
+import { BottomSheet, RNHostView, type SnapPoint } from '@expo/ui';
 import { createContext, use, useMemo } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Platform, ScrollView, useWindowDimensions, View } from 'react-native';
 
 import { useColorToken } from '../hooks/useColorToken';
 import { cn } from '../lib/cn';
@@ -11,6 +11,22 @@ import { Text, type TextProps } from './Text';
 type DrawerContextValue = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  snapPoints?: readonly number[];
+};
+/** The DOM members the web fix uses: the package compiles without the DOM lib. */
+type WebAnimationEvent = { animationName: string; target: unknown };
+
+type WebElement = {
+  addEventListener: (
+    type: 'animationend',
+    listener: (event: WebAnimationEvent) => void,
+  ) => void;
+  closest: (selector: string) => null | WebElement;
+  removeEventListener: (
+    type: 'animationend',
+    listener: (event: WebAnimationEvent) => void,
+  ) => void;
+  style: { animation: string; transform: string };
 };
 
 const DrawerContext = createContext<DrawerContextValue | null>(null);
@@ -39,6 +55,13 @@ export type DrawerProps = {
   onOpenChange?: (open: boolean) => void;
   /** Whether the drawer is open. Use with `onOpenChange` to control it. */
   open?: boolean;
+  /**
+   * Heights the sheet rests at, as Base UI's: a number from 0 to 1 is a
+   * fraction of the screen's height, a larger one a height in points. Android's
+   * sheet is as tall as the largest and can also rest at half the screen.
+   * Without them, the sheet sizes to its content.
+   */
+  snapPoints?: readonly number[];
 };
 export type DrawerTitleProps = Omit<TextProps, 'tone' | 'variant'>;
 export type DrawerTriggerProps = ButtonProps;
@@ -71,43 +94,95 @@ function DrawerClose({ onPress, ...props }: DrawerCloseProps) {
  * The bottom sheet, presented through Expo UI's `BottomSheet`: SwiftUI's sheet
  * on iOS, Material's on Android, a `<dialog>` on the web. The system draws the
  * sheet's shape, grabber and backdrop, follows the finger and sizes the sheet
- * to its content.
+ * to its content, or to the drawer's `snapPoints`. On the web, the grabber is
+ * this component's, placed like iOS's.
  */
 function DrawerContent({
   children,
   className,
   closeLabel = 'Close',
   showCloseButton = false,
+  style,
   ...props
 }: DrawerContentProps) {
-  const { open, setOpen } = useDrawer('Content');
+  const { open, setOpen, snapPoints } = useDrawer('Content');
   const background = useColorToken('popover');
+  const { height: windowHeight } = useWindowDimensions();
+  // Material sizes its sheet to the content, so on Android the content takes
+  // the largest snap point's height; elsewhere it fills the sheet. Without snap
+  // points, it shrinks to the sheet's max height and `Drawer.Panel` scrolls.
+  const androidHeight =
+    Platform.OS === 'android' && snapPoints
+      ? Math.max(...snapPoints.map((point) => toHeight(point, windowHeight)))
+      : undefined;
+  const content = (
+    <View
+      aria-modal
+      className={cn(
+        snapPoints ? androidHeight === undefined && 'h-0 grow' : 'shrink',
+        className,
+      )}
+      style={[
+        androidHeight === undefined ? null : { height: androidHeight },
+        style,
+      ]}
+      {...props}
+    >
+      <DrawerCloseButtonContext value={showCloseButton}>
+        {children}
+      </DrawerCloseButtonContext>
+      {showCloseButton ? (
+        <Button
+          accessibilityLabel={closeLabel}
+          className="absolute end-3 top-1"
+          onPress={() => setOpen(false)}
+          size="icon-sm"
+          variant="ghost"
+        >
+          <CloseIcon />
+        </Button>
+      ) : null}
+    </View>
+  );
 
   return (
     <BottomSheet
       containerColor={background}
-      // The parts pad themselves; the top clears the grabber.
-      contentPadding={{ top: 8 }}
+      // The parts pad themselves. On iOS the top clears the grabber drawn over
+      // the content and, with the header's 4pt, matches the web header's 24px;
+      // the web's grabber row is the same 20px, and Material's has its own.
+      contentPadding={Platform.OS === 'ios' ? { top: 20 } : 0}
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
       onDismiss={() => setOpen(false)}
+      // The web draws its own grabber, where iOS draws the system's.
+      showDragIndicator={Platform.OS !== 'web'}
+      snapPoints={snapPoints?.map(toSnapPoint)}
     >
-      <View aria-modal className={className} {...props}>
-        <DrawerCloseButtonContext value={showCloseButton}>
-          {children}
-        </DrawerCloseButtonContext>
-        {showCloseButton ? (
-          <Button
-            accessibilityLabel={closeLabel}
-            className="absolute end-3 top-1"
-            onPress={() => setOpen(false)}
-            size="icon-sm"
-            variant="ghost"
+      {Platform.OS === 'web' ? (
+        <>
+          <View
+            aria-hidden
+            className="web:cursor-grab h-5 shrink-0 items-center pt-[5px]"
+            ref={keepWebSheetDraggable}
           >
-            <CloseIcon />
-          </Button>
-        ) : null}
-      </View>
+            <View className="bg-foreground/25 h-[5px] w-9 rounded-full" />
+          </View>
+          {content}
+        </>
+      ) : (
+        // SwiftUI and Compose lay out what they host: the content takes the
+        // sheet's width, and its height from itself or from the snap point.
+        <RNHostView
+          matchContents={
+            snapPoints && androidHeight === undefined
+              ? false
+              : { vertical: true }
+          }
+        >
+          {content}
+        </RNHostView>
+      )}
     </BottomSheet>
   );
 }
@@ -145,17 +220,22 @@ function DrawerHeader({ className, ...props }: DrawerHeaderProps) {
   );
 }
 
-/** The scrolling body between the header and the footer. */
+/**
+ * The scrolling body between the header and the footer. With snap points, it
+ * fills the height they leave.
+ */
 function DrawerPanel({
   className,
   contentContainerClassName,
   ...props
 }: DrawerPanelProps) {
+  const { snapPoints } = useDrawer('Panel');
+
   return (
     <ScrollView
       // Pulled 4pt into the header's padding and padded back, so a field's 3pt
       // focus ring at the top isn't clipped by the scroll view.
-      className={cn('-mt-1 shrink grow-0', className)}
+      className={cn('-mt-1 shrink', snapPoints ? 'grow' : 'grow-0', className)}
       contentContainerClassName={cn(
         'px-6 pt-1 pb-6',
         contentContainerClassName,
@@ -171,13 +251,22 @@ function DrawerRoot({
   defaultOpen = false,
   onOpenChange,
   open: openProp,
+  snapPoints,
 }: DrawerProps) {
   const [open, setOpen] = useControllableState(
     openProp,
     defaultOpen,
     onOpenChange,
   );
-  const value = useMemo(() => ({ open, setOpen }), [open, setOpen]);
+  const value = useMemo(
+    // An empty list is no snap points, as Expo UI reads it.
+    () => ({
+      open,
+      setOpen,
+      snapPoints: snapPoints?.length ? snapPoints : undefined,
+    }),
+    [open, setOpen, snapPoints],
+  );
 
   return <DrawerContext value={value}>{children}</DrawerContext>;
 }
@@ -204,6 +293,39 @@ function DrawerTrigger({ onPress, ...props }: DrawerTriggerProps) {
       {...props}
     />
   );
+}
+
+/**
+ * Expo UI's web sheet holds its enter animation's last frame over an inline
+ * `translateY(100%)`, and an animation outranks the inline `translateY` a
+ * downward drag writes, so the sheet stayed put under the pointer. Once the
+ * sheet is in, both go and the drag shows.
+ */
+function keepWebSheetDraggable(node: unknown) {
+  const panel = (node as null | WebElement)?.closest(
+    '[data-expo-ui-bottom-sheet-panel]',
+  );
+  if (!panel) return;
+
+  const onAnimationEnd = (event: WebAnimationEvent) => {
+    if (event.target !== panel || event.animationName !== 'expo-ui-sheet-in') {
+      return;
+    }
+    panel.style.animation = '';
+    panel.style.transform = '';
+  };
+  panel.addEventListener('animationend', onAnimationEnd);
+  return () => panel.removeEventListener('animationend', onAnimationEnd);
+}
+
+/** A snap point's height in points: a fraction up to 1, points beyond. */
+function toHeight(snapPoint: number, windowHeight: number) {
+  return snapPoint <= 1 ? snapPoint * windowHeight : snapPoint;
+}
+
+/** A snap point as Expo UI takes it: a fraction up to 1, points beyond. */
+function toSnapPoint(snapPoint: number): SnapPoint {
+  return snapPoint <= 1 ? { fraction: snapPoint } : { height: snapPoint };
 }
 
 function useDrawer(part: string) {

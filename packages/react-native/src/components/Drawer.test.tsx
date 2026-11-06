@@ -1,4 +1,6 @@
+import { BottomSheet, RNHostView } from '@expo/ui';
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { Dimensions, Platform } from 'react-native';
 
 import { Drawer, type DrawerContentProps, type DrawerProps } from './Drawer';
 
@@ -26,6 +28,8 @@ async function renderDrawer({
 }
 
 describe('Drawer', () => {
+  afterEach(() => jest.restoreAllMocks());
+
   it('opens from the trigger', async () => {
     await renderDrawer();
 
@@ -96,5 +100,52 @@ describe('Drawer', () => {
 
     expect(onOpenChange).toHaveBeenCalledWith(true);
     expect(screen.queryByText('Cart')).not.toBeOnTheScreen();
+  });
+
+  it('sizes the sheet to its content by default', async () => {
+    await renderDrawer({ defaultOpen: true });
+
+    expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
+      snapPoints: undefined,
+    });
+  });
+
+  it('rests the sheet at its snap points, fractions and heights', async () => {
+    await renderDrawer({ defaultOpen: true, snapPoints: [0.9, 320] });
+
+    expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
+      snapPoints: [{ fraction: 0.9 }, { height: 320 }],
+    });
+  });
+
+  it('reads an empty list as no snap points', async () => {
+    await renderDrawer({ defaultOpen: true, snapPoints: [] });
+
+    expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
+      snapPoints: undefined,
+    });
+    expect(jest.mocked(RNHostView).mock.lastCall?.[0]).toMatchObject({
+      matchContents: { vertical: true },
+    });
+  });
+
+  it('gives Android the largest snap point as the content height', async () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    await renderDrawer({ defaultOpen: true, snapPoints: [0.5, 320] });
+
+    const { children, matchContents } =
+      jest.mocked(RNHostView).mock.lastCall![0];
+    expect(matchContents).toEqual({ vertical: true });
+    expect(
+      (children as React.ReactElement<{ style: unknown }>).props.style,
+    ).toEqual([
+      {
+        height: Math.max(Dimensions.get('window').height * 0.5, 320),
+      },
+      undefined,
+    ]);
+    expect(jest.mocked(BottomSheet).mock.lastCall?.[0]).toMatchObject({
+      contentPadding: 0,
+    });
   });
 });

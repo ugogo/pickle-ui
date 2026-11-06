@@ -41,6 +41,38 @@ const CONTENT_COLUMNS: {
   },
 ];
 
+const SNAP_POINT_COLUMNS: {
+  description: string;
+  key: string;
+  label: string;
+  snapPoints: number[];
+}[] = [
+  {
+    description: 'Half the screen; the panel scrolls',
+    key: 'half',
+    label: '[0.5]',
+    snapPoints: [0.5],
+  },
+  {
+    description: 'The panel fills the sheet, the footer stays at its foot',
+    key: 'tall',
+    label: '[0.9]',
+    snapPoints: [0.9],
+  },
+  {
+    description: 'A height in points',
+    key: 'height',
+    label: '[360]',
+    snapPoints: [360],
+  },
+  {
+    description: 'Rests at half; drag up to 90%',
+    key: 'two',
+    label: '[0.5, 0.9]',
+    snapPoints: [0.5, 0.9],
+  },
+];
+
 const profileSchema = z.object({
   name: z.string().trim().min(1, 'Enter your name.'),
   username: z.string().trim().min(2, 'Use at least 2 characters.'),
@@ -50,6 +82,28 @@ const ACTIVITY = Array.from({ length: 24 }, (_, index) => ({
   id: index,
   label: `Deployment #${240 - index}`,
 }));
+
+/** A header, a long scrolling panel and a footer. */
+function ActivityContent() {
+  return (
+    <>
+      <Drawer.Header>
+        <Drawer.Title>Activity</Drawer.Title>
+        <Drawer.Description>The last 24 deployments.</Drawer.Description>
+      </Drawer.Header>
+      <Drawer.Panel contentContainerClassName="gap-2">
+        {ACTIVITY.map(({ id, label }) => (
+          <View className="border-border rounded-lg border px-3 py-2" key={id}>
+            <Text>{label}</Text>
+          </View>
+        ))}
+      </Drawer.Panel>
+      <Drawer.Footer>
+        <Drawer.Close variant="outline">Close</Drawer.Close>
+      </Drawer.Footer>
+    </>
+  );
+}
 
 function DrawerCell({ column }: ComponentMatrixCellProps) {
   const content = column.key as ExampleContent;
@@ -62,27 +116,7 @@ function DrawerCell({ column }: ComponentMatrixCellProps) {
         {content === 'form' ? (
           <ProfileForm onSaved={() => setOpen(false)} />
         ) : null}
-        {content === 'list' ? (
-          <>
-            <Drawer.Header>
-              <Drawer.Title>Activity</Drawer.Title>
-              <Drawer.Description>The last 24 deployments.</Drawer.Description>
-            </Drawer.Header>
-            <Drawer.Panel contentContainerClassName="gap-2">
-              {ACTIVITY.map(({ id, label }) => (
-                <View
-                  className="border-border rounded-lg border px-3 py-2"
-                  key={id}
-                >
-                  <Text>{label}</Text>
-                </View>
-              ))}
-            </Drawer.Panel>
-            <Drawer.Footer>
-              <Drawer.Close variant="outline">Close</Drawer.Close>
-            </Drawer.Footer>
-          </>
-        ) : null}
+        {content === 'list' ? <ActivityContent /> : null}
         {content === 'close-button' ? (
           <>
             <Drawer.Header>
@@ -140,11 +174,25 @@ function ProfileForm({ onSaved }: { onSaved: () => void }) {
   );
 }
 
+function SnapPointsCell({ column }: ComponentMatrixCellProps) {
+  const { snapPoints } =
+    SNAP_POINT_COLUMNS.find(({ key }) => key === column.key) ?? {};
+
+  return (
+    <Drawer snapPoints={snapPoints}>
+      <Drawer.Trigger variant="outline">Open</Drawer.Trigger>
+      <Drawer.Content>
+        <ActivityContent />
+      </Drawer.Content>
+    </Drawer>
+  );
+}
+
 export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Drawer">
       <Story.Section title="Content">
-        <Text tone="muted">
+        <Text className="mb-4" tone="muted">
           The platform&apos;s bottom sheet, through Expo UI. It sizes itself to
           its content and closes when swiped down.
         </Text>
@@ -154,6 +202,24 @@ export const All: StoryDefinition = {
           rows={[
             {
               description: 'Swipe down or tap outside to close',
+              key: 'default',
+              label: 'Default',
+            },
+          ]}
+        />
+      </Story.Section>
+      <Story.Section title="Snap points">
+        <Text className="mb-4" tone="muted">
+          A number up to 1 is a fraction of the screen&apos;s height, a larger
+          one a height in points. Android&apos;s sheet is as tall as the largest
+          and can also rest at half the screen.
+        </Text>
+        <Story.Matrix
+          Cell={SnapPointsCell}
+          columns={SNAP_POINT_COLUMNS}
+          rows={[
+            {
+              description: 'Drag between the snap points, down to close',
               key: 'default',
               label: 'Default',
             },
