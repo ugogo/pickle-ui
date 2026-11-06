@@ -1,5 +1,11 @@
 # @pickle-ui/react-native
 
+## 1.0.0-beta.7
+
+### Patch Changes
+
+- 72d98a3: On iOS, `Drawer.Content` lays out at the window's width from its first render, so its text wraps from the start.
+
 ## 1.0.0-beta.6
 
 ### Minor Changes
