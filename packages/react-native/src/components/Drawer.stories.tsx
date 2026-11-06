@@ -192,7 +192,7 @@ export const All: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-5xl" title="Drawer">
       <Story.Section title="Content">
-        <Text tone="muted">
+        <Text className="mb-4" tone="muted">
           The platform&apos;s bottom sheet, through Expo UI. It sizes itself to
           its content and closes when swiped down.
         </Text>
@@ -209,7 +209,7 @@ export const All: StoryDefinition = {
         />
       </Story.Section>
       <Story.Section title="Snap points">
-        <Text tone="muted">
+        <Text className="mb-4" tone="muted">
           A number up to 1 is a fraction of the screen&apos;s height, a larger
           one a height in points. Android rests at half or full height, the
           nearest to each.

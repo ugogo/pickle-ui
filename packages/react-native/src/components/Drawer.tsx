@@ -131,9 +131,10 @@ function DrawerContent({
   return (
     <BottomSheet
       containerColor={background}
-      // The parts pad themselves; the top clears the grabber and, with the
-      // header's 4pt, matches the web header's 24px.
-      contentPadding={{ top: 20 }}
+      // The parts pad themselves. On iOS and Android the top clears the
+      // grabber and, with the header's 4pt, matches the web header's 24px; the
+      // web sheet's grabber has its own row above the content.
+      contentPadding={Platform.OS === 'web' ? 0 : { top: 20 }}
       isPresented={open}
       // A swipe, a tap on the backdrop or Android's back button.
       onDismiss={() => setOpen(false)}
