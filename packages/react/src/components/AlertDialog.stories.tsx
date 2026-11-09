@@ -130,7 +130,7 @@ function AlertDialogMatrixCell({ column, row }: ComponentMatrixCellProps) {
     <AlertDialog>
       <AlertDialog.Trigger
         render={
-          <Button variant={destructive ? 'destructive-outline' : 'outline'} />
+          <Button variant={destructive ? 'outline-destructive' : 'outline'} />
         }
       >
         {content.trigger}

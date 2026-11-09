@@ -47,7 +47,7 @@ const VARIANT_ROWS: {
   { key: 'secondary-destructive', label: 'Secondary destructive' },
   { key: 'destructive', label: 'Destructive' },
   { key: 'outline', label: 'Outline' },
-  { key: 'destructive-outline', label: 'Destructive outline' },
+  { key: 'outline-destructive', label: 'Outline destructive' },
   { key: 'ghost', label: 'Ghost' },
   { key: 'ghost-destructive', label: 'Ghost destructive' },
   { key: 'link', label: 'Link' },
