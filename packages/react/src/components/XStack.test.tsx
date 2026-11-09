@@ -116,5 +116,31 @@ describe('XStack', () => {
         'vertical',
       );
     });
+
+    it('renders the node a separator function returns', () => {
+      const { container } = render(
+        <XStack
+          separator={({ index, orientation }) => (
+            <hr data-orientation={orientation} data-testid={`rule-${index}`} />
+          )}
+        >
+          <span>A</span>
+          <span>B</span>
+          <span>C</span>
+        </XStack>,
+      );
+
+      const stack = container.firstElementChild!;
+      expect(
+        [...stack.children].map(
+          (child) => child.getAttribute('data-testid') ?? child.textContent,
+        ),
+      ).toEqual(['A', 'rule-0', 'B', 'rule-1', 'C']);
+      expect(screen.getByTestId('rule-0')).toHaveAttribute(
+        'data-orientation',
+        'vertical',
+      );
+      expect(separators(container)).toHaveLength(0);
+    });
   });
 });

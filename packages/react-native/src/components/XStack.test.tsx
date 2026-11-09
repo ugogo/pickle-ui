@@ -101,5 +101,29 @@ describe('XStack', () => {
         expect.stringContaining('w-px self-stretch'),
       );
     });
+
+    it('renders the node a separator function returns', async () => {
+      await render(
+        <XStack
+          separator={({ index, orientation }) => (
+            <View testID={`rule-${index}-${orientation}`} />
+          )}
+          testID="stack"
+        >
+          <View testID="a" />
+          <View testID="b" />
+          <View testID="c" />
+        </XStack>,
+      );
+
+      expect(
+        screen
+          .getByTestId('stack')
+          .children.map((child) =>
+            typeof child === 'string' ? child : child.props.testID,
+          ),
+      ).toEqual(['a', 'rule-0-vertical', 'b', 'rule-1-vertical', 'c']);
+      expect(separators()).toHaveLength(0);
+    });
   });
 });

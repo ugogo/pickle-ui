@@ -1,4 +1,4 @@
-import { Children, isValidElement } from 'react';
+import { Children, Fragment } from 'react';
 import { View } from 'react-native';
 
 import { cn } from '../lib/cn';
@@ -22,12 +22,21 @@ export type FlexProps = LayoutStyleProps &
   Omit<React.ComponentProps<typeof View>, keyof LayoutStyleProps> & {
     direction?: keyof typeof directionClasses;
     /**
-     * Renders a decorative `Separator` between each two children, across the
-     * direction of the flex.
+     * Renders a separator between each two children. `true` renders a
+     * decorative `Separator` across the direction of the flex. A function
+     * renders what it returns, given the separator's index and that
+     * orientation; give a decorative node `aria-hidden`.
      */
-    separator?: boolean;
+    separator?: boolean | RenderSeparator;
     wrap?: keyof typeof wrapClasses;
   };
+
+type RenderSeparator = (details: {
+  index: number;
+  orientation: SeparatorOrientation;
+}) => React.ReactNode;
+
+type SeparatorOrientation = 'horizontal' | 'vertical';
 
 /**
  * A `View` laid out with flexbox props, like `Flex` in @pickle-ui/react. It
@@ -61,25 +70,31 @@ export function Flex({
       )}
       {...props}
     >
-      {separator ? separate(children, orientation) : children}
+      {separator
+        ? separate(
+            children,
+            orientation,
+            separator === true ? renderSeparator : separator,
+          )
+        : children}
     </View>
   );
 }
 
+const renderSeparator: RenderSeparator = ({ orientation }) => (
+  <Separator aria-hidden orientation={orientation} />
+);
+
 function separate(
   children: React.ReactNode,
-  orientation: 'horizontal' | 'vertical',
+  orientation: SeparatorOrientation,
+  render: RenderSeparator,
 ) {
-  return Children.toArray(children).flatMap((child, index) => {
-    if (index === 0) return [child];
-    const key = isValidElement(child) ? child.key : index;
-    return [
-      <Separator
-        aria-hidden
-        key={`separator-${key}`}
-        orientation={orientation}
-      />,
-      child,
-    ];
-  });
+  // `toArray` drops empty children; `map` then keys each fragment by its child.
+  return Children.map(Children.toArray(children), (child, index) => (
+    <Fragment>
+      {index > 0 && render({ index: index - 1, orientation })}
+      {child}
+    </Fragment>
+  ));
 }
