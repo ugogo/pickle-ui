@@ -35,6 +35,14 @@ export const All: StoryDefinition = {
         </XStack>
       </Story.Section>
 
+      <Story.Section title="Separators">
+        <XStack gap={3} separator>
+          <Item>Groceries</Item>
+          <Item>Chores</Item>
+          <Item>Calendar</Item>
+        </XStack>
+      </Story.Section>
+
       <Story.Section title="Responsive override">
         <XStack className="max-sm:flex-col" gap={3}>
           <Item>Horizontal by default</Item>

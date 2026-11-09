@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native-web-vite';
 
 import { Story } from './_internal/Story';
 import { StoryItem as Item } from './_internal/StoryItem';
+import { Separator } from './Separator';
 import { YStack } from './YStack';
 
 const meta = {
@@ -32,6 +33,31 @@ export const All: StoryDefinition = {
         >
           <Item>Leading action</Item>
           <Item>Trailing action</Item>
+        </YStack>
+      </Story.Section>
+
+      <Story.Section title="Separators">
+        <YStack gap={3} separator>
+          <Item>Groceries</Item>
+          <Item>Chores</Item>
+          <Item>Calendar</Item>
+        </YStack>
+      </Story.Section>
+
+      <Story.Section title="Custom separators">
+        <YStack
+          gap={3}
+          separator={({ orientation }) => (
+            <Separator
+              aria-hidden
+              className="bg-primary"
+              orientation={orientation}
+            />
+          )}
+        >
+          <Item>Groceries</Item>
+          <Item>Chores</Item>
+          <Item>Calendar</Item>
         </YStack>
       </Story.Section>
 

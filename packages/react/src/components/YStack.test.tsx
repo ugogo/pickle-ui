@@ -28,4 +28,19 @@ describe('YStack', () => {
     expect(element).toHaveClass('flex-row', 'custom-class');
     expect(element).not.toHaveClass('flex-col');
   });
+
+  it('renders horizontal separators between its children', () => {
+    const { container } = render(
+      <YStack separator>
+        <span>A</span>
+        <span>B</span>
+        <span>C</span>
+      </YStack>,
+    );
+
+    const separators = container.querySelectorAll('[data-slot="separator"]');
+    expect(separators).toHaveLength(2);
+    expect(separators[0]).toHaveAttribute('data-orientation', 'horizontal');
+    expect(separators[0]).toHaveAttribute('aria-hidden', 'true');
+  });
 });
