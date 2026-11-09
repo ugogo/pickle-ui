@@ -1,7 +1,9 @@
+import { Children, isValidElement } from 'react';
 import { View } from 'react-native';
 
 import { cn } from '../lib/cn';
 import { getLayoutClasses, type LayoutStyleProps } from './_internal/layout';
+import { Separator } from './Separator';
 
 const directionClasses = {
   column: 'flex-col',
@@ -19,6 +21,11 @@ const wrapClasses = {
 export type FlexProps = LayoutStyleProps &
   Omit<React.ComponentProps<typeof View>, keyof LayoutStyleProps> & {
     direction?: keyof typeof directionClasses;
+    /**
+     * Renders a decorative `Separator` between each two children, across the
+     * direction of the flex.
+     */
+    separator?: boolean;
     wrap?: keyof typeof wrapClasses;
   };
 
@@ -29,15 +36,21 @@ export type FlexProps = LayoutStyleProps &
  */
 export function Flex({
   align,
+  children,
   className,
   direction = 'row',
   gap,
   gapX,
   gapY,
   justify,
+  separator = false,
   wrap,
   ...props
 }: FlexProps) {
+  const orientation = direction.startsWith('column')
+    ? 'horizontal'
+    : 'vertical';
+
   return (
     <View
       className={cn(
@@ -47,6 +60,26 @@ export function Flex({
         className,
       )}
       {...props}
-    />
+    >
+      {separator ? separate(children, orientation) : children}
+    </View>
   );
+}
+
+function separate(
+  children: React.ReactNode,
+  orientation: 'horizontal' | 'vertical',
+) {
+  return Children.toArray(children).flatMap((child, index) => {
+    if (index === 0) return [child];
+    const key = isValidElement(child) ? child.key : index;
+    return [
+      <Separator
+        aria-hidden
+        key={`separator-${key}`}
+        orientation={orientation}
+      />,
+      child,
+    ];
+  });
 }

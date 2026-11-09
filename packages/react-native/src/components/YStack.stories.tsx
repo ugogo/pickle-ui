@@ -35,6 +35,14 @@ export const All: StoryDefinition = {
         </YStack>
       </Story.Section>
 
+      <Story.Section title="Separators">
+        <YStack gap={3} separator>
+          <Item>Groceries</Item>
+          <Item>Chores</Item>
+          <Item>Calendar</Item>
+        </YStack>
+      </Story.Section>
+
       <Story.Section title="Responsive override">
         <YStack className="sm:flex-row" gap={3}>
           <Item>Vertical by default</Item>

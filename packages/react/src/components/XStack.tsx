@@ -1,17 +1,9 @@
-import { cn } from '../lib/utils';
 import { Flex, type FlexProps } from './Flex';
 
 type XStackProps = Omit<FlexProps, 'direction'>;
 
-function XStack({ className, ref, ...props }: XStackProps) {
-  return (
-    <Flex
-      className={cn('flex-row', className)}
-      data-slot="x-stack"
-      ref={ref}
-      {...props}
-    />
-  );
+function XStack(props: XStackProps) {
+  return <Flex data-slot="x-stack" direction="row" {...props} />;
 }
 
 export { XStack };
