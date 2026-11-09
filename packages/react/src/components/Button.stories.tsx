@@ -44,10 +44,12 @@ const VARIANT_ROWS: {
 }[] = [
   { key: 'default', label: 'Default' },
   { key: 'secondary', label: 'Secondary' },
+  { key: 'secondary-destructive', label: 'Secondary destructive' },
   { key: 'destructive', label: 'Destructive' },
-  { key: 'destructive-outline', label: 'Destructive outline' },
   { key: 'outline', label: 'Outline' },
+  { key: 'outline-destructive', label: 'Outline destructive' },
   { key: 'ghost', label: 'Ghost' },
+  { key: 'ghost-destructive', label: 'Ghost destructive' },
   { key: 'link', label: 'Link' },
 ];
 

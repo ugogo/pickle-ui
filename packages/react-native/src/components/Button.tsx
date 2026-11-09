@@ -31,13 +31,16 @@ const buttonVariants = cva(
           'border-primary bg-primary shadow-primary/24 shadow-xs active:bg-primary/90 disabled:shadow-none',
         destructive:
           'border-destructive bg-destructive shadow-destructive/24 shadow-xs active:bg-destructive/90 disabled:shadow-none',
-        'destructive-outline':
-          'border-input bg-popover active:border-destructive/32 active:bg-destructive/4 dark:bg-input/32 shadow-xs shadow-black/5 disabled:shadow-none',
         ghost: 'active:bg-accent border-transparent',
+        'ghost-destructive': 'active:bg-accent border-transparent',
         link: 'border-transparent',
         outline:
           'border-input bg-popover active:bg-accent/50 dark:bg-input/32 dark:active:bg-input/64 shadow-xs shadow-black/5 disabled:shadow-none',
+        'outline-destructive':
+          'border-input bg-popover active:border-destructive/32 active:bg-destructive/4 dark:bg-input/32 shadow-xs shadow-black/5 disabled:shadow-none',
         secondary: 'bg-secondary active:bg-secondary/80 border-transparent',
+        'secondary-destructive':
+          'bg-destructive-subtle active:bg-destructive-subtle/80 border-transparent',
       },
     },
   },
@@ -67,11 +70,13 @@ const labelVariants = cva('font-sans font-medium', {
     variant: {
       default: 'text-primary-foreground',
       destructive: 'text-destructive-foreground',
-      'destructive-outline': 'text-destructive-subtle-foreground',
       ghost: 'text-foreground',
+      'ghost-destructive': 'text-destructive-subtle-foreground',
       link: 'text-foreground',
       outline: 'text-foreground',
+      'outline-destructive': 'text-destructive-subtle-foreground',
       secondary: 'text-secondary-foreground',
+      'secondary-destructive': 'text-destructive-subtle-foreground',
     },
   },
 });
@@ -82,11 +87,13 @@ const spinnerVariants = cva('size-4 opacity-80', {
     variant: {
       default: 'text-primary-foreground',
       destructive: 'text-destructive-foreground',
-      'destructive-outline': 'text-foreground',
       ghost: 'text-foreground',
+      'ghost-destructive': 'text-destructive-subtle-foreground',
       link: 'text-foreground',
       outline: 'text-foreground',
+      'outline-destructive': 'text-foreground',
       secondary: 'text-secondary-foreground',
+      'secondary-destructive': 'text-destructive-subtle-foreground',
     },
   },
 });

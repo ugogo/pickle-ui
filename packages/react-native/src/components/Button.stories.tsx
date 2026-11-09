@@ -38,10 +38,12 @@ const VARIANT_ROWS: {
 }[] = [
   { key: 'default', label: 'Default' },
   { key: 'secondary', label: 'Secondary' },
+  { key: 'secondary-destructive', label: 'Secondary destructive' },
   { key: 'destructive', label: 'Destructive' },
-  { key: 'destructive-outline', label: 'Destructive outline' },
   { key: 'outline', label: 'Outline' },
+  { key: 'outline-destructive', label: 'Outline destructive' },
   { key: 'ghost', label: 'Ghost' },
+  { key: 'ghost-destructive', label: 'Ghost destructive' },
   { key: 'link', label: 'Link' },
 ];
 
@@ -79,11 +81,13 @@ const CONTENT_ROWS = [
 const ICON_COLORS: Record<ButtonVariant, string> = {
   default: 'text-primary-foreground',
   destructive: 'text-destructive-foreground',
-  'destructive-outline': 'text-destructive-subtle-foreground',
   ghost: 'text-foreground',
+  'ghost-destructive': 'text-destructive-subtle-foreground',
   link: 'text-foreground',
   outline: 'text-foreground',
+  'outline-destructive': 'text-destructive-subtle-foreground',
   secondary: 'text-secondary-foreground',
+  'secondary-destructive': 'text-destructive-subtle-foreground',
 };
 
 function ButtonContentCell({ column, row }: ComponentMatrixCellProps) {
