@@ -48,6 +48,9 @@ const VARIANT_ROWS: {
   { key: 'destructive-outline', label: 'Destructive outline' },
   { key: 'outline', label: 'Outline' },
   { key: 'ghost', label: 'Ghost' },
+  { key: 'ghost-primary', label: 'Ghost primary' },
+  { key: 'ghost-muted', label: 'Ghost muted' },
+  { key: 'ghost-destructive', label: 'Ghost destructive' },
   { key: 'link', label: 'Link' },
 ];
 

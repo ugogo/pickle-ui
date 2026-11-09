@@ -3,6 +3,10 @@ import { View } from 'react-native';
 
 import { Button } from './Button';
 
+function classesOf(element: { props: { className?: unknown } }) {
+  return String(element.props.className).split(' ');
+}
+
 describe('Button', () => {
   it('renders a button named by its label', async () => {
     await render(<Button>Save</Button>);
@@ -57,6 +61,22 @@ describe('Button', () => {
     expect(
       screen.getByRole('button', { name: 'Add project' }),
     ).toBeOnTheScreen();
+  });
+
+  it.each([
+    ['ghost-primary', 'text-primary'],
+    ['ghost-muted', 'text-muted-foreground'],
+    ['ghost-destructive', 'text-destructive-subtle-foreground'],
+  ] as const)('renders %s as a ghost in %s', async (variant, text) => {
+    await render(<Button variant={variant}>Save</Button>);
+    const button = classesOf(screen.getByRole('button'));
+    const label = classesOf(screen.getByText('Save'));
+
+    expect(button).toEqual(
+      expect.arrayContaining(['border-transparent', 'active:bg-accent']),
+    );
+    expect(label).toContain(text);
+    expect(label).not.toContain('text-foreground');
   });
 
   it('is busy and disabled while loading', async () => {

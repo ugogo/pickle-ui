@@ -42,6 +42,9 @@ const VARIANT_ROWS: {
   { key: 'destructive-outline', label: 'Destructive outline' },
   { key: 'outline', label: 'Outline' },
   { key: 'ghost', label: 'Ghost' },
+  { key: 'ghost-primary', label: 'Ghost primary' },
+  { key: 'ghost-muted', label: 'Ghost muted' },
+  { key: 'ghost-destructive', label: 'Ghost destructive' },
   { key: 'link', label: 'Link' },
 ];
 
@@ -81,6 +84,9 @@ const ICON_COLORS: Record<ButtonVariant, string> = {
   destructive: 'text-destructive-foreground',
   'destructive-outline': 'text-destructive-subtle-foreground',
   ghost: 'text-foreground',
+  'ghost-destructive': 'text-destructive-subtle-foreground',
+  'ghost-muted': 'text-muted-foreground',
+  'ghost-primary': 'text-primary',
   link: 'text-foreground',
   outline: 'text-foreground',
   secondary: 'text-secondary-foreground',
