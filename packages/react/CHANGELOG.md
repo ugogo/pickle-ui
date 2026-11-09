@@ -1,5 +1,13 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.12
+
+### Minor Changes
+
+- ea12e72: Add the `ghost-destructive` and `secondary-destructive` `Button` variants: `ghost` and `secondary` in the destructive colours.
+
+  **Breaking:** the `destructive-outline` `Button` variant is renamed `outline-destructive`, so each destructive variant follows its base (`data-variant` changes too).
+
 ## 1.0.0-beta.11
 
 ### Minor Changes
