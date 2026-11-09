@@ -1,6 +1,6 @@
 {
   "name": "@pickle-ui/react-native",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "type": "module",
   "description": "React Native components for Expo, styled with Pickle UI's tokens through Uniwind.",
   "main": "dist/index.js",
