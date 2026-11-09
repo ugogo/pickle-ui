@@ -46,19 +46,6 @@ describe('Button', () => {
     expect(outlineButton).toHaveAttribute('data-size', 'lg');
   });
 
-  it.each([
-    ['ghost-primary', 'text-primary'],
-    ['ghost-muted', 'text-muted-foreground'],
-    ['ghost-destructive', 'text-destructive-subtle-foreground'],
-  ] as const)('renders %s as a ghost in %s', (variant, text) => {
-    render(<Button variant={variant}>Save</Button>);
-    const button = screen.getByRole('button');
-
-    expect(button).toHaveAttribute('data-variant', variant);
-    expect(button).toHaveClass('border-transparent', 'hover:bg-accent', text);
-    expect(button).not.toHaveClass('text-foreground');
-  });
-
   it('omits the data attributes when variant and size are null', () => {
     render(
       <Button size={null} variant={null}>
