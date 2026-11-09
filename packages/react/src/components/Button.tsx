@@ -39,15 +39,13 @@ const buttonVariants = cva(
           'border-transparent text-foreground hover:bg-accent data-pressed:bg-accent *:data-[slot=button-loading-indicator]:text-foreground',
         'ghost-destructive':
           'border-transparent text-destructive-subtle-foreground hover:bg-accent data-pressed:bg-accent *:data-[slot=button-loading-indicator]:text-destructive-subtle-foreground',
-        'ghost-muted':
-          'border-transparent text-muted-foreground hover:bg-accent data-pressed:bg-accent *:data-[slot=button-loading-indicator]:text-muted-foreground',
-        'ghost-primary':
-          'border-transparent text-primary hover:bg-accent data-pressed:bg-accent *:data-[slot=button-loading-indicator]:text-primary',
         link: 'border-transparent text-foreground underline-offset-4 hover:underline data-pressed:underline *:data-[slot=button-loading-indicator]:text-foreground',
         outline:
           'border-input bg-popover not-dark:bg-clip-padding text-foreground shadow-xs/5 not-disabled:not-active:not-data-pressed:before:shadow-[0_1px_--theme(--color-black/4%)] hover:bg-accent/50 data-pressed:bg-accent/50 *:data-[slot=button-loading-indicator]:text-foreground dark:bg-input/32 dark:data-pressed:bg-input/64 dark:hover:bg-input/64 dark:not-disabled:before:shadow-[0_-1px_--theme(--color-white/2%)] dark:not-disabled:not-active:not-data-pressed:before:shadow-[0_-1px_--theme(--color-white/6%)] [:disabled,:active,[data-pressed]]:shadow-none',
         secondary:
           'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/90 data-pressed:bg-secondary/90 *:data-[slot=button-loading-indicator]:text-secondary-foreground [:active,[data-pressed]]:bg-secondary/80',
+        'secondary-destructive':
+          'border-transparent bg-destructive-subtle text-destructive-subtle-foreground hover:bg-destructive-subtle/90 data-pressed:bg-destructive-subtle/90 *:data-[slot=button-loading-indicator]:text-destructive-subtle-foreground [:active,[data-pressed]]:bg-destructive-subtle/80',
       },
     },
   },
