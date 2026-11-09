@@ -1,5 +1,11 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.13
+
+### Minor Changes
+
+- 8c3b47a: Add the `separator` prop to `XStack` and `YStack`. `true` renders a decorative `Separator` between each two children, vertical in an `XStack` and horizontal in a `YStack`; a function renders its own node there, given the separator's index and orientation.
+
 ## 1.0.0-beta.12
 
 ### Minor Changes
