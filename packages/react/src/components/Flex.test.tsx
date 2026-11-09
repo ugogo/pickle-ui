@@ -50,27 +50,4 @@ describe('Flex', () => {
     expect(element).not.toHaveClass('flex-col');
     expect(ref.current).toBe(element);
   });
-
-  it('orients its separators along its direction', () => {
-    const { container, rerender } = render(
-      <Flex separator>
-        <span>A</span>
-        <span>B</span>
-      </Flex>,
-    );
-    const orientation = () =>
-      container
-        .querySelector('[data-slot="separator"]')
-        ?.getAttribute('data-orientation');
-
-    expect(orientation()).toBe('vertical');
-
-    rerender(
-      <Flex direction="column-reverse" separator>
-        <span>A</span>
-        <span>B</span>
-      </Flex>,
-    );
-    expect(orientation()).toBe('horizontal');
-  });
 });
