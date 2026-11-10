@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import {
   type FieldValues,
   FormProvider,
@@ -19,7 +19,8 @@ export type FormProps<FormValues extends FieldValues = FieldValues> =
 /**
  * React Native has no `<form>`, so the root shares a submit action:
  * `Form.Button` and the return key in `Form.Input` call it, like a submit
- * button and Enter on the web.
+ * button and Enter on the web. One runs at a time: the return key is never
+ * disabled, as a loading button is.
  */
 export function FormRoot<FormValues extends FieldValues = FieldValues>({
   className,
@@ -27,8 +28,16 @@ export function FormRoot<FormValues extends FieldValues = FieldValues>({
   onSubmit,
   ...props
 }: FormProps<FormValues>) {
+  const submitting = useRef(false);
   const submit = useCallback(() => {
-    if (onSubmit) void form.handleSubmit(onSubmit)();
+    if (!onSubmit || submitting.current) return;
+
+    submitting.current = true;
+    void form
+      .handleSubmit(onSubmit)()
+      .finally(() => {
+        submitting.current = false;
+      });
   }, [form, onSubmit]);
 
   return (
