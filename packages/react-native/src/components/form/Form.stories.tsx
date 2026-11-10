@@ -141,11 +141,46 @@ function SignUpForm() {
   );
 }
 
+// Two seconds per submit: the return key during one sends nothing more.
+function SlowSubmitForm() {
+  const form = useForm({ defaultValues: { name: '' } });
+  const [submits, setSubmits] = useState(0);
+
+  async function submit() {
+    setSubmits((count) => count + 1);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
+  return (
+    <Form className="max-w-md" form={form} onSubmit={submit}>
+      <Form.Field
+        description="Press return twice: one submit is sent."
+        label="List name"
+        name="name"
+      >
+        <Form.Input />
+      </Form.Field>
+      <Form.Button loading={form.formState.isSubmitting}>Create</Form.Button>
+      <Text tone="muted">Submits sent: {submits}</Text>
+    </Form>
+  );
+}
+
 export const SignUp: StoryDefinition = {
   render: () => (
     <Story.Layout className="max-w-lg" title="Form">
       <Story.Section title="Sign up">
         <SignUpForm />
+      </Story.Section>
+    </Story.Layout>
+  ),
+};
+
+export const SlowSubmit: StoryDefinition = {
+  render: () => (
+    <Story.Layout className="max-w-lg" title="Form">
+      <Story.Section title="A submit that takes two seconds">
+        <SlowSubmitForm />
       </Story.Section>
     </Story.Layout>
   ),

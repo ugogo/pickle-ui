@@ -121,6 +121,26 @@ describe('Form', () => {
     await waitFor(() => expect(handleSubmit).toHaveBeenCalledTimes(1));
   });
 
+  it('sends one submit at a time: the return key waits for the one running', async () => {
+    const settles: (() => void)[] = [];
+    const handleSubmit = jest.fn(
+      () => new Promise<void>((resolve) => settles.push(resolve)),
+    );
+    await render(<TestForm onSubmit={handleSubmit} />);
+    const email = screen.getByLabelText('Email');
+
+    await fireEvent(email, 'submitEditing');
+    await waitFor(() => expect(handleSubmit).toHaveBeenCalledTimes(1));
+    await fireEvent(email, 'submitEditing');
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+
+    settles[0]?.();
+    await waitFor(async () => {
+      await fireEvent(email, 'submitEditing');
+      expect(handleSubmit).toHaveBeenCalledTimes(2);
+    });
+  });
+
   it('shows the description until the field has an error', async () => {
     await render(
       <TestForm
