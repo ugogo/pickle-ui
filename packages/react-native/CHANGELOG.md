@@ -1,5 +1,11 @@
 # @pickle-ui/react-native
 
+## 1.0.0-beta.10
+
+### Patch Changes
+
+- be3aeee: `Form` sends one submit at a time: the return key in `Form.Input` no longer sends a second one while the first runs.
+
 ## 1.0.0-beta.9
 
 ### Minor Changes
