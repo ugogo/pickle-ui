@@ -1,4 +1,3 @@
-import { useCallback, useRef } from 'react';
 import {
   type FieldValues,
   FormProvider,
@@ -28,17 +27,12 @@ export function FormRoot<FormValues extends FieldValues = FieldValues>({
   onSubmit,
   ...props
 }: FormProps<FormValues>) {
-  const submitting = useRef(false);
-  const submit = useCallback(() => {
-    if (!onSubmit || submitting.current) return;
-
-    submitting.current = true;
-    void form
-      .handleSubmit(onSubmit)()
-      .finally(() => {
-        submitting.current = false;
-      });
-  }, [form, onSubmit]);
+  // React Hook Form sets `isSubmitting` before its first await: a second
+  // call sees it.
+  const submit = () => {
+    if (!onSubmit || form.formState.isSubmitting) return;
+    void form.handleSubmit(onSubmit)();
+  };
 
   return (
     <FormProvider {...form}>
