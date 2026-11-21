@@ -10,9 +10,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
-    name: Lint, format & typecheck
+  # One job per check, so they run side by side instead of one after another.
+  check:
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Lint & format
+            run: pnpm run lint && pnpm run format:check
+          - name: Typecheck
+            run: pnpm run typecheck
+          # Every package but React Native, so a new package is tested here.
+          - name: Test
+            run: pnpm --filter './packages/*' --filter '!@pickle-ui/react-native' run test
+          - name: Test (react-native)
+            run: pnpm --filter @pickle-ui/react-native run test
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -29,14 +43,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Check formatting
-        run: pnpm run format:check
-
-      - name: Typecheck
-        run: pnpm run typecheck
-
-      - name: Test
-        run: pnpm run test
+      - name: ${{ matrix.name }}
+        run: ${{ matrix.run }}

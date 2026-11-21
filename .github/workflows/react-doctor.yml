@@ -30,20 +30,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: pnpm
-
-      # `doctor.config.ts` imports `react-doctor/api`. Without the install, the
-      # config silently fails to load and the action runs its default rules.
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+      # No install: the action sets up Node and its own react-doctor, which
+      # loads `doctor.config.ts` without the project's dependencies. If
+      # `only-export-components` warnings appear on the web package, the
+      # config stopped loading.
       - name: Run React Doctor
         uses: millionco/react-doctor@v2
         with:
