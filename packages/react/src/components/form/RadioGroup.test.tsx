@@ -113,7 +113,7 @@ describe('RadioGroup', () => {
     expect(radios).toHaveLength(3);
     const radioA = screen.getByRole('radio', { name: 'Option A' });
     expect(radioA).toHaveAttribute('aria-checked', 'true');
-    // Arrow-key roving focus is browser behavior the test DOM lacks, so click.
+    // Arrow-key roving focus is browser behavior jsdom lacks, so click.
     fireEvent.click(screen.getByRole('radio', { name: 'Option C' }));
     expect(screen.getByRole('radio', { name: 'Option C' })).toHaveAttribute(
       'aria-checked',

@@ -10,7 +10,7 @@ export default defineConfig({
     conditions: ['@pickle-ui/source', ...defaultClientConditions],
   },
   test: {
-    environment: 'happy-dom',
+    environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test-setup.ts'],
   },

@@ -223,10 +223,10 @@ describe('Combobox', () => {
       type('Papaya');
       fireEvent.click(screen.getByRole('option', { name: 'Create "Papaya"' }));
 
-      // The closing list may still show the new item, so look at chips only.
-      expect(
-        screen.getByText('Papaya', { selector: '[data-slot="combobox-chip"]' }),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Papaya')).toHaveAttribute(
+        'data-slot',
+        'combobox-chip',
+      );
     });
 
     it('appends the create option after grouped items', () => {
