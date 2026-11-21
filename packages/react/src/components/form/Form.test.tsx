@@ -190,7 +190,7 @@ describe('Form', () => {
 
       return (
         <Form form={form} onSubmit={vi.fn()}>
-          <Form.Field group label="Grocery list" name="list">
+          <Form.GroupField label="Grocery list" name="list">
             <div>
               {['Flour', 'Eggs'].map((name) => (
                 <Form.Item key={name}>
@@ -203,9 +203,9 @@ describe('Form', () => {
                 </Form.Item>
               ))}
             </div>
-          </Form.Field>
+          </Form.GroupField>
 
-          <Form.Field group label="Choices" name="choices">
+          <Form.GroupField label="Choices" name="choices">
             {['Butter or margarine', 'Milk or cream'].map((name) => (
               <Form.Item key={name}>
                 <RadioGroup aria-label={name}>
@@ -214,7 +214,7 @@ describe('Form', () => {
                 </RadioGroup>
               </Form.Item>
             ))}
-          </Form.Field>
+          </Form.GroupField>
         </Form>
       );
     }

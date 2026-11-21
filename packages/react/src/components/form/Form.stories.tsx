@@ -233,9 +233,8 @@ function GroupFieldForm() {
 
   return (
     <Form form={form} onSubmit={() => {}}>
-      <Form.Field
+      <Form.GroupField
         description="Each row keeps its own label."
-        group
         label="Grocery list"
         name="list"
       >
@@ -244,7 +243,7 @@ function GroupFieldForm() {
             <Checkbox label={name} />
           </Form.Item>
         ))}
-      </Form.Field>
+      </Form.GroupField>
     </Form>
   );
 }

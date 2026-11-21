@@ -24,15 +24,37 @@ type FormFieldProps = Omit<
   controlId?: string;
   description?: React.ReactNode;
   error?: React.ReactNode;
-  /**
-   * Names the field's content as a group, for a list of rows, a stepper or
-   * buttons. Wrap each row's control in `Form.Item`.
-   */
-  group?: boolean;
   label?: React.ReactNode;
 };
 
-function FormField({
+function FormField(props: FormFieldProps) {
+  return <FormFieldRoot {...props} />;
+}
+
+// Native inputs use htmlFor/id for label focus; Base UI composites and groups
+// use non-native labels so their primitives can wire aria-labelledby.
+function FormFieldLabel({
+  children,
+  controlId,
+  id,
+  native,
+}: {
+  children: React.ReactNode;
+  controlId: string;
+  id: string;
+  native: boolean;
+}) {
+  return native ? (
+    <FormLabel htmlFor={controlId}>{children}</FormLabel>
+  ) : (
+    <FormLabel id={id} nativeLabel={false} render={<span />}>
+      {children}
+    </FormLabel>
+  );
+}
+
+// Shared by Form.Field and Form.GroupField, which sets `group`.
+function FormFieldRoot({
   children,
   className,
   controlId: controlIdProp,
@@ -41,7 +63,7 @@ function FormField({
   group = false,
   label,
   ...props
-}: FormFieldProps) {
+}: FormFieldProps & { group?: boolean }) {
   const { control, getFieldState } = useFormMethods();
   const name = props.name;
   const formState = useFormState({
@@ -94,28 +116,6 @@ function FormField({
   );
 }
 
-// Native inputs use htmlFor/id for label focus; Base UI composites and groups
-// use non-native labels so their primitives can wire aria-labelledby.
-function FormFieldLabel({
-  children,
-  controlId,
-  id,
-  native,
-}: {
-  children: React.ReactNode;
-  controlId: string;
-  id: string;
-  native: boolean;
-}) {
-  return native ? (
-    <FormLabel htmlFor={controlId}>{children}</FormLabel>
-  ) : (
-    <FormLabel id={id} nativeLabel={false} render={<span />}>
-      {children}
-    </FormLabel>
-  );
-}
-
 function isFormRadioGroupElement(
   child: React.ReactNode,
 ): child is React.ReactElement<FormRadioGroupProps> {
@@ -134,5 +134,5 @@ function shouldUseNativeFieldLabel(children: React.ReactNode) {
   );
 }
 
-export { FormField };
+export { FormField, FormFieldRoot };
 export type { FormFieldProps };
