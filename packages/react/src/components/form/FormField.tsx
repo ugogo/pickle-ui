@@ -24,6 +24,11 @@ type FormFieldProps = Omit<
   controlId?: string;
   description?: React.ReactNode;
   error?: React.ReactNode;
+  /**
+   * Names the field's content as a group, for a list of rows, a stepper or
+   * buttons. Wrap each row's control in `Form.Item`.
+   */
+  group?: boolean;
   label?: React.ReactNode;
 };
 
@@ -33,6 +38,7 @@ function FormField({
   controlId: controlIdProp,
   description,
   error,
+  group = false,
   label,
   ...props
 }: FormFieldProps) {
@@ -50,29 +56,31 @@ function FormField({
   // forms and rows.
   const generatedControlId = React.useId();
   const controlId = controlIdProp ?? generatedControlId;
-  const nativeLabel = shouldUseNativeFieldLabel(children);
+  const labelId = React.useId();
   const contextValue = React.useMemo(
-    () => ({
-      controlId,
-      name,
-    }),
-    [controlId, name],
+    // A group's rows each keep their own id.
+    () => ({ controlId: group ? undefined : controlId, name }),
+    [controlId, group, name],
   );
 
   return (
     <Field.Root
       className={cn('grid gap-2.5', className)}
       data-slot="field"
+      {...(group && {
+        'aria-labelledby': label ? labelId : undefined,
+        role: 'group',
+      })}
       {...props}
     >
-      {/* Native inputs use htmlFor/id for label focus; Base UI composites
-      use non-native labels so their primitives can wire aria-labelledby. */}
-      {label && nativeLabel ? (
-        <FormLabel htmlFor={controlId}>{label}</FormLabel>
-      ) : label ? (
-        <FormLabel nativeLabel={false} render={<span />}>
+      {label ? (
+        <FormFieldLabel
+          controlId={controlId}
+          id={labelId}
+          native={!group && shouldUseNativeFieldLabel(children)}
+        >
           {label}
-        </FormLabel>
+        </FormFieldLabel>
       ) : null}
       <FormFieldContext.Provider value={contextValue}>
         {children}
@@ -83,6 +91,28 @@ function FormField({
         <FormDescription>{description}</FormDescription>
       ) : null}
     </Field.Root>
+  );
+}
+
+// Native inputs use htmlFor/id for label focus; Base UI composites and groups
+// use non-native labels so their primitives can wire aria-labelledby.
+function FormFieldLabel({
+  children,
+  controlId,
+  id,
+  native,
+}: {
+  children: React.ReactNode;
+  controlId: string;
+  id: string;
+  native: boolean;
+}) {
+  return native ? (
+    <FormLabel htmlFor={controlId}>{children}</FormLabel>
+  ) : (
+    <FormLabel id={id} nativeLabel={false} render={<span />}>
+      {children}
+    </FormLabel>
   );
 }
 

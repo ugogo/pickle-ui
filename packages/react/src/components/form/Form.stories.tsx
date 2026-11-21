@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 
 import { Story } from '../_internal/Story';
+import { Checkbox } from './Checkbox';
 import { Form } from './Form';
 
 const meta = {
@@ -220,6 +221,39 @@ export const SignUp: StoryDefinition = {
     <Story.Layout className="max-w-lg" title="Form">
       <Story.Section title="Sign up">
         <SignUpForm />
+      </Story.Section>
+    </Story.Layout>
+  ),
+};
+
+const groceries = ['Flour', 'Eggs', 'Butter'];
+
+function GroupFieldForm() {
+  const form = useForm<{ list: string[] }>({ defaultValues: { list: [] } });
+
+  return (
+    <Form form={form} onSubmit={() => {}}>
+      <Form.Field
+        description="Each row keeps its own label."
+        group
+        label="Grocery list"
+        name="list"
+      >
+        {groceries.map((name) => (
+          <Form.Item key={name}>
+            <Checkbox label={name} />
+          </Form.Item>
+        ))}
+      </Form.Field>
+    </Form>
+  );
+}
+
+export const GroupField: StoryDefinition = {
+  render: () => (
+    <Story.Layout className="max-w-lg" title="Form">
+      <Story.Section title="List of rows">
+        <GroupFieldForm />
       </Story.Section>
     </Story.Layout>
   ),

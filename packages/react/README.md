@@ -193,6 +193,20 @@ export function SignUpForm() {
 }
 ```
 
+A field whose content is not one control (a list of rows, a stepper, buttons)
+takes `group`: it renders a group named by its label. Wrap each row's control in
+`Form.Item` so it keeps its own label and id.
+
+```tsx
+<Form.Field group label="Grocery list" name="list">
+  {ingredients.map((ingredient) => (
+    <Form.Item key={ingredient.id}>
+      <Checkbox label={ingredient.name} />
+    </Form.Item>
+  ))}
+</Form.Field>
+```
+
 ## Theming
 
 Pickle is styled with Tailwind utilities that resolve to a small set of CSS

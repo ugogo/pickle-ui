@@ -7,6 +7,7 @@ export type {
   FormFieldProps,
   FormInputGroupProps,
   FormInputProps,
+  FormItemProps,
   FormLabelProps,
   FormProps,
   FormRadioGroupProps,

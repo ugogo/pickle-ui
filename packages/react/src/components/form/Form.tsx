@@ -8,6 +8,7 @@ import { FormError, type FormErrorProps } from './FormError';
 import { FormField, type FormFieldProps } from './FormField';
 import { FormInput, type FormInputProps } from './FormInput';
 import { FormInputGroup, type FormInputGroupProps } from './FormInputGroup';
+import { FormItem, type FormItemProps } from './FormItem';
 import { FormLabel, type FormLabelProps } from './FormLabel';
 import { FormRadioGroup, type FormRadioGroupProps } from './FormRadioGroup';
 import { type FormProps, FormRoot } from './FormRoot';
@@ -24,6 +25,7 @@ const Form = Object.assign(FormRoot, {
   Field: FormField,
   Input: FormInput,
   InputGroup: FormInputGroup,
+  Item: FormItem,
   Label: FormLabel,
   RadioGroup: FormRadioGroup,
   Select: FormSelect,
@@ -40,6 +42,7 @@ export type {
   FormFieldProps,
   FormInputGroupProps,
   FormInputProps,
+  FormItemProps,
   FormLabelProps,
   FormProps,
   FormRadioGroupProps,
