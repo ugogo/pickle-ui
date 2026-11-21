@@ -1,9 +1,17 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { describe, expect, it, vi } from 'vitest';
 
+import { Checkbox } from './Checkbox';
 import { Form } from './Form';
+import { RadioGroup } from './RadioGroup';
 
 type TestFormValues = {
   channel: string;
@@ -158,6 +166,97 @@ describe('Form', () => {
     expect(
       screen.getByRole('checkbox', { name: 'Accept terms' }),
     ).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  describe('group fields', () => {
+    type ListFormValues = {
+      choices: string;
+      list: string[];
+      salt: boolean;
+      sugar: boolean;
+    };
+
+    function ListForm({ withErrors }: { withErrors?: boolean }) {
+      const form = useForm<ListFormValues>({
+        defaultValues: { choices: '', list: [], salt: false, sugar: false },
+      });
+
+      React.useEffect(() => {
+        if (withErrors) {
+          form.setError('list', { message: 'Pick one.', type: 'manual' });
+          form.setError('choices', { message: 'Choose.', type: 'manual' });
+        }
+      }, [form, withErrors]);
+
+      return (
+        <Form form={form} onSubmit={vi.fn()}>
+          <Form.GroupField label="Grocery list" name="list">
+            <div>
+              {['Flour', 'Eggs'].map((name) => (
+                <Form.GroupField.Item key={name}>
+                  <Checkbox label={name} />
+                </Form.GroupField.Item>
+              ))}
+              {(['salt', 'sugar'] as const).map((name) => (
+                <Form.GroupField.Item key={name}>
+                  <Form.Checkbox label={name} name={name} />
+                </Form.GroupField.Item>
+              ))}
+            </div>
+          </Form.GroupField>
+
+          <Form.GroupField label="Choices" name="choices">
+            {['Butter or margarine', 'Milk or cream'].map((name) => (
+              <Form.GroupField.Item key={name}>
+                <RadioGroup aria-label={name}>
+                  <RadioGroup.Item label="First" value="first" />
+                  <RadioGroup.Item label="Second" value="second" />
+                </RadioGroup>
+              </Form.GroupField.Item>
+            ))}
+          </Form.GroupField>
+        </Form>
+      );
+    }
+
+    it('names the list as a group and each row by its own label', () => {
+      render(<ListForm />);
+
+      const group = screen.getByRole('group', { name: 'Grocery list' });
+
+      expect(group).toHaveAttribute('data-slot', 'group-field');
+      const checkboxes = ['Flour', 'Eggs', 'salt', 'sugar'].map((name) =>
+        within(group).getByRole('checkbox', { name }),
+      );
+      const ids = checkboxes.map((checkbox) => checkbox.id);
+
+      expect(ids.every(Boolean)).toBe(true);
+      expect(new Set(ids).size).toBe(ids.length);
+    });
+
+    it('keeps the aria-label of each radio group', () => {
+      render(<ListForm />);
+
+      const group = screen.getByRole('group', { name: 'Choices' });
+
+      for (const name of ['Butter or margarine', 'Milk or cream']) {
+        expect(
+          within(group).getByRole('radiogroup', { name }),
+        ).toBeInTheDocument();
+      }
+    });
+
+    it('describes the rows with the field error', async () => {
+      render(<ListForm withErrors />);
+
+      expect(await screen.findByText('Pick one.')).toBeInTheDocument();
+      expect(
+        screen.getByRole('checkbox', { name: 'Flour' }),
+      ).toHaveAccessibleDescription('Pick one.');
+      expect(
+        screen.getByRole('radiogroup', { name: 'Milk or cream' }),
+      ).toHaveAccessibleDescription('Choose.');
+    });
   });
 
   describe('Form.Combobox', () => {

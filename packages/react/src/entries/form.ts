@@ -5,6 +5,8 @@ export type {
   FormDescriptionProps,
   FormErrorProps,
   FormFieldProps,
+  FormGroupFieldItemProps,
+  FormGroupFieldProps,
   FormInputGroupProps,
   FormInputProps,
   FormLabelProps,
