@@ -6,10 +6,13 @@ import { FormCombobox, type FormComboboxProps } from './FormCombobox';
 import { FormDescription, type FormDescriptionProps } from './FormDescription';
 import { FormError, type FormErrorProps } from './FormError';
 import { FormField, type FormFieldProps } from './FormField';
-import { FormGroupField, type FormGroupFieldProps } from './FormGroupField';
+import {
+  FormGroupField,
+  type FormGroupFieldItemProps,
+  type FormGroupFieldProps,
+} from './FormGroupField';
 import { FormInput, type FormInputProps } from './FormInput';
 import { FormInputGroup, type FormInputGroupProps } from './FormInputGroup';
-import { FormItem, type FormItemProps } from './FormItem';
 import { FormLabel, type FormLabelProps } from './FormLabel';
 import { FormRadioGroup, type FormRadioGroupProps } from './FormRadioGroup';
 import { type FormProps, FormRoot } from './FormRoot';
@@ -27,7 +30,6 @@ const Form = Object.assign(FormRoot, {
   GroupField: FormGroupField,
   Input: FormInput,
   InputGroup: FormInputGroup,
-  Item: FormItem,
   Label: FormLabel,
   RadioGroup: FormRadioGroup,
   Select: FormSelect,
@@ -42,10 +44,10 @@ export type {
   FormDescriptionProps,
   FormErrorProps,
   FormFieldProps,
+  FormGroupFieldItemProps,
   FormGroupFieldProps,
   FormInputGroupProps,
   FormInputProps,
-  FormItemProps,
   FormLabelProps,
   FormProps,
   FormRadioGroupProps,

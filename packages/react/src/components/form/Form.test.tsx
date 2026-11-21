@@ -193,26 +193,26 @@ describe('Form', () => {
           <Form.GroupField label="Grocery list" name="list">
             <div>
               {['Flour', 'Eggs'].map((name) => (
-                <Form.Item key={name}>
+                <Form.GroupField.Item key={name}>
                   <Checkbox label={name} />
-                </Form.Item>
+                </Form.GroupField.Item>
               ))}
               {(['salt', 'sugar'] as const).map((name) => (
-                <Form.Item key={name}>
+                <Form.GroupField.Item key={name}>
                   <Form.Checkbox label={name} name={name} />
-                </Form.Item>
+                </Form.GroupField.Item>
               ))}
             </div>
           </Form.GroupField>
 
           <Form.GroupField label="Choices" name="choices">
             {['Butter or margarine', 'Milk or cream'].map((name) => (
-              <Form.Item key={name}>
+              <Form.GroupField.Item key={name}>
                 <RadioGroup aria-label={name}>
                   <RadioGroup.Item label="First" value="first" />
                   <RadioGroup.Item label="Second" value="second" />
                 </RadioGroup>
-              </Form.Item>
+              </Form.GroupField.Item>
             ))}
           </Form.GroupField>
         </Form>
@@ -223,6 +223,8 @@ describe('Form', () => {
       render(<ListForm />);
 
       const group = screen.getByRole('group', { name: 'Grocery list' });
+
+      expect(group).toHaveAttribute('data-slot', 'group-field');
       const checkboxes = ['Flour', 'Eggs', 'salt', 'sugar'].map((name) =>
         within(group).getByRole('checkbox', { name }),
       );

@@ -239,9 +239,9 @@ function GroupFieldForm() {
         name="list"
       >
         {groceries.map((name) => (
-          <Form.Item key={name}>
+          <Form.GroupField.Item key={name}>
             <Checkbox label={name} />
-          </Form.Item>
+          </Form.GroupField.Item>
         ))}
       </Form.GroupField>
     </Form>
