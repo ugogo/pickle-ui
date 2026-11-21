@@ -1,5 +1,11 @@
 # @pickle-ui/react
 
+## 1.0.0-beta.14
+
+### Minor Changes
+
+- 8db14f3: Add `Form.GroupField` and its `Item` part, so a field holding a list of rows, a stepper or buttons is named as a group by its label, and each row keeps its own label and id.
+
 ## 1.0.0-beta.13
 
 ### Minor Changes
